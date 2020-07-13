@@ -4,6 +4,8 @@ This package is the ros package for teleoperating multiple chairbots via one cen
 This package acts as the ros master and can connect to joysticks to control multiple chairbots.
 It uses fiducials on the chairs along with anchor fiducials to localize robots
 
+This is the server script, the robot script lives [in this repo](https://github.com/stoddabr/chairbot_robot)
+
 # Quickstart
 
 ## Setup chairbots
