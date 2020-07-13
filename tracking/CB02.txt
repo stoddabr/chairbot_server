@@ -1,0 +1,2 @@
+./tracking/CB02.txt
+x/ll[0] 	 y/ll[1] 	 degree 	 time

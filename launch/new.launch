@@ -1,0 +1,12 @@
+<!-- 
+ -->
+
+<launch>
+
+<node respawn="true" pkg="joy" type="joy_node" name="ps4_joy">
+<param name="dev" type="string" value="/dev/input/js1" />
+</node>
+ 
+<node pkg="central_server" type="center_wizard.py" name="center_wizard" output="screen">
+</node>
+</launch>

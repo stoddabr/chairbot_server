@@ -1,0 +1,10 @@
+<!-- 
+ -->
+
+<launch>
+  <node respawn="true" pkg="joy" type="joy_node" name="ps4_joy">
+    <param name="dev" type="string" value="/dev/input/js0" />
+  </node>
+ 
+  <node pkg="central_server" type="joystick_all.py" name="joystick" output="screen"/>
+</launch>

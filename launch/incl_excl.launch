@@ -1,0 +1,17 @@
+<!-- 
+ -->
+
+<launch>
+  <node respawn="true" pkg="joy" type="joy_node" name="ps4_joy">
+    <param name="dev" type="string" value="/dev/input/js0" />
+  </node>
+ 
+  <node pkg="central_server" type="joystick_all.py" name="joystick" output="screen"/>
+
+  <node pkg="neato_localization" type="tracking_aruco_markers.py" name="tracking_aruco_markers" output="screen">
+  </node>
+
+  <node pkg="neato_localization" type="localizing_tracked_markers.py" name="localizing_tracked_markers" output="screen">
+  </node>
+
+</launch>

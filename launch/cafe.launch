@@ -1,0 +1,10 @@
+<!-- 
+ -->
+
+<launch>
+
+<node pkg="central_server" type="tracking_bridge.py" name="mark" output="screen">
+</node>
+
+</launch>
+
