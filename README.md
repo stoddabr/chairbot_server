@@ -2,7 +2,20 @@
 
 This package is the ros package for teleoperating multiple chairbots via one central machine.
 This package acts as the ros master and can connect to joysticks to control multiple chairbots.
-It uses fiducials on the chairs along with anchor fiducials to localize robots
+It uses fiducials on the chairs to sense their locations.
+
+# Features
+
+## Current
+  - Support for various screen sizes (including mobile via localhost)
+  - Controllable via a joystick
+  - Can control one or multiple chairbots
+  - Fiducial tracking via webcam
+  - Records chairbot location
+
+## Planned
+  - Collision avoidance
+  - Arrangement memory and recall
 
 # Quickstart
 
@@ -38,17 +51,6 @@ Set it up to run with ros
 ## Setup server
 
 `roslaunch chairbot_server start_ui_server.launch`
-
-# Features
-  - Support for various screen sizes (including mobile via localhost)
-  - Controllable via a joystick
-  - Can control one or multiple chairbots
-  - Fiducial tracking via webcam
-  - Records chairbot location
-
-# Planned changes
-  - Collision avoidance
-  - Arrangement memory and recall
 
 # Implementation
 
