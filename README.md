@@ -4,8 +4,6 @@ This package is the ros package for teleoperating multiple chairbots via one cen
 This package acts as the ros master and can connect to joysticks to control multiple chairbots.
 It uses fiducials on the chairs along with anchor fiducials to localize robots
 
-This is the server script, the robot script lives [in this repo](https://github.com/stoddabr/chairbot_robot)
-
 # Quickstart
 
 ## Setup chairbots
@@ -39,21 +37,30 @@ Set it up to run with ros
 
 ## Setup server
 
-`roslaunch central_server start_ui_server.launch`
-
-## ...
-coming soon...
-
+`roslaunch chairbot_server start_ui_server.launch`
 
 # Features
   - Support for various screen sizes (including mobile via localhost)
   - Controllable via a joystick
   - Can control one or multiple chairbots
   - Fiducial tracking via webcam
+  - Records chairbot location
 
 # Planned changes
   - Collision avoidance
   - Arrangement memory and recall
+
+# Implementation
+
+## Tracking
+Fiducial (chairbot) locations are periodically saved in csv files in the ./.ros directory.
+Each chairbot is given it's own file and is marked with the time the server started.
+Eg: `/home/{user}/.ros/chairbotTracking-CB07-2020-07-13 10:39:41.443251.txt`.
+This is the directory where ROS is running the python code during execution.
+
+## Modules
+
+TODO find deleted notes about modules and re-add them here
 
 # External Links
 Chirbot Wiki for more information on getting started with the chairs https://github.com/abhiagni11/ChairBots_ROS_system/wiki
