@@ -29,38 +29,38 @@ STREAM_TO_ROBOT = False  # stream movement data to the robot
 
 class TrackingCamera(object):
     def __init__(self):
+    
+      # USB-Connected Camera
+      self.cap = cv2.VideoCapture(0)  # 1 for usb camera
 
-        # USB-Connected Camera
-    	self.cap = cv2.VideoCapture(0)  # 1 for usb camera
+      # Fiducial Marker Dictionary
+      self.dictionary = cv2.aruco.getPredefinedDictionary(
+        cv2.aruco.DICT_4X4_50
+        )
 
-        # Fiducial Marker Dictionary
-        self.dictionary = cv2.aruco.getPredefinedDictionary(
-          cv2.aruco.DICT_4X4_50
-          )
+      # Constant relative file path to main.py
+      self.filePath = './'
+      print('saving tracking information to directory: '+ os.getcwd())
 
-        # Constant relative file path to main.py
-        self.filePath = './'
-        print 'saving tracking information to directory: '+os.getcwd()
+      # Initialize files using list comprehension
+      self.numTrackers = 8 # default 8, higher fiducial numbers will be ignored
+      self.filenames = [
+          "{}chairbotTracking-CB0{}-{}.txt".format(
+          self.filePath, str(i), datetime.now())
+          for i in range(self.numTrackers) #xrange
+      ]
 
-        # Initialize files using list comprehension
-        self.numTrackers = 8 # default 8, higher fiducial numbers will be ignored
-        self.filenames = [
-            "{}chairbotTracking-CB0{}-{}.txt".format(
-            self.filePath, str(i), datetime.now())
-            for i in xrange(self.numTrackers)
-        ]
+      # test write to all initialized files
+      columnLabelHeader = "x/ll[0] \t y/ll[1] \t degree \t time"
+      for filepath in self.filenames:
+          # Open and Write
+          with open(filepath, 'w+') as f:
+              f.write(filepath)
+              f.write('\n')
+              f.write(columnLabelHeader)
+              f.write('\n')
 
-        # test write to all initialized files
-        columnLabelHeader = "x/ll[0] \t y/ll[1] \t degree \t time"
-        for filepath in self.filenames:
-            # Open and Write
-            with open(filepath, 'w+') as f:
-                f.write(filepath)
-                f.write('\n')
-                f.write(columnLabelHeader)
-                f.write('\n')
-
-        return;
+      return;
 
     # Closing Process
     def __del__(self):
