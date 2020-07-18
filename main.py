@@ -5,10 +5,10 @@
 import sys
 from flask import Flask, render_template, Response, request, jsonify
 import os
-# import rospy
+import rospy
+from std_msgs.msg import String
 import threading
 import html
-# from std_msgs.msg import String
 from static.py.tracking_markers_class2 import TrackingCamera
 from static.py.BrettControllers.robot_controller import RobotControllerClass
 
@@ -22,7 +22,6 @@ app = Flask(__name__, template_folder='templates')
 
 # threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 # setup topics related to each chairbot
-f = '''
 chair_ids = range(4)
 gen_move_task = lambda x: rospy.Publisher(
     ('/requestMotion0'+str(x)), String, queue_size=1)
@@ -30,7 +29,6 @@ gen_stop_task = lambda x: rospy.Publisher(
     ('/requestStop0'+str(x)), String, queue_size=1)
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
-'''
 
 fiducialIds = [1,2,3,4]
 RobotController = RobotControllerClass()
@@ -54,7 +52,7 @@ def video_feed():
 
 # get/set formations and arrangements
 @app.route('/autonomy/<type>', methods = ['GET', 'PATCH', 'POST'])
-def arrange():
+def arrange(type):
     if request.method == 'GET':
         return RobotController.getPositions(type)
 
@@ -73,7 +71,7 @@ def arrange():
 
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
-def send_movement_command(direction):
+def send_movement_command(direction, id):
     if any(direction in d for d in ['forward','backward','left','right', 'stop']):
         # new ROSLIB.Message({data: motion})
         if (direction == 'stop'):
@@ -85,13 +83,7 @@ def send_movement_command(direction):
     else:
         mgs = 'Direction not recognized'
         return '<h2>Direction not recognized: unable to publish</h2>'
-'''
 
-@app.route('/get_formations')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result=a + b)
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', debug=False)
+	app.run(threaded=True, host='0.0.0.0', debug=False)

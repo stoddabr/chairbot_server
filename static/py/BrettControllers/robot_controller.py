@@ -47,7 +47,7 @@ class RobotControllerClass:
     command()
         tells robot_entities to calculate paths and move robots to their goals
 
-    getPositioning( type: str )
+    getPositions( type: str )
         gets possible positions for a type (arrangemetn, formation, ect)
 
     createNewPositioning( info: obj )
@@ -141,7 +141,7 @@ class RobotControllerClass:
         self.robots[robotId].move()
 
 
-    def getPositioning( self, type ):
+    def getPositions( self, type ):
         """gets possible positions for a type (arrangement, formation, ect)
 
 

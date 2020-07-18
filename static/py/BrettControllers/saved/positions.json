@@ -1,5 +1,5 @@
 {
-  "arrangements": {
+  "testpos": {
     "random": {
       "epoch_time": 2342523533,
       "data": {
@@ -17,7 +17,7 @@
       }
     }
   },
-  "formations": {
+  "testformations": {
     "random": {
       "epoch_time": 2342523533,
       "data": {

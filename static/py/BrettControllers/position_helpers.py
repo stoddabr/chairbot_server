@@ -34,7 +34,7 @@ def getPositions(type):
     # Output: {'name': 'Bob', 'languages': ['English', 'Fench']}
     positions = data[type]
     print(positions)
-    return positions
+    return json.dumps(positions)
 
 def saveNewPosition(name, type, positioningInfo):
     """ Saves new position to file
