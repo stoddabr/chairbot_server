@@ -46,6 +46,7 @@ code post 4/1 updated by Brett
     body {
       /*avoid scroll on small screens */
       overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .bottom-flex-container {
@@ -79,12 +80,42 @@ code post 4/1 updated by Brett
       /* border: 2px solid #fa223d */
     }
 
-    .joy-disable-container {
-      grid-column: span 2;
+    .control-center {
+      grid-column: span 4;
+      display: flex;
       justify-content: center;
-      flex-direction: row;
+      flex-direction: column;
       align-content: center;
       text-align: center;
+    }
+
+    .control-arrangement-button {
+      padding: 5px;
+    }
+
+    .control-toggle-button {
+      margin-top: 15px;
+      padding-left: 7px;
+      padding-right: 7px;
+      align-self: flex-end;
+    }
+
+    .control-header-main {
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+
+    .control-formation-button {
+      padding-left: 7px;
+      padding-right: 7px;
+      align-self: flex-end;
+    }
+
+    .control-formaiton-button {
+      margin-top: 15px;
+      padding-left: 7px;
+      padding-right: 7px;
+      align-self: flex-end;
     }
 
     .joy-container {
@@ -99,37 +130,116 @@ code post 4/1 updated by Brett
 
 
     .button-container {
-      grid-column: span 6;
+      grid-column: span 4;
 
       /*background: rgba(0, 0, 100, 0.25);*/
       /*border: 1px solid #123755 display: grid;*/
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
+      justify-content: center;
     }
 
     .button-header {
-      flex: 1; /* fill space horizontally*/
+      /* border: 1px solid #669000; */
+      flex: 1;
+      /* fill space horizontally*/
     }
 
     .button-input {
+      flex: 2;
+      justify-content: center;
+      flex-direction: row;
+      overflow: auto;
+      margin-bottom: 3px;
+    }
+
+    .button-item {
       flex: 1;
-      /*border: 1px solid #660000;*/
+      padding: 1px;
     }
 
     #joystick {
       /*border: 1px solid #9C9898;*/
     }
 
+    .header-text {
+      margin-top: 5px;
+      margin-bottom: 2px;
+    }
+
+    /* The Modal (background) */
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      padding-top: 100px;
+      /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Full width */
+      height: 100%;
+      /* Full height */
+      overflow: auto;
+      /* Enable scroll if needed */
+      background-color: rgb(0, 0, 0);
+      /* Fallback color */
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+
     /* responsive styles for mobile using media queries */
-    @media screen and (max-width: 480px) {
+    @media screen and (max-width: 620px) {
       .custom-row {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         color: #f1f1f1;
-        /*border: 2px solid #fa223d*/
       }
 
+      .control-center {
+        grid-column: span 2;
+      }
+
+      .button-container {
+        grid-column: span 6;
+      }
+
+      .button-container {
+        flex-direction: row;
+      }
+
+      .button-input {
+        max-height: 7vh;
+        border: 1px solid #660000;
+      }
     }
   </style>
 </head>
@@ -140,49 +250,76 @@ code post 4/1 updated by Brett
     <div class="custom-row">
       <div class='button-container'>
         <!-- buttons div -->
-        <div class='button-header' <h3>
-          You are driving:
+        <div class='button-header'>
+          <h3 class='control-header-main'>You are driving:</h3>
           <span id="Toggle01"></span>
           <span id="Toggle02"></span>
           <span id="Toggle03"></span>
           <span id="Toggle04"></span>
-          </h3>
         </div>
         <div class='button-input'>
-          <label class="switch" style="background: green; color: white">
-            <input class='chair_selectors' type="checkbox" id="Switch01" onclick="toggle_chair01()" style="" />
-            <span class="slider round" style="padding-right:1em" id="Toggle01Text">Chair1</span>
-          </label>
+          <div class='button-item'>
+            <label class="switch" style="background: green; color: white">
+              <input class='chair_selectors' type="checkbox" id="Switch01" onclick="toggle_chair01()" style="" />
+              <span class="slider round" style="padding-right:1em" id="Toggle01Text">Chair1</span>
+            </label>
+          </div>
 
-          <label class="switch" style="background: orange; color: white">
-            <input class='chair_selectors' type="checkbox" id="Switch02" onclick="toggle_chair02()">
-            <span class="slider round" style="padding-right:1em" id="Toggle02Text">Chair2</span>
-          </label>
+          <div class='button-item'>
+            <label class="switch" style="background: orange; color: white">
+              <input class='chair_selectors' type="checkbox" id="Switch02" onclick="toggle_chair02()">
+              <span class="slider round" style="padding-right:1em" id="Toggle02Text">Chair2</span>
+            </label>
+          </div>
 
-          <label class="switch" style="background: black; color: white">
-            <input class='chair_selectors' type="checkbox" id="Switch03" onclick="toggle_chair03()">
-            <span class="slider round" style="padding-right:1em" id="Toggle03Text">Chair3</span>
-          </label>
+          <div class='button-item'>
+            <label class="switch" style="background: black; color: white">
+              <input class='chair_selectors' type="checkbox" id="Switch03" onclick="toggle_chair03()">
+              <span class="slider round" style="padding-right:1em" id="Toggle03Text">Chair3</span>
+            </label>
+          </div>
 
-          <label class="switch" style="background: purple; color: white">
-            <input class='chair_selectors' type="checkbox" id="Switch04" onclick="toggle_chair04()" style="">
-            <span class="slider round" style="padding-right:1em" id="Toggle04Text">Chair4</span>
-          </label>
+          <div class='button-item'>
+            <label class="switch" style="background: purple; color: white">
+              <input class='chair_selectors' type="checkbox" id="Switch04" onclick="toggle_chair04()" style="">
+              <span class="slider round" style="padding-right:1em" id="Toggle04Text">Chair4</span>
+            </label>
+          </div>
 
-          <label class='switch'>
-            <input type="checkbox" id="SwitchAll" onclick="toggle_all()">
-            Select All
-          </label>
+          <div class='button-item'>
+            <label class='switch'>
+              <input type="checkbox" id="SwitchAll" onclick="toggle_all()">
+              Select All
+            </label>
+          </div>
+
         </div>
       </div> <!-- buttons div -->
 
-      <div class='joy-disable-container'>
-        <p>Disable Joystick </p>
-        <form style="justify-content:center;">
-          <p>
+      <div class='control-center'>
+        <!-- <h2 class='control-header-main'>Motion Controls</h2> -->
+        <div>
+          <h3 class='header-text'>Arrangement</h3>
+          <button class="control-formation-button" type="button" id="arrangementSaveButton">
+            Save
+          </button>
+          <button class="control-formation-button" type="button" id="arrangementSetButton">
+            Set
+          </button>
+        </div>
+        <div>
+          <h3 class='header-text'>Formation</h3>
+          <button class="control-formation-button" type="button" id='formationEnableButton'>
+            Set
+            <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'>
+          </button>
+        </div>
+        <div>
+          <button class="control-toggle-button" type="button" id='joystickDisableButton'>
+            Disable Joystick
             <input type='checkbox' id='joystickDisableCheckbox' name='joy-disable'>
-          </p>
-        </form>
+          </button>
+        </div>
       </div>
 
       <div class="joy-container">
@@ -192,8 +329,32 @@ code post 4/1 updated by Brett
     </div> <!-- row div -->
   </div> <!-- content div -->
 
+  <!-- Set Arrangement Modal -->
+  <div id="setAutonomyModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content" id="setAutonomyModalContainer">
+      <span class="close" id="closeModalArea">&times;</span>
+      <div id="setAutonomyModalContent">
+        <p>Set Autonomy Modal</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Arrangement Modal -->
+  <div id="saveAutonomyModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content" id="saveAutonomyModalContent">
+      <span class="close" id="closeModalArea">&times;</span>
+      <p>Save Autonomy Modal</p>
+    </div>
+  </div>
+
   <img id="camera-frame" src="{{ url_for('video_feed') }}" style="position: fixed; top: 0;height: 100vh; width: 100vw; object-fit: cover; z-index: -1; overflow-y:visible" />
 
+  <script type=text/javascript>
+    // get the server url for ajax requests
+    var $SCRIPT_ROOT = '{{ request.script_root|tojson|safe }}';
+  </script>
   <script>
     // prevent jquery from rendering 'loading' on bottom of screen
     $.mobile.autoInitializePage = false;
@@ -219,8 +380,11 @@ code post 4/1 updated by Brett
 
     var toggleJoystickEnabled = () => {
       joystickEnabled = !joystickEnabled
+      console.log('joystick toggled, new val:', joystickEnabled)
+      $('#joystickDisableCheckbox').prop('checked', !joystickEnabled);
     }
-    $('#joystickDisableCheckbox').on('click', toggleJoystickEnabled)
+    // avoid clicking both $('#joystickDisableCheckbox').on('click', toggleJoystickEnabled)
+    $('#joystickDisableButton').on('click', toggleJoystickEnabled)
 
     /* joystick control robot */
     //TODO implement "percise" controls and implement into switch case
@@ -253,6 +417,15 @@ code post 4/1 updated by Brett
         }
     }, 100); // poll joystick every 0.1 seconds
 
+    // formation controls
+    var formationEnabled = false
+    var toggleFormationEnabled = () => {
+      formationEnabled = !formationEnabled
+      console.log('formation toggled, new val:', formationEnabled)
+      $('#formationEnableCheckbox').prop('checked', formationEnabled);
+    }
+    $('#formationEnableButton').on('click', toggleFormationEnabled)
+
 
     /* add the touch handler events to the navigation buttons to call the resepctive motion function*/
     $('#forward_button').bind("vmousedown", forward);
@@ -275,6 +448,60 @@ code post 4/1 updated by Brett
       eval(requestMotion_topic_name).advertise()
       eval(requestStop_topic_name).advertise()
     }
+
+
+    // arrangement logics
+    const populateSetArrangementModal = () => {
+      $('#setAutonomyModal').css('display', 'block')
+      $("#setAutonomyModalContent").html('Loading...')
+      console.log('asdf', $SCRIPT_ROOT)
+      $.getJSON('/autonomy/testpos', function(data) { // FIXME change to arrangements
+        console.log('ajax requrest', data)
+        $("#setAutonomyModalContent").html('')
+        $("#setAutonomyModalContent").append(`<p>${JSON.stringify(data)}</p>`)
+      });
+    }
+
+    const populateSaveArrangementModal = () => {
+      $('#setAutonomyModal').css('display', 'block')
+      $("#setAutonomyModalContent").html('');
+      $("#setAutonomyModalContent").append(`
+        <form action="/testEndpoint">
+          <label for="fname">What should this be called?</label><br>
+          <input type="text" id="fname" name="fname" value="John"><br>
+          <input type="submit" value="Submit">
+        </form>`
+      );
+    }
+
+    var setArrangement = () => {
+      console.log('formation set')
+      hideModals()
+    }
+    var saveArrangement = () => {
+      console.log('arrangement saved')
+      hideModals()
+    }
+
+    // modal controls
+    var showSetAutonomyModal = (e) => {
+      console.log('autonomy set selected', e.target.id)
+      $('#setAutonomyModal').css('display', 'block')
+      populateSetArrangementModal()
+    }
+    var showSaveAutonomyModal = () => {
+      console.log('arrangement save selected')
+      $('#setAutonomyModal').css('display', 'block')
+      populateSaveArrangementModal()
+    }
+    var hideModals = () => {
+      $('#setAutonomyModal').css('display', 'none')
+      $('#saveAutonomyModal').css('display', 'none')
+    }
+
+    $('#arrangementSetButton').on('click', showSetAutonomyModal)
+    $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
+    $('#closeModalArea').on('click', hideModals)
   </script>
 </body>
 

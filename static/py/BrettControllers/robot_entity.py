@@ -32,6 +32,8 @@ class RobotEntity:
     ----------
     updateCoords()
         update the internally saved coordinates for this robot
+    getCoords()
+        returns the most recent robot coordinates
     updateCoordinates()
         see updateCoords
     calculateCommand( id: int ) -> Command
@@ -70,6 +72,11 @@ class RobotEntity:
         """
 
         self.coords = newCoords
+
+    def getCoords(self):
+        """ returns the robots most recent coordinates """
+
+        return self.coords
 
     def updateGoal(self, newGoal):
         """ Updates robot's goal location which can then be used to calculate

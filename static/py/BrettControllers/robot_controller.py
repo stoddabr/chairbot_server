@@ -13,7 +13,7 @@ TODO change docstrings to match epydoc format for easy documentation generation
 http://epydoc.sourceforge.net/epytext.html
 
 
-Assumes: 
+Assumes:
     Camera is at a constant position orthogonal to the floor
 
 Changelogs:
@@ -23,9 +23,9 @@ Changelogs:
 '''
 from robot_command import CommandClass
 from robot_entity import RobotEntity
+import position_helpers as pos
 
-
-class RobotController:
+class RobotControllerClass:
     """
     A class used to track multi-robot information
 
@@ -35,35 +35,39 @@ class RobotController:
     ----------
     robots : dictionary < RobotEntity >
         dictionary of robots indexed by fiducial/robot id
-    originId : int
-        fiducial id of the origin reference used
-    originLocation : tuple < int, int >
-        x,y coordinates of the origin fiducial
-    socket : ???
-        socket used to send commands
 
     Public Methods
     -------
     updateRobotLocation( id: int , coords: tuple )
         updates a specific robot's location
-    command #TODO  
+
+    updateRobotGoal( robotId: int, coords: tuple )
+        updates a robot's goal location coordinates and angles
+
+    command()
+        tells robot_entities to calculate paths and move robots to their goals
+
+    getPositions( type: str )
+        gets possible positions for a type (arrangemetn, formation, ect)
+
+    createNewPositioning( info: obj )
+        creates and saves a new possible positions for a type (arrangemetn,
+        formation, ect) based on current robot snapshot
+
+    setPositioning( positioning: obj )
+        recalls a positioning
     """
 
-    def __init__(self, fiducialIds, originId, originCoords=None):
+    def __init__(self, fiducialIds=None):
         """
         Parameters
         ----------
-        robotIds : array < int >
+        fiducialIds : array < int > optional
             array of fiducial/robot ids that may be active in the scene
-        originId : int
-            fiducial id of the origin point
-        originCoords : tuple <int, int>, optional
-            x, y location
         """
 
-        self.originId = originId
-        self.originCoords = originCoords
-        self.robots = {x: RobotEntity(x) for x in fiducialIds}
+        if fiducialIds is not None:
+            self.robots = {x: RobotEntity(x) for x in fiducialIds}
 
     def updateRobotLocation(self, robotId, coords):
         """ Updates a robots saved location which can then be used to calculate
@@ -114,7 +118,7 @@ class RobotController:
         robotId : int
             The sound the animal makes (default is None)
         newRobotCoords : tuple <int,int,int>, optional
-            x,y,angle coordinates for this robot's new location. 
+            x,y,angle coordinates for this robot's new location.
             If not provided, then last saved location of the robot will be used
 
         Raises
@@ -135,3 +139,66 @@ class RobotController:
 
         # prepare and send move command to robot
         self.robots[robotId].move()
+
+
+    def getPositions( self, type ):
+        """gets possible positions for a type (arrangement, formation, ect)
+
+
+        reads from json file where the positioning information is stored
+
+        Parameters
+        ----------
+        type : str
+            The positioning type (arrangement, formation, ect)
+        """
+
+        return pos.getPositions(type)
+
+    def _getCurrentRobotPositions(self):
+        """ gets the current locations for the robots"""
+
+        info = {}
+        for robotId, robotEntity in self.robots.items():
+            info[key] = robotEntity.getCoords()
+
+        return info
+
+    def saveNewPosition( self, name, type ):
+        """ creates and saves a new possible positions for a type (arrangement,
+        formation, ect) based on current robot snapshot
+
+        Parameters
+        ----------
+        name: str
+            human-readable name for the position
+        type: str
+            type of positioning. For example, "formation", "arrangement",
+            "snap-orientation"
+        """
+
+        if (type == 'arrangement'):
+            info = self._getCurrentRobotPositions()
+        #elif (type == 'formation'):
+        #    info =
+        else:
+            raise Exception('Position type not recognized: '+type)
+
+        return pos.saveNewPosition(name, type, info)
+
+    def setPositioning( self, type, name ):
+        """ recalls a positioning and updates goals for robotEntities
+
+        Parameters
+        ----------
+        positioning : dict
+            name: str
+                human-readable name for the position
+            type: str
+                position type, ie "arrangement", "formation", "snap"
+            data : array <dict>
+                data containing chairbot coordinates and angles
+        """
+
+
+        raise Exception('setPositioning not yet implemented')

@@ -28,7 +28,9 @@ STREAM_TO_ROBOT = False  # stream movement data to the robot
 
 
 class TrackingCamera(object):
-    def __init__(self):
+    def __init__(self, robotController):
+        # robot controller class
+        self.robotController = robotController
 
         # USB-Connected Camera
     	self.cap = cv2.VideoCapture(0)  # 1 for usb camera
