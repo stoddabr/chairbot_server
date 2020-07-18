@@ -1,0 +1,38 @@
+{
+  "arrangements": {
+    "random": {
+      "epoch_time": 2342523533,
+      "data": {
+        "x": 25,
+        "y": 25,
+        "angle": 25
+      }
+    },
+    "random2": {
+      "epoch_time": 2342523533,
+      "data": {
+        "x": 25,
+        "y": 25,
+        "angle": 25
+      }
+    }
+  },
+  "formations": {
+    "random": {
+      "epoch_time": 2342523533,
+      "data": {
+        "x": 25,
+        "y": 25,
+        "angle": 25
+      }
+    },
+    "random2": {
+      "epoch_time": 2342523533,
+      "data": {
+        "x": 25,
+        "y": 25,
+        "angle": 25
+      }
+    }
+  }
+}

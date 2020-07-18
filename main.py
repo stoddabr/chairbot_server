@@ -10,6 +10,7 @@ import threading
 import html
 from std_msgs.msg import String
 from static.py.tracking_markers_class2 import TrackingCamera
+from static.py.BrettControllers.robot_controller import RobotControllerClass
 
 app = Flask(__name__, template_folder='templates')
 
@@ -29,6 +30,9 @@ gen_stop_task = lambda x: rospy.Publisher(
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
+fiducialIds = [1,2,3,4]
+RobotController = RobotControllerClass()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -39,11 +43,33 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(TrackingCamera()),
+    return Response(gen(TrackingCamera(RobotController)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+# get/set formations and arrangements
+@app.route('/autonomy/<type>', methods = ['GET', 'PATCH', 'POST'])
+def arrange():
+    if request.method == 'GET':
+        return RobotController.getPositions(type)
+
+    elif request.method == 'PATCH':
+        httpBody = request.get_json(force=True)
+        name = httpBody['name']
+        return RobotController.saveNewPosition(name, type)
+
+    elif request.method == 'PATCH':
+        httpBody = request.get_json(force=True)
+        return RobotController.setPosition(httpBody) # TODO implement
+
+    else:
+        raise Exception('Route "/autonomy/<type>", method not accepted')
+
+
+# directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction):
     if any(direction in d for d in ['forward','backward','left','right', 'stop']):
