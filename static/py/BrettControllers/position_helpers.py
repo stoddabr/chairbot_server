@@ -17,15 +17,20 @@ import json
 import time
 from collections import defaultdict
 
-FILE_PATH = '/home/charisma/catkin_ws/src/chairbot_server/static/py/BrettControllers/saved/positions.json'
+#FILE_PATH = '/home/charisma/catkin_ws/src/chairbot_server/static/py/BrettControllers/saved/positions.json' FIXME
+FILE_PATH = 'C:/Users/Brett/Documents/Robot/chairbot/chairbot_server/static/py/BrettControllers/saved/positions.json'
 
-def getPositions(type):
+
+def getPositions(type, toJson=True):
     """ Reads and returns list of positions based on type
 
     Parameters
     ----------
     type : str
       position type, ie "arrangement", "formation", "snap"
+    toJson : bool (optional)
+      if the response should be a json string or dictionary
+      default dictionary
     """
 
     with open(FILE_PATH) as f:
@@ -34,7 +39,10 @@ def getPositions(type):
     # Output: {'name': 'Bob', 'languages': ['English', 'Fench']}
     positions = data[type]
     print(positions)
-    return json.dumps(positions)
+
+    if toJson:
+      return json.dumps(positions)
+    return positions
 
 def saveNewPosition(name, type, positioningInfo):
     """ Saves new position to file

@@ -200,5 +200,7 @@ class RobotControllerClass:
                 data containing chairbot coordinates and angles
         """
 
-
+        allPositions = pos.getPositions(type, False)
+        position = allPositions[name]
+        print position
         raise Exception('setPositioning not yet implemented')

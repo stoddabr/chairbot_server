@@ -215,6 +215,11 @@ code post 4/1 updated by Brett
       cursor: pointer;
     }
 
+    .autonomyButtonContainer {
+      margin: 5px;
+      padding: 5px;
+    }
+
 
     /* responsive styles for mobile using media queries */
     @media screen and (max-width: 620px) {
@@ -450,17 +455,49 @@ code post 4/1 updated by Brett
     }
 
 
+    ///////////////////////////// positioning/arrangements/formations
+
     // arrangement logics
-    const populateSetArrangementModal = () => {
+    const populateSetAutonomyModal = (type) => {
       $('#setAutonomyModal').css('display', 'block')
       $("#setAutonomyModalContent").html('Loading...')
       console.log('asdf', $SCRIPT_ROOT)
-      $.getJSON('/autonomy/testpos', function(data) { // FIXME change to arrangements
-        console.log('ajax requrest', data)
+      $.getJSON(`/autonomy/${type}`, function(data) {
+        console.log('ajax requrest to dynamically render', data)
+
         $("#setAutonomyModalContent").html('')
-        $("#setAutonomyModalContent").append(`<p>${JSON.stringify(data)}</p>`)
+        Object.keys(data).forEach((key, i)=>{
+          $("#setAutonomyModalContent").append(`
+            <div class='autonomyButtonContainer'>
+              <button class='autonomyButton${i}' data-name=${key} data-type=${type}>
+                ${key}
+              </button>
+            </div>
+            `
+          );
+          $(`button.autonomyButton${i}`).click( function() {
+            $(this).parent().remove();
+            const name = $(this).data("name")
+            const type = $(this).data("type")
+            $.post( `/autonomy/${type}`, JSON.stringify({name}), function( data ) {
+              $( ".result" ).html( data );
+            }, 'json')
+              .fail(function() {
+                alert( "Error with ajax request! Check out python logs" );
+              });
+          });
+        })
       });
     }
+
+    $(document).ready(function(){
+        $("button").click(function(){
+            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>"); 
+        });
+        $(document).on("click", "a.remove" , function() {
+            $(this).parent().remove();
+        });
+    });
 
     const populateSaveArrangementModal = () => {
       $('#setAutonomyModal').css('display', 'block')
@@ -487,12 +524,12 @@ code post 4/1 updated by Brett
     var showSetAutonomyModal = (e) => {
       console.log('autonomy set selected', e.target.id)
       $('#setAutonomyModal').css('display', 'block')
-      populateSetArrangementModal()
+      populateSetAutonomyModal('testpos')
     }
-    var showSaveAutonomyModal = () => {
-      console.log('arrangement save selected')
+    var showSaveAutonomyModal = (e) => {
+      console.log('autonomy save selected')
       $('#setAutonomyModal').css('display', 'block')
-      populateSaveArrangementModal()
+      populateSetAutonomyModal('arrangement')
     }
     var hideModals = () => {
       $('#setAutonomyModal').css('display', 'none')

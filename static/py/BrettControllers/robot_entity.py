@@ -12,7 +12,7 @@ Changelogs:
 '''
 from math import sin, cos, atan2, sqrt, pi
 
-import rospy
+# import rospy FIXME
 
 from robot_command import CommandClass
 

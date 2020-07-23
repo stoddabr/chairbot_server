@@ -33,7 +33,7 @@ class TrackingCamera(object):
         self.robotController = robotController
 
         # USB-Connected Camera
-    	self.cap = cv2.VideoCapture(0)  # 1 for usb camera
+        self.cap = cv2.VideoCapture(1)  # 1 for usb camera, 0 for local
 
         # Fiducial Marker Dictionary
         self.dictionary = cv2.aruco.getPredefinedDictionary(
