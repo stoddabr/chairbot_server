@@ -218,8 +218,65 @@ code post 4/1 updated by Brett
     .autonomyButtonContainer {
       margin: 5px;
       padding: 5px;
+      justify-content: center;
     }
 
+    .autonomyButtonContainer button {
+      padding: 10px;
+      font-size: large;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+      width: 90%;
+      border: 2px solid #4CAF50; /* Green */
+    }
+
+    .autonomyButtonContainer button[class$="Default"] { 
+      border: 2px solid black; 
+    }
+
+    .autonomyButtonContainer button:hover {
+      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    .autononmyButtonName {
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .autononmyButtonInfo {
+      text-align: right;
+      color: gray;
+    }
+
+    .autonomyModalTitle {
+      justify-content: center;
+    }
+
+    .autonomyForm {
+      padding: 5px;
+      margin: 5px;
+    }
+
+    .autonomyForm input[type=text], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .autonomyForm input[type=button], input[type=submit], input[type=reset] {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      text-decoration: none;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
 
     /* responsive styles for mobile using media queries */
     @media screen and (max-width: 620px) {
@@ -335,22 +392,13 @@ code post 4/1 updated by Brett
   </div> <!-- content div -->
 
   <!-- Set Arrangement Modal -->
-  <div id="setAutonomyModal" class="modal">
+  <div id="autonomyModal" class="modal">
     <!-- Modal content -->
-    <div class="modal-content" id="setAutonomyModalContainer">
+    <div class="modal-content" id="autonomyModalContainer">
       <span class="close" id="closeModalArea">&times;</span>
-      <div id="setAutonomyModalContent">
+      <div id="autonomyModalContent">
         <p>Set Autonomy Modal</p>
       </div>
-    </div>
-  </div>
-
-  <!-- Save Arrangement Modal -->
-  <div id="saveAutonomyModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content" id="saveAutonomyModalContent">
-      <span class="close" id="closeModalArea">&times;</span>
-      <p>Save Autonomy Modal</p>
     </div>
   </div>
 
@@ -422,15 +470,6 @@ code post 4/1 updated by Brett
         }
     }, 100); // poll joystick every 0.1 seconds
 
-    // formation controls
-    var formationEnabled = false
-    var toggleFormationEnabled = () => {
-      formationEnabled = !formationEnabled
-      console.log('formation toggled, new val:', formationEnabled)
-      $('#formationEnableCheckbox').prop('checked', formationEnabled);
-    }
-    $('#formationEnableButton').on('click', toggleFormationEnabled)
-
 
     /* add the touch handler events to the navigation buttons to call the resepctive motion function*/
     $('#forward_button').bind("vmousedown", forward);
@@ -457,40 +496,112 @@ code post 4/1 updated by Brett
 
     ///////////////////////////// positioning/arrangements/formations
 
-    // arrangement logics
+    // UI handlers
+    function setArrangementUi() {
+      console.log('formation set')
+      hideModals()
+    }
+    function saveArrangementUi() {
+      console.log('arrangement saved')
+      hideModals()
+    }
+    var formationEnabled = false
+    var arrangementEnabled = false
+
+    // modal logic 
     const populateSetAutonomyModal = (type) => {
-      $('#setAutonomyModal').css('display', 'block')
-      $("#setAutonomyModalContent").html('Loading...')
+      $('#autonomyModal').css('display', 'block')
+      $("#autonomyModalContent").html('Loading...')
       console.log('asdf', $SCRIPT_ROOT)
       $.getJSON(`/autonomy/${type}`, function(data) {
         console.log('ajax requrest to dynamically render', data)
 
-        $("#setAutonomyModalContent").html('')
+        console.log('ajax ', type.charAt(0).toLowerCase())
+        $("#autonomyModalContent").html(`
+          <div class='autonomyModalTitle'>
+            <h1>
+              Select ${type.charAt(0).toLowerCase() === 'a'?'an':'a' } ${type}
+            </h1>
+            <span style="color: gray;">Default items have a black outline</span>
+          </div>
+        `)
         Object.keys(data).forEach((key, i)=>{
-          $("#setAutonomyModalContent").append(`
+          const ts = new Date(data[key].created)
+          $("#autonomyModalContent").append(`
             <div class='autonomyButtonContainer'>
-              <button class='autonomyButton${i}' data-name=${key} data-type=${type}>
-                ${key}
+              <button class='autonomyButton${i}${data[key].type}' data-name=${key} data-type=${type}>
+                <h3 class="autononmyButtonName">${key}</h3>
+                <div class="autononmyButtonInfo">${data[key].author} - ${ts.getMonth()}/${ts.getDay()}/${ts.getFullYear()}</div>
               </button>
             </div>
-            `
-          );
-          $(`button.autonomyButton${i}`).click( function() {
+            `);
+          $(`button.autonomyButton${i}${data[key].type}`).click( function() {
             $(this).parent().remove();
             const name = $(this).data("name")
             const type = $(this).data("type")
             $.post( `/autonomy/${type}`, JSON.stringify({name}), function( data ) {
               $( ".result" ).html( data );
+              setArrangementUi()
             }, 'json')
               .fail(function() {
                 alert( "Error with ajax request! Check out python logs" );
+                setArrangementUi()
               });
           });
         })
       });
     }
 
-    $(document).ready(function(){
+    const populateSaveArrangementModal = (type) => {
+      $('#autonomyModal').css('display', 'block')
+      $("#autonomyModalContent").html('');
+      // header
+      $("#autonomyModalContent").append(`
+          <div class='autonomyModalTitle'>
+            <h1>
+              Save current ${type}
+            </h1>
+          </div>
+        `)
+      // form
+      $("#autonomyModalContent").append(`
+        <form class="autonomyForm" >
+          <label for="name">${type} Name</label>
+          <input type="text" id="autonomyFormName" name="name" placeholder="Wallflower">
+
+          <label for="author">Your Name</label>
+          <input type="text" id="autonomyFormAuthor" name="author" placeholder="James Dean">
+
+          <label for="category">${type} Category</label>
+          <select id="autonomyFormCategory" name="category">
+            <option value="default">Default</option>
+            <option value="temporary">Temporary</option>
+          </select>
+
+          <input type="submit" value="Submit">
+        </form>
+        `);
+
+      $("form.autonomyForm").submit(function(e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        const author = $('#autonomyFormAuthor').val();
+        const name = $('#autonomyFormName').val();
+        const category = $('#autonomyFormCategory').val();
+        console.log('submit things', {name, author, category})
+        $.post( `/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {
+          $( ".result" ).html( data );
+          setArrangementUi()
+        }, 'json')
+          .fail(function() {
+            alert( "Error with ajax request! Check out python logs" );
+            setArrangementUi()
+          });
+      });
+    }
+
+
+    $(document).ready(function(){ // TODO remove button
         $("button").click(function(){
             $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>"); 
         });
@@ -499,45 +610,54 @@ code post 4/1 updated by Brett
         });
     });
 
-    const populateSaveArrangementModal = () => {
-      $('#setAutonomyModal').css('display', 'block')
-      $("#setAutonomyModalContent").html('');
-      $("#setAutonomyModalContent").append(`
-        <form action="/testEndpoint">
-          <label for="fname">What should this be called?</label><br>
-          <input type="text" id="fname" name="fname" value="John"><br>
-          <input type="submit" value="Submit">
-        </form>`
-      );
-    }
 
-    var setArrangement = () => {
-      console.log('formation set')
-      hideModals()
-    }
-    var saveArrangement = () => {
-      console.log('arrangement saved')
-      hideModals()
-    }
 
     // modal controls
     var showSetAutonomyModal = (e) => {
-      console.log('autonomy set selected', e.target.id)
-      $('#setAutonomyModal').css('display', 'block')
-      populateSetAutonomyModal('testpos')
-    }
-    var showSaveAutonomyModal = (e) => {
-      console.log('autonomy save selected')
-      $('#setAutonomyModal').css('display', 'block')
-      populateSetAutonomyModal('arrangement')
-    }
-    var hideModals = () => {
-      $('#setAutonomyModal').css('display', 'none')
-      $('#saveAutonomyModal').css('display', 'none')
+      console.log('autonomy set selected', )
+      $('#autonomyModal').css('display', 'block')
+      switch (e.target.id) {
+        case 'arrangementSetButton':
+          populateSetAutonomyModal('testpos') // FIXME update to real arrangements
+          break;
+        case 'formationEnableButton':
+          populateSetAutonomyModal('testformations') // FIXME update to real formations
+          break;
+        default:
+          alert('Autonomy mode not recognized by UI: '+ e.targed.id)
+          break;
+      }
     }
 
+    var showSaveAutonomyModal = (e) => {
+      console.log('autonomy save selected', e.target.id)
+      $('#autonomyModal').css('display', 'block')
+      switch (e.target.id) {
+        case 'arrangementSaveButton':
+          populateSaveArrangementModal('testpos') // FIXME update to real arrangements
+          break;
+        default:
+          alert('Autonomy mode not recognized by UI: '+ e.targed.id)
+          break;
+      }
+    }
+    var hideModals = () => {
+      $('#autonomyModal').css('display', 'none')
+    }
+
+    // formation controls
+    function toggleFormationEnabled(e) {
+      formationEnabled = !formationEnabled
+      console.log('formation toggled, new val:', formationEnabled);
+      $('#formationEnableCheckbox').prop('checked', formationEnabled);
+      if (formationEnabled)
+        showSetAutonomyModal(e)
+    }
+
+    // handlers
     $('#arrangementSetButton').on('click', showSetAutonomyModal)
     $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
+    $('#formationEnableButton').on('click', toggleFormationEnabled)
     $('#closeModalArea').on('click', hideModals)
   </script>
 </body>

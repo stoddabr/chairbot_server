@@ -1,7 +1,9 @@
 {
   "testpos": {
     "random": {
-      "epoch_time": 2342523533,
+      "type": "Default",
+      "created": 1595699632000,
+      "author": "Brett Snottard",
       "data": {
         "x": 25,
         "y": 25,
@@ -9,7 +11,9 @@
       }
     },
     "random2": {
-      "epoch_time": 2342523533,
+      "type": "Temp",
+      "created": 964547632000,
+      "author": "Dave Franco",
       "data": {
         "x": 25,
         "y": 25,

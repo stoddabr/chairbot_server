@@ -65,6 +65,7 @@ def arrange(type):
     elif request.method == 'POST':
         httpBody = request.get_json(force=True)
         name = httpBody['name'].encode('ascii','replace')
+        
         return RobotController.setPositioning(type, name) # TODO finish implementing
 
     else:
