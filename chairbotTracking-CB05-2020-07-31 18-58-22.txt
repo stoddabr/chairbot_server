@@ -1,2 +1,0 @@
-chairbotTracking-CB05-2020-07-31 18-58-22.txt
-x/ll[0] 	 y/ll[1] 	 degree 	 time
