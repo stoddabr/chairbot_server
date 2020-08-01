@@ -139,7 +139,7 @@ class TrackingCamera(object):
                                 # based on localization data
                                 self.robotController.updateRobotLocation(
                                     int(index[0]), # fiducial id
-                                    (midcords[0], midcords[1], degree), # x,y,angle location
+                                    (midcords[0], midcords[1], degree), # x,y,angle, position tuple
                                 )
                                 # robotController will send commands to the robot
 

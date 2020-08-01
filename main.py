@@ -5,8 +5,8 @@
 import sys
 from flask import Flask, render_template, Response, request, jsonify
 import os
-# import rospy FIXME uncomment
-# from std_msgs.msg import String
+import rospy 
+from std_msgs.msg import String
 import threading
 import html
 from static.py.tracking_markers_class2 import TrackingCamera
@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='templates')
 
 # threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 # setup topics related to each chairbot
-'''
+
 chair_ids = range(4)
 gen_move_task = lambda x: rospy.Publisher(
     ('/requestMotion0'+str(x)), String, queue_size=1)
@@ -30,7 +30,7 @@ gen_stop_task = lambda x: rospy.Publisher(
     ('/requestStop0'+str(x)), String, queue_size=1)
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
-'''
+
 fiducialIds = [1,2,3,4]
 RobotController = RobotControllerClass([1,2,3,4,5,6,7,8])
 
@@ -74,7 +74,7 @@ def arrange(type):
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
 
-'''
+
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction, id):
@@ -89,7 +89,7 @@ def send_movement_command(direction, id):
     else:
         mgs = 'Direction not recognized'
         return '<h2>Direction not recognized: unable to publish</h2>'
-'''
+
 
 if __name__ == '__main__':
 	app.run(threaded=True, host='0.0.0.0', debug=False)
