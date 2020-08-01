@@ -49,7 +49,7 @@ class TrackingCamera(object):
         self.numTrackers = 8 # default 8, higher fiducial numbers will be ignored
         self.filenames = [
             "{}chairbotTracking-CB0{}-{}.txt".format(
-            self.filePath, str(i), time.strftime("%Y%m%d-%H%M%S"))
+            self.filePath, str(i), time.strftime("%Y-%m-%d %H-%M-%S"))
             for i in xrange(self.numTrackers)
         ]
 
