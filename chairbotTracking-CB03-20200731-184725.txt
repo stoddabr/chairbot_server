@@ -1,0 +1,2 @@
+chairbotTracking-CB03-20200731-184725.txt
+x/ll[0] 	 y/ll[1] 	 degree 	 time

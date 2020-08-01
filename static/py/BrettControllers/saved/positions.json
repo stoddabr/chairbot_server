@@ -1,4 +1,20 @@
 {
+  "arrangement": {
+    "test positions": {
+      "type": "Default",
+      "created": 1595699632000,
+      "author": "Brett Snottard",
+      "data": {}
+    }
+  },
+  "formation": {
+    "test positions": {
+      "type": "Default",
+      "created": 1595699632000,
+      "author": "Brett Snottard",
+      "data": {}
+    }
+  },
   "testpos": {
     "random": {
       "type": "Default",

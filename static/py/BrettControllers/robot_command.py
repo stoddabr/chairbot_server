@@ -17,7 +17,7 @@ class CommandClass:
     A class used to contain and execute command messages sent to the robots
 
     command strings:
-    Nothing:  do nothing
+    Stop:     stop moving (do nothing)
     Forward:  move forward
     Backward: move backward
     Right:    turn right
@@ -34,6 +34,8 @@ class CommandClass:
       generates a command for a robot of specific ID
     """
 
+    VALID_COMMANDS = ['FORWARD','BACKWARD','RIGHT','LEFT','STOP']
+
     def __init__(self, command):
         """ Initializes a specific type of command
 
@@ -43,7 +45,14 @@ class CommandClass:
           command string interperable by robot
         """
 
-        self.commandString = command
+        upperString = command.upper()
+        if upperString in self.VALID_COMMANDS:
+            self.commandString = command
+        else:
+            raise SystemError(
+                'Invalid command initialized in robot CommandClass: {}. Valid commands are: {}'
+                .format( command, ''.join( self.VALID_COMMANDS) )
+            )
 
     def generateCommand(self, id):
         """ Generates command datastricture that is interperable by robot client

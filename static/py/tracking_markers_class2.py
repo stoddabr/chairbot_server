@@ -16,6 +16,7 @@ import time
 import math
 import os
 from datetime import datetime
+import time
 
 # import socket
 
@@ -41,14 +42,14 @@ class TrackingCamera(object):
           )
 
         # Constant relative file path to main.py
-        self.filePath = './'
+        self.filePath = ''
         print 'saving tracking information to directory: '+os.getcwd()
 
         # Initialize files using list comprehension
         self.numTrackers = 8 # default 8, higher fiducial numbers will be ignored
         self.filenames = [
             "{}chairbotTracking-CB0{}-{}.txt".format(
-            self.filePath, str(i), datetime.now())
+            self.filePath, str(i), time.strftime("%Y%m%d-%H%M%S"))
             for i in xrange(self.numTrackers)
         ]
 

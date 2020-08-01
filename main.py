@@ -32,7 +32,7 @@ pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 '''
 fiducialIds = [1,2,3,4]
-RobotController = RobotControllerClass()
+RobotController = RobotControllerClass([1,2,3,4,5,6,7,8])
 
 @app.route('/')
 def index():
@@ -52,7 +52,7 @@ def video_feed():
 
 
 # get/set formations and arrangements
-@app.route('/autonomy/<type>', methods = ['GET', 'PATCH', 'POST'])
+@app.route('/autonomy/<type>', methods = ['GET', 'PATCH', 'POST', 'DELETE'])
 def arrange(type):
     if request.method == 'GET':
         return RobotController.getPositions(type)
@@ -60,13 +60,16 @@ def arrange(type):
     elif request.method == 'PATCH':
         httpBody = request.get_json(force=True)
         name = httpBody['name'].encode('ascii','replace')
+        name = httpBody['name'].encode('ascii','replace')
         return RobotController.saveNewPosition(name, type) # TODO implement
 
     elif request.method == 'POST':
         httpBody = request.get_json(force=True)
         name = httpBody['name'].encode('ascii','replace')
-        
         return RobotController.setPositioning(type, name) # TODO finish implementing
+
+    elif request.method == 'DELETE':
+        return RobotController.stop()
 
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')

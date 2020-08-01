@@ -56,6 +56,9 @@ class RobotControllerClass:
 
     setPositioning( positioning: obj )
         recalls a positioning
+
+    stop()
+        big red button to stop chair movement and reset goals
     """
 
     def __init__(self, fiducialIds=None):
@@ -204,3 +207,22 @@ class RobotControllerClass:
         position = allPositions[name]
         print position
         raise Exception('setPositioning not yet implemented')
+
+
+    def stop( self ):
+        """ sends stop command to all chairs and resets goals 
+        
+        big red button
+        """
+
+        stopped = []
+
+        stopCommand = CommandClass( 'stop' )
+        for robotId, robotEntity in self.robots.items():
+            robotEntity.sendCommand( stopCommand )
+            robotEntity.clearGoal()
+            stopped.append( robotId )
+
+        return {
+          'stoppedRobotIds': stopped
+        }

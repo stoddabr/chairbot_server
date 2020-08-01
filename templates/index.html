@@ -505,6 +505,19 @@ code post 4/1 updated by Brett
       console.log('arrangement saved')
       hideModals()
     }
+    function resetAutonomy() {
+      $.ajax({
+        url:  '/autonomy/all',
+        method: 'DELETE',
+      }).then(function (success) {
+        $('#formationEnableCheckbox').prop('checked', false);
+        console.log('autonomy reset', success)
+      }).catch(function(err) {
+        alert( "Error with ajax request: reset! Check out python logs" );
+        console.log("Error with ajax reset", err)
+      })
+    }
+
     var formationEnabled = false
     var arrangementEnabled = false
 
@@ -600,7 +613,6 @@ code post 4/1 updated by Brett
       });
     }
 
-
     $(document).ready(function(){ // TODO remove button
         $("button").click(function(){
             $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>"); 
@@ -610,18 +622,16 @@ code post 4/1 updated by Brett
         });
     });
 
-
-
     // modal controls
-    var showSetAutonomyModal = (e) => {
+    function showSetAutonomyModal(e) {
       console.log('autonomy set selected', )
       $('#autonomyModal').css('display', 'block')
       switch (e.target.id) {
         case 'arrangementSetButton':
-          populateSetAutonomyModal('testpos') // FIXME update to real arrangements
+          populateSetAutonomyModal('arrangement') // FIXME update to real arrangements
           break;
         case 'formationEnableButton':
-          populateSetAutonomyModal('testformations') // FIXME update to real formations
+          populateSetAutonomyModal('formation') // FIXME update to real formations
           break;
         default:
           alert('Autonomy mode not recognized by UI: '+ e.targed.id)
@@ -629,7 +639,7 @@ code post 4/1 updated by Brett
       }
     }
 
-    var showSaveAutonomyModal = (e) => {
+    function showSaveAutonomyModal(e) {
       console.log('autonomy save selected', e.target.id)
       $('#autonomyModal').css('display', 'block')
       switch (e.target.id) {
@@ -658,6 +668,11 @@ code post 4/1 updated by Brett
     $('#arrangementSetButton').on('click', showSetAutonomyModal)
     $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
     $('#formationEnableButton').on('click', toggleFormationEnabled)
+    
+    $('#arrangementSaveButton').on('click', resetAutonomy)
+    $('#arrangementSetButton').on('click', resetAutonomy)
+    $('#formationEnableButton').on('click', resetAutonomy)
+    
     $('#closeModalArea').on('click', hideModals)
   </script>
 </body>
