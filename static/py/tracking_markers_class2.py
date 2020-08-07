@@ -25,7 +25,7 @@ import time
 
 # variables that enable/disable features
 WRITE_TO_FILE = False
-STREAM_TO_ROBOT = False  # stream movement data to the robot
+STREAM_TO_ROBOT = True  # stream movement data to the robot
 
 
 class TrackingCamera(object):
@@ -46,22 +46,23 @@ class TrackingCamera(object):
         print 'saving tracking information to directory: '+os.getcwd()
 
         # Initialize files using list comprehension
-        self.numTrackers = 8 # default 8, higher fiducial numbers will be ignored
+        self.numTrackers = 11 # default 8, higher fiducial numbers will be ignored
         self.filenames = [
             "{}chairbotTracking-CB0{}-{}.txt".format(
             self.filePath, str(i), time.strftime("%Y-%m-%d %H-%M-%S"))
             for i in xrange(self.numTrackers)
         ]
 
-        # test write to all initialized files
-        columnLabelHeader = "x/ll[0] \t y/ll[1] \t degree \t time"
-        for filepath in self.filenames:
-            # Open and Write
-            with open(filepath, 'w+') as f:
-                f.write(filepath)
-                f.write('\n')
-                f.write(columnLabelHeader)
-                f.write('\n')
+        if WRITE_TO_FILE:
+            # test write to all initialized files
+            columnLabelHeader = "x/ll[0] \t y/ll[1] \t degree \t time"
+            for filepath in self.filenames:
+                # Open and Write
+                with open(filepath, 'w+') as f:
+                    f.write(filepath)
+                    f.write('\n')
+                    f.write(columnLabelHeader)
+                    f.write('\n')
 
         return;
 
@@ -137,6 +138,7 @@ class TrackingCamera(object):
                             if STREAM_TO_ROBOT:
                                 # Stream movement commands to robot
                                 # based on localization data
+                                # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
                                 self.robotController.updateRobotLocation(
                                     int(index[0]), # fiducial id
                                     (midcords[0], midcords[1], degree), # x,y,angle, position tuple

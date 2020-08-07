@@ -163,11 +163,17 @@ class RobotControllerClass:
 
         info = {}
         for robotId, robotEntity in self.robots.items():
-            info[key] = robotEntity.getCoords()
+            # tuples and int64 are not json serializable
+            # need to convert to array here
+            tmp_coords = robotEntity.getCoords()
+            if tmp_coords: #avoid None type
+                info[robotId] = [int(x) for x in tmp_coords]
+            else:
+                info[robotId] = None
 
         return info
 
-    def saveNewPosition( self, name, type ):
+    def saveNewPosition( self, name, type, category="temporary", author="Default" ):
         """ creates and saves a new possible positions for a type (arrangement,
         formation, ect) based on current robot snapshot
 
@@ -187,7 +193,7 @@ class RobotControllerClass:
         else:
             raise Exception('Position type not recognized: '+type)
 
-        return pos.saveNewPosition(name, type, info)
+        return pos.saveNewPosition(name, type, info, author, category)
 
     def setPositioning( self, type, name ):
         """ recalls a positioning and updates goals for robotEntities
@@ -210,8 +216,8 @@ class RobotControllerClass:
 
 
     def stop( self ):
-        """ sends stop command to all chairs and resets goals 
-        
+        """ sends stop command to all chairs and resets goals
+
         big red button
         """
 
