@@ -19,8 +19,8 @@ app = Flask(__name__, template_folder='templates')
 # The parameter *disable_signals* must be set if node is not initialized
 # in the main thread.
 # tutorial
+threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
-# threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 # setup topics related to each chairbot
 chair_ids = range(4)
 gen_move_task = lambda x: rospy.Publisher(
@@ -30,8 +30,7 @@ gen_stop_task = lambda x: rospy.Publisher(
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
-fiducialIds = [1,2,3,4]
-RobotController = RobotControllerClass()
+RobotController = RobotControllerClass([1,2,3])
 
 @app.route('/')
 def index():
@@ -51,23 +50,36 @@ def video_feed():
 
 
 # get/set formations and arrangements
-@app.route('/autonomy/<type>', methods = ['GET', 'PATCH', 'POST'])
+@app.route('/autonomy/<type>', methods = ['GET', 'POST', 'DELETE'])
 def arrange(type):
     if request.method == 'GET':
         return RobotController.getPositions(type)
 
-    elif request.method == 'PATCH':
+    elif request.method == 'POST':
         httpBody = request.get_json(force=True)
-        name = httpBody['name']
-        return RobotController.saveNewPosition(name, type)
+        name = httpBody['name'].encode('ascii','replace')
+        RobotController.setPositioning(type, name) # TODO finish implementing
+        return 'Position set success'
 
-    elif request.method == 'PATCH':
-        httpBody = request.get_json(force=True)
-        return RobotController.setPosition(httpBody) # TODO implement
+    elif request.method == 'DELETE':
+        RobotController.stop()
+        return 'Robots stopped'
 
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
 
+# get/set formations and arrangements
+@app.route('/new/autonomy/<type>', methods = ['POST'])
+def record_position(type):
+    if request.method == 'POST':
+        httpBody = request.get_json(force=True)
+        name = httpBody['name'].encode('ascii','replace')
+        author = httpBody['author'].encode('ascii','replace')
+        category = httpBody['category'].encode('ascii','replace')
+        RobotController.saveNewPosition(name, type, author, category)
+        return 'Position save success'
+    else:
+        raise Exception('Route "/autonomy/<type>", method not accepted')
 
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])

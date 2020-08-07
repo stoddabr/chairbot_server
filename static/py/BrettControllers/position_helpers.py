@@ -18,14 +18,19 @@ import time
 from collections import defaultdict
 
 FILE_PATH = '/home/charisma/catkin_ws/src/chairbot_server/static/py/BrettControllers/saved/positions.json'
+# FILE_PATH = 'C:/Users/Brett/Documents/Robot/chairbot/chairbot_server/static/py/BrettControllers/saved/positions.json'
 
-def getPositions(type):
+
+def getPositions(type, toJson=True):
     """ Reads and returns list of positions based on type
 
     Parameters
     ----------
     type : str
       position type, ie "arrangement", "formation", "snap"
+    toJson : bool (optional)
+      if the response should be a json string or dictionary
+      default dictionary
     """
 
     with open(FILE_PATH) as f:
@@ -34,9 +39,12 @@ def getPositions(type):
     # Output: {'name': 'Bob', 'languages': ['English', 'Fench']}
     positions = data[type]
     print(positions)
-    return json.dumps(positions)
 
-def saveNewPosition(name, type, positioningInfo):
+    if toJson:
+      return json.dumps(positions)
+    return positions
+
+def saveNewPosition(name, type, positioningInfo, author, category):
     """ Saves new position to file
 
     Parameters
@@ -49,29 +57,38 @@ def saveNewPosition(name, type, positioningInfo):
         data containing information that can be later recalled to snap
         the chairbots to desired positions.
         For example, the coordinates and angles of multiple chairbots
+    author : string
+        position author Name
+    category : string enum['temporary', 'default']
+        if the position is temporary or default
     """
 
+    print('position info', positioningInfo)
     with open(FILE_PATH) as rf:
       data = json.load(rf)
 
     # prepare variables
-    epoch_time = int(time.time())
+    epoch_time = int(time.time()) * 1000
 
     # add to dictionary
     if type in data:
         data[type][name] = {
-            "epoch_time": epoch_time,
-            "data":positioningInfo,
+            "created": epoch_time,
+            "data": positioningInfo,
+            "author": author,
+            "type": category,
         }
     else:
         data[type] = {
             [name]: {
-                "epoch_time": epoch_time,
+                "created": epoch_time,
                 "data": positioningInfo,
+                "author": author,
+                "type": category,
             },
         }
 
     with open(FILE_PATH, 'w') as wf:
       json.dump(data, wf)
 
-    return data
+    return True

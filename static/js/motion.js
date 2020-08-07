@@ -75,7 +75,7 @@ function askToRunSequence(motion) {
 			}
 			else
 			{
-				console.log("NOT Sending command to " + chair.id)
+				// console.log("NOT Sending command to " + chair.id)
 			}
 		}
 	}
@@ -101,7 +101,7 @@ function askToRunSequence(motion) {
 			}
 			else
 			{
-				console.log("NOT Sending command to " + chair.id)
+				// console.log("NOT Sending command to " + chair.id)
 			}
 		}
 

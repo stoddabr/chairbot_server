@@ -1,32 +1,32 @@
 {
   "formation": {
     "test positions": {
-      "type": "Default",
-      "created": 1595699632000,
       "data": {},
-      "author": "Brett Snottard"
+      "author": "Brett Snottard",
+      "type": "Default",
+      "created": 1595699632000
     }
   },
   "testpos": {
     "random2": {
-      "type": "Temp",
-      "created": 964547632000,
       "data": {
         "y": 25,
         "x": 25,
         "angle": 25
       },
-      "author": "Dave Franco"
+      "author": "Dave Franco",
+      "type": "Temp",
+      "created": 964547632000
     },
     "random": {
-      "type": "Default",
-      "created": 1595699632000,
       "data": {
         "y": 25,
         "x": 25,
         "angle": 25
       },
-      "author": "Brett Snottard"
+      "author": "Brett Snottard",
+      "type": "Default",
+      "created": 1595699632000
     }
   },
   "testformations": {
@@ -48,26 +48,13 @@
     }
   },
   "arrangement": {
-    "Facing chairs": {
-      "type": "Brett",
-      "author": "temporary",
-      "data": {
-        "0": [388, 345, 268],
-        "1": [137, 181, 258],
-        "2": null,
-        "3": null,
-        "5": [205, 168, 194],
-        "10": [27, 349, 268]
-      },
-      "created": 1596834556000
-    },
     "test positions": {
-      "type": "Default",
-      "created": 1595699632000,
       "data": {
         "a": 2
       },
-      "author": "Brett Snottard"
+      "author": "Brett Snottard",
+      "type": "Default",
+      "created": 1595699632000
     }
   }
 }

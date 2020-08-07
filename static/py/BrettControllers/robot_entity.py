@@ -13,8 +13,20 @@ Changelogs:
 from math import sin, cos, atan2, sqrt, pi
 
 import rospy
+from std_msgs.msg import String
+import threading
 
 from robot_command import CommandClass
+
+threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
+
+chair_ids = range(20)
+gen_move_task = lambda x: rospy.Publisher(
+    ('/requestMotion0'+str(x)), String, queue_size=1)
+gen_stop_task = lambda x: rospy.Publisher(
+    ('/requestStop0'+str(x)), String, queue_size=1)
+pub_motion_arr = list(map(gen_move_task , chair_ids))
+pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 
 class RobotEntity:
@@ -32,14 +44,28 @@ class RobotEntity:
     ----------
     updateCoords()
         update the internally saved coordinates for this robot
+
     getCoords()
         returns the most recent robot coordinates
+
     updateCoordinates()
         see updateCoords
-    calculateCommand( id: int ) -> Command
-        calculates which command to send to the robot (eg turn, forward)
-    sendCommand( command: Command)
-        sends a command to the robot
+
+    updateGoal( newGoal: tuple )
+        update goal coordinates
+
+    clearGoal()
+        Resets a robot's saved goal
+
+    generateCommand( id: int ) -> CommandClass
+        calculates and returns which command to send to the robot (eg turn, forward)
+
+    move()
+        triggers the execution of path planning software meticulously programmed
+        by underpaid grad students to calculate the next before passing to generateCommand
+
+    sendCommand( command: CommandClass )
+        sends a command to the robot via ros
     """
 
     def __init__(self, robotId, coords=None, goal=None):
@@ -90,6 +116,13 @@ class RobotEntity:
 
         self.goal = newGoal
 
+    def clearGoal(self):
+        """ Resets a robot's goal
+
+        """
+
+        self.goal = None
+
     def _calculateDistanceToGoal(self):
         """ Calculates and triggers a robot movement
 
@@ -117,21 +150,21 @@ class RobotEntity:
         return theta * 180 / pi + 180
 
     def generateCommand(self):
-        """ Calculates and triggers a robot movement
+        """ Calculates the next best robot command to get towards the goal
 
-        Returns int distance to goal in coords
+        Returns CommandClass instance
         """
 
         distTolerance = 10  # pixels FIXME experimentally determine
         angleTolerance = 45 / 2  # degrees
 
         # check if distance within margin
-        dist = _calculateDistanceToGoal()
+        dist = self._calculateDistanceToGoal()
         if (dist < distTolerance):
             return CommandClass('Nothing', self.robotId)
 
         # check if angle within margin
-        goalAngle = _calculateAngleToGoal()
+        goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
         if goalAngle + angleTolerance > currAngle \
                 and goalAngle - angleTolerance < currAngle:
@@ -176,7 +209,7 @@ class RobotEntity:
             )
 
         # calculate and send command to neato
-        command = self.generateCommand(goalCoords)
+        command = self.generateCommand()
         if command.isNothing():
             return False
 
@@ -185,7 +218,7 @@ class RobotEntity:
         return True
 
     def sendCommand(self, command):
-        """ Sends a command over ROS socket
+        """ Sends a command via ROS socket
 
         Parameters
         ----------
@@ -194,8 +227,19 @@ class RobotEntity:
         Raises
         ------
         SystemError
-            If socket fails
+            If socket fails or if brett is lazy
         """
+
+        id = self.robotId
+        message = command.generateCommand()
+        if (message == 'stop'):
+            pub_stop_arr[id].publish( message )
+            return '<h2>Stop Command Published</h2>'
+        else:
+            pub_motion_arr[id].publish( message )
+            return '<h2>Direction Command Published</h2>'
+
+#        raise SystemError('Command not implemented. Blame Brett Stoddard stoddardbrett@gmail.com')
 
         # TODO call rosbridge_websocket
         # @tutorial http://wiki.ros.org/roslibjs/Tutorials/ActionlibClient
