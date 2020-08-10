@@ -102,6 +102,7 @@ class RobotControllerClass:
         coords : tuple < int, int >
             (x,y) representing the location of the goal
         """
+
         # if robot doesn't exist, initialize one
         if not self.robots.has_key(robotId):
             self.robots[robotId] = RobotEntity(robotId)
@@ -167,6 +168,23 @@ class RobotControllerClass:
 
         return info
 
+    def _calculateRelativePosition(self, originCoords, nodeCoords):
+        """ calcualtes relative position coordinates from absolute coordinates """
+
+        relativeCoordsArr = [ x-y for x,y in zip( originCoords, nodeCoords )]
+        return tuple( relCoordsArr )
+
+    def _getRelativeRobotPositions(self, masterId=2):
+        """ gets the current locations for the robots relative to a master"""
+
+        info = {}
+        mainCords = self.robots[masterId].getCoords()
+        for robotId, robotEntity in self.robots.items():
+            if robotId is not masterId:
+              absCords = robotEntity.getCoords() 
+              info[key] =  self._calculateRelativePosition( mainCoords, absCoords )
+        return info
+
     def saveNewPosition( self, name, type ):
         """ creates and saves a new possible positions for a type (arrangement,
         formation, ect) based on current robot snapshot
@@ -182,8 +200,8 @@ class RobotControllerClass:
 
         if (type == 'arrangement'):
             info = self._getCurrentRobotPositions()
-        #elif (type == 'formation'):
-        #    info =
+        elif (type == 'formation'):
+            info = self._getRelativeRobotPositions()
         else:
             raise Exception('Position type not recognized: '+type)
 
