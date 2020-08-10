@@ -245,8 +245,8 @@ code post 4/1 updated by Brett
       border: 2px solid #4CAF50; /* Green */
     }
 
-    .autonomyButtonContainer button[class$="Default"] { 
-      border: 2px solid black; 
+    .autonomyButtonContainer button[class$="Default"] {
+      border: 2px solid black;
     }
 
     .autonomyButtonContainer button:hover {
@@ -542,7 +542,7 @@ code post 4/1 updated by Brett
     var formationEnabled = false
     var arrangementEnabled = false
 
-    // modal logic 
+    // modal logic
     const populateSetAutonomyModal = (type) => {
       $('#autonomyModal').css('display', 'block')
       $("#autonomyModalContent").html('Loading...')
@@ -623,12 +623,12 @@ code post 4/1 updated by Brett
         const name = $('#autonomyFormName').val();
         const category = $('#autonomyFormCategory').val();
         console.log('submit things', {name, author, category})
-        $.post( `/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {
+        $.post( `/new/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {
           $( ".result" ).html( data );
           setArrangementUi()
         }, 'json')
           .fail(function() {
-            alert( "Error with ajax request! Check out python logs" );
+            // alert( "Error with ajax request! Check out python logs" );
             setArrangementUi()
           });
       });
@@ -636,7 +636,7 @@ code post 4/1 updated by Brett
 
     $(document).ready(function(){ // TODO remove button
         $("button").click(function(){
-            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>"); 
+            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>");
         });
         $(document).on("click", "a.remove" , function() {
             $(this).parent().remove();
@@ -649,10 +649,10 @@ code post 4/1 updated by Brett
       $('#autonomyModal').css('display', 'block')
       switch (e.target.id) {
         case 'arrangementSetButton':
-          populateSetAutonomyModal('arrangement') 
+          populateSetAutonomyModal('arrangement')
           break;
         case 'formationEnableButton':
-          populateSetAutonomyModal('formation') 
+          populateSetAutonomyModal('formation')
           break;
         default:
           alert('Autonomy mode not recognized by UI: '+ e.targed.id)
@@ -665,7 +665,7 @@ code post 4/1 updated by Brett
       $('#autonomyModal').css('display', 'block')
       switch (e.target.id) {
         case 'arrangementSaveButton':
-          populateSaveArrangementModal('testpos') // FIXME update to real arrangements
+          populateSaveArrangementModal('arrangement') // FIXME update to real arrangements
           break;
         default:
           alert('Autonomy mode not recognized by UI: '+ e.targed.id)
@@ -689,7 +689,7 @@ code post 4/1 updated by Brett
     $('#arrangementSetButton').on('click', showSetAutonomyModal)
     $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
     $('#formationEnableButton').on('click', toggleFormationEnabled)
-    
+
     $('#arrangementSaveButton').on('click', resetAutonomy)
     $('#arrangementSetButton').on('click', resetAutonomy)
     $('#formationEnableButton').on('click', resetAutonomy)

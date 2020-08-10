@@ -54,17 +54,15 @@ class CommandClass:
                 .format( command, ''.join( self.VALID_COMMANDS) )
             )
 
-    def generateCommand(self, id):
+    def generateCommand(self, id=None):
         """ Generates command datastricture that is interperable by robot client
         Parameters
         ----------
         id : int
-          robot/fiducial id of the robot recieving command
+          robot/fiducial id of the robot recieving command. Default None.
         """
 
-        # TODO match format server is expecting
-        commandTemplate = '{} SEND TO {}'  # NOTE this is a placeholder
-        return commandTemplate.format(self.commandString, str(id))
+        return self.commandString
 
     def isNothing(self):
         """ Checks if command is to do nothing
