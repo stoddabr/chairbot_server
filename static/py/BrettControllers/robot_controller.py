@@ -161,16 +161,42 @@ class RobotControllerClass:
     def _getCurrentRobotPositions(self):
         """ gets the current locations for the robots"""
 
-        info = {}
+        positionDict = {}
         for robotId, robotEntity in self.robots.items():
             # tuples and int64 are not json serializable
             # need to convert to array here
             tmp_coords = robotEntity.getCoords()
             if tmp_coords: #avoid None type
-                info[robotId] = [int(x) for x in tmp_coords]
+                positionDict[robotId] = [int(x) for x in tmp_coords]
             else:
-                info[robotId] = None
+                positionDict[robotId] = None
 
+        return positionDict
+
+    def _getCurrentRobotRelativePositions(self, originId=1):
+        """ gets the current relative locations for the robots
+
+        relative to entity with id originId
+        """
+
+        positionDict = {}
+        origin_coords = self.robots[originId].getCoords()
+        print(origin_coords)
+        for robotId, robotEntity in self.robots.items():
+            # tuples and int64 are not json serializable
+            # need to convert to array here
+            tmp_coords = robotEntity.getCoords()
+            if tmp_coords: #avoid None type
+                positionDict[robotId] = [
+                    int(x)-int(x0) for x,x0 in zip(tmp_coords, origin_coords)
+                ]
+            else:
+                positionDict[robotId] = None
+
+        info = {
+            'coords' : positionDict,
+            'originId' : originId,
+        }
         return info
 
     def saveNewPosition( self, name, type, category="temporary", author="Default" ):
@@ -188,8 +214,8 @@ class RobotControllerClass:
 
         if (type == 'arrangement'):
             info = self._getCurrentRobotPositions()
-        #elif (type == 'formation'):
-        #    info =
+        elif (type == 'formation'):
+            info = self._getCurrentRobotRelativePositions()
         else:
             raise Exception('Position type not recognized: '+type)
 

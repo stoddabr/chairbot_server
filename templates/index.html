@@ -385,6 +385,9 @@ code post 4/1 updated by Brett
         </div>
         <div>
           <h3 class='header-text'>Formation</h3>
+          <button class="control-formation-button" type="button" id="formationSaveButton">
+            Save
+          </button>
           <button class="control-formation-button" type="button" id='formationEnableButton'>
             Set
             <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'>
@@ -665,7 +668,10 @@ code post 4/1 updated by Brett
       $('#autonomyModal').css('display', 'block')
       switch (e.target.id) {
         case 'arrangementSaveButton':
-          populateSaveArrangementModal('arrangement') // FIXME update to real arrangements
+          populateSaveArrangementModal('arrangement')
+          break;
+        case 'formationSaveButton':
+          populateSaveArrangementModal('formation')
           break;
         default:
           alert('Autonomy mode not recognized by UI: '+ e.targed.id)
@@ -688,6 +694,7 @@ code post 4/1 updated by Brett
     // handlers
     $('#arrangementSetButton').on('click', showSetAutonomyModal)
     $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
+    $('#formationSaveButton').on('click', showSaveAutonomyModal)
     $('#formationEnableButton').on('click', toggleFormationEnabled)
 
     $('#arrangementSaveButton').on('click', resetAutonomy)

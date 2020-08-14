@@ -76,7 +76,7 @@ def record_position(type):
         name = httpBody['name'].encode('ascii','replace')
         author = httpBody['author'].encode('ascii','replace')
         category = httpBody['category'].encode('ascii','replace')
-        RobotController.saveNewPosition(name, type, author, category)
+        RobotController.saveNewPosition(name, type, category, author )
         return 'Position save success'
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
