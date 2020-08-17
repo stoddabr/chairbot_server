@@ -24,6 +24,7 @@ Changelogs:
 from robot_command import CommandClass
 from robot_entity import RobotEntity
 import position_helpers as pos
+import math
 
 class RobotControllerClass:
     """
@@ -145,7 +146,7 @@ class RobotControllerClass:
         self.robots[robotId].move()
 
 
-    def getPositions( self, type ):
+    def getPositions( self, posType ):
         """gets possible positions for a type (arrangement, formation, ect)
 
 
@@ -157,7 +158,7 @@ class RobotControllerClass:
             The positioning type (arrangement, formation, ect)
         """
 
-        return pos.getPositions(type)
+        return pos.getPositions(posType)
 
     def _getCurrentRobotPositions(self):
         """ gets the current locations for the robots"""
@@ -174,24 +175,85 @@ class RobotControllerClass:
 
         return info
 
-    def _calculateRelativePosition(self, originCoords, nodeCoords):
-        """ calcualtes relative position coordinates from absolute coordinates """
+    def _rotate(origin, point, angle):
+        """
+        Rotate a point counterclockwise by a given angle around a given origin.
 
-        relativeCoordsArr = [ x-y for x,y in zip( originCoords, nodeCoords )]
-        return tuple( relCoordsArr )
+        The angle should be given in degrees.
+        Converted from angles/counterclockwise from this stackoverflow
+            https://stackoverflow.com/a/34374437/12334204
+
+          Parameters
+          ----------
+          origin: array length 2
+              x, y coordinates of the point to rotate around
+          point: array length 2
+              x, y coordinates of the point to be rotate
+          angle: int
+              type of positioning. For example, "formation", "arrangement",
+              "snap-orientation"
+          """
+          
+        ox, oy = origin
+        px, py = point
+        angleRad = math.radians(angle)
+        qx = ox + math.cos(angleRad) * (px - ox) - math.sin(angleRad) * (py - oy)
+        qy = oy + math.sin(angleRad) * (px - ox) + math.cos(angleRad) * (py - oy)
+        return qx, qy
+
+
+    def _calculateRelativePosition(origin, newOrigin, point):
+        """ calculates relative position using previous and new origin
+        
+        Parameters
+        ----------
+        origin: array
+            [x, y, angle] coordinates of the point to rotate around
+        newOrigin: array
+            [x, y, angle] coordinates of the new origin coordinates
+        point: array
+            [x, y, angle] coordinates of the point to be rotate
+        """
+
+        # calculate origin translation and rotation
+        dx = newOrigin[0] - origin[0]
+        dy = newOrigin[1] - origin[1]
+        dt = newOrigin[2] - origin[2]
+        # calculate new point wrt origin rotation
+        xrot,yrot = _rotate(origin[:2], point[:2], dt)
+        # calculate new point wrt origin translation
+        x = xrot + dx 
+        y = yrot + dy
+        t = (point[2] + dt) % 360
+        return [x,y,t]
+
+    def _calculateRelativePosition_DEPRECATED(self, originCoords, nodeCoords):
+        """ calcualtes relative position coordinates from absolute coordinates 
+
+        computes a traslation, and a rotation to change the origin from
+        the image origin to the chairbot origin coords given
+
+        DEPRECATED in favor of method where calculations are all done in one step
+        during recall
+        """
+
+        newPoint = self._rotate(originCoords[:2], nodeCoords[:2], originCoords[2])
+        newAngle = ( nodeCoords[2] - originCoords[2] ) % 360
+
+        return tuple( newPoint + newAngle )
 
     def _getRelativeRobotPositions(self, masterId=2):
         """ gets the current locations for the robots relative to a master"""
 
         info = {}
-        mainCords = self.robots[masterId].getCoords()
         for robotId, robotEntity in self.robots.items():
             if robotId is not masterId:
               absCords = robotEntity.getCoords() 
-              info[key] =  self._calculateRelativePosition( mainCoords, absCoords )
+              info[key] =  absCords
         return info
 
-    def saveNewPosition( self, name, type, category="temporary", author="Default" ):
+
+    def saveNewPosition( self, name, postype, category="temporary", author="Default" ):
         """ creates and saves a new possible positions for a type (arrangement,
         formation, ect) based on current robot snapshot
 
@@ -199,21 +261,78 @@ class RobotControllerClass:
         ----------
         name: str
             human-readable name for the position
-        type: str
+        postype: str
             type of positioning. For example, "formation", "arrangement",
             "snap-orientation"
         """
 
-        if (type == 'arrangement'):
+        if (postype == 'arrangement'):
             info = self._getCurrentRobotPositions()
-        elif (type == 'formation'):
+        elif (postype == 'formation'):
             info = self._getRelativeRobotPositions()
         else:
-            raise Exception('Position type not recognized: '+type)
+            raise Exception('Position type not recognized: '+postype)
 
-        return pos.saveNewPosition(name, type, info, author, category)
+        return pos.saveNewPosition(name, postype, info, author, category)
 
-    def setPositioning( self, type, name ):
+
+    def setGoalsFromAbsolutePosition(positionData):
+        """ sets goals from absolute positions
+
+        inverse of _getCurrentRobotPositions(*)
+
+        Parameters
+        ----------
+        positionData: dictionary
+            dictionary with robotIds as keys and coordinate array as values
+            where coordinate array is [x,y,angle]
+        """
+        
+        for robotId, robotEntity in self.robots.items():
+            if robotId in positionData:
+                coordsArray = positionData[robotId]
+                coords = tuple(coordsArray)
+                robotEntity.updateGoal(coords)
+
+
+    def setGoalsFromRelativePosition(positionData):
+        """ sets goals from absolute positions
+
+        inverse of _getCurrentRobotPositions(*)
+
+        Parameters
+        ----------
+        positionData: dictionary
+            dictionary with robotIds as keys and coordinate array as values
+            where coordinate array is [x,y,angle]
+        """
+
+        originId = positionData['originId']
+        # avoid case where original origin robotId was not recorded
+        if not positionData['coords'].has_key(originId):
+            errString = 'Brett: Origin id not recorded in coordinates: ' + originId
+            print('Error: '+errString)
+            raise Exception(errString) # possibly comment out during production?
+            return False
+        # avoid case where origin robotId is not valid
+        if not self.robots.has_key(originId):
+            errString = 'Brett: Origin robot id not recorded in current entities: ' + originId
+            print('Error: '+errString)
+            raise Exception(errString) # possibly comment out during production?
+            return False
+
+        originCoords = positionData['coords'][ originId ]
+        newOriginCoords = self.robots[originId].getCoords() 
+        for robotId, robotEntity in self.robots.items():
+            if positionData['coords'].has_key(robotId):
+                recordedCoords = positionData[robotId]
+                newCoords = tuple(
+                  self._calculateRelativePosition( originCoords, newOriginCoords, recordedCoords )
+                )
+                robotEntity.updateGoal(newCoords)
+
+
+    def setPositioning( self, posType, name ):
         """ recalls a positioning and updates goals for robotEntities
 
         Parameters
@@ -221,16 +340,25 @@ class RobotControllerClass:
         positioning : dict
             name: str
                 human-readable name for the position
-            type: str
+            posType: str
                 position type, ie "arrangement", "formation", "snap"
             data : array <dict>
                 data containing chairbot coordinates and angles
         """
 
-        allPositions = pos.getPositions(type, False)
+        allPositions = pos.getPositions(posType, False)
         position = allPositions[name]
-        print position
-        raise Exception('setPositioning not yet implemented')
+        print('Position: ',position)
+        positionData = position['data']
+
+        if posType is 'arrangement':
+            # set goals as absolute positions
+            self.setGoalsFromAbsolutePosition(position)
+        elif posType is 'formation':
+            # set goals as calculated relative positions 
+            self.setGoalsFromRelativePosition(position)
+        else:
+            raise Exception('Position type not recognized. Should be "formation" or "arrangement". Given: '+posType)
 
 
     def stop( self ):
