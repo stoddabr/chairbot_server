@@ -75,7 +75,7 @@ class RobotControllerClass:
         if fiducialIds is not None:
             self.robots = {x: RobotEntity(x) for x in fiducialIds}
 
-    def updateRobotLocation(self, robotId, coords):
+    def updateRobotLocation(self, robotId, coords, toMoveOrNotToMove=True):
         """ Updates a robots saved location which can then be used to calculate
         robot movements
 
@@ -84,7 +84,9 @@ class RobotControllerClass:
         robotId : int
             robot fiducial id
         coords : tuple < int, int, float >
-            (x,y,angle degrees) representing the location of the robot
+            (x,y,angle degrees) representing the location of the robot 
+        toMoveOrNotToMove : boolean  default True
+            if true, will also move the robot
         """
 
         # if robot doesn't exist, initialize one
@@ -93,6 +95,10 @@ class RobotControllerClass:
 
         # update coords
         self.robots[robotId].updateCoords(coords)
+
+        # move robot if no exesential crisis
+        if toMoveOrNotToMove:
+            self.robots.[robotId].move()
 
     def updateRobotGoal(self, robotId, coords):
         """ Updates a robots saved goal which can then be used to calculate
