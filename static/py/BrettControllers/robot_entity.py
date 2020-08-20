@@ -161,14 +161,14 @@ class RobotEntity:
         # check if distance within margin
         dist = self._calculateDistanceToGoal()
         if (dist < distTolerance):
-            return CommandClass('Nothing', self.robotId)
+            return CommandClass('Stop', self.robotId)
 
         # check if angle within margin
         goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
         if goalAngle + angleTolerance > currAngle \
                 and goalAngle - angleTolerance < currAngle:
-            return CommandClass('Left', self.robotId)
+            return CommandClass('Forward', self.robotId)
 
         # turn so angle is within margin
         if goalAngle < currAngle:
