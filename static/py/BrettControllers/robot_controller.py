@@ -222,7 +222,7 @@ class RobotControllerClass:
             dictionary with robotIds as keys and coordinate array as values
             where coordinate array is [x,y,angle]
         """
-        
+
         for robotId, robotEntity in self.robots.items():
             if robotId in positionData:
                 coordsArray = positionData[robotId]
@@ -247,8 +247,8 @@ class RobotControllerClass:
           angle: int
               type of positioning. For example, "formation", "arrangement",
               "snap-orientation"
-          """
-          
+        """
+
         ox, oy = origin
         px, py = point
         angleRad = math.radians(angle)
