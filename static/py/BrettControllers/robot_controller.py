@@ -98,7 +98,9 @@ class RobotControllerClass:
 
         # move robot if no exesential crisis
         if toMoveOrNotToMove:
-            self.robots.[robotId].move()
+            self.robots[robotId].move()
+        return True
+
 
     def updateRobotGoal(self, robotId, coords):
         """ Updates a robots saved goal which can then be used to calculate
