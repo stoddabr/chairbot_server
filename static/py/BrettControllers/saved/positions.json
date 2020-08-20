@@ -1,9 +1,15 @@
 {
   "formation": {
-    "test positions": {
+    "Move Together": {
       "type": "Default",
       "created": 1595699632000,
-      "data": {},
+      "data": {
+        "coords": {
+          "1": [42,42,42],
+          "10": [42,42,42]
+        },
+        "originId": 10
+      },
       "author": "Brett Snottard"
     }
   },
