@@ -73,13 +73,15 @@ code post 4/1 updated by Brett
 
     .big-red-button {
       background-color: red;
-      border: 1px solid red; /* Green */
+      border: 1px solid red;
+      /* Green */
       color: white;
       font-weight: bold;
       border-radius: 12px;
       margin: 10px;
       padding: 5px;
     }
+
     .big-red-button:hover {
       background-color: white;
       color: red;
@@ -242,7 +244,8 @@ code post 4/1 updated by Brett
       color: black;
       border-radius: 10px;
       width: 90%;
-      border: 2px solid #4CAF50; /* Green */
+      border: 2px solid #4CAF50;
+      /* Green */
     }
 
     .autonomyButtonContainer button[class$="Default"] {
@@ -250,7 +253,7 @@ code post 4/1 updated by Brett
     }
 
     .autonomyButtonContainer button:hover {
-      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+      box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
     }
 
     .autononmyButtonName {
@@ -258,6 +261,7 @@ code post 4/1 updated by Brett
       margin: 0;
       padding: 0;
     }
+
     .autononmyButtonInfo {
       text-align: right;
       color: gray;
@@ -272,7 +276,8 @@ code post 4/1 updated by Brett
       margin: 5px;
     }
 
-    .autonomyForm input[type=text], select {
+    .autonomyForm input[type=text],
+    select {
       width: 100%;
       padding: 12px 20px;
       margin: 8px 0;
@@ -282,7 +287,9 @@ code post 4/1 updated by Brett
       box-sizing: border-box;
     }
 
-    .autonomyForm input[type=button], input[type=submit], input[type=reset] {
+    .autonomyForm input[type=button],
+    input[type=submit],
+    input[type=reset] {
       background-color: #4CAF50;
       border: none;
       color: white;
@@ -522,20 +529,22 @@ code post 4/1 updated by Brett
       console.log('formation set')
       hideModals()
     }
+
     function saveArrangementUi() {
       console.log('arrangement saved')
       hideModals()
     }
+
     function resetAutonomy() {
       $.ajax({
-        url:  '/autonomy/all',
+        url: '/autonomy/all',
         method: 'DELETE',
-      }).then(function (success) {
+      }).then(function(success) {
         $('#formationEnableCheckbox').prop('checked', false);
         console.log('autonomy reset', success)
       }).catch(function(err) {
-        alert( "Error with ajax request: reset! Check out python logs" );
-        console.log("Error with ajax reset", err)
+        alert("Error with ajax request: reset! Check out python logs");
+        console.log("Error with ajax reset in resetAutonomy", err)
       })
     }
 
@@ -559,7 +568,7 @@ code post 4/1 updated by Brett
             <span style="color: gray;">Default items have a black outline</span>
           </div>
         `)
-        Object.keys(data).forEach((key, i)=>{
+        Object.keys(data).forEach((key, i) => {
           const ts = new Date(data[key].created)
           $("#autonomyModalContent").append(`
             <div class='autonomyButtonContainer'>
@@ -569,17 +578,24 @@ code post 4/1 updated by Brett
               </button>
             </div>
             `);
-          $(`button.autonomyButton${i}${data[key].type}`).click( function() {
+          $(`button.autonomyButton${i}${data[key].type}`).click(function() {
             $(this).parent().remove();
             const name = $(this).data("name")
             const type = $(this).data("type")
-            $.post( `/autonomy/${type}`, JSON.stringify({name}), function( data ) {
-              $( ".result" ).html( data );
-              setArrangementUi()
-            }, 'json')
-              .fail(function() {
-                alert( "Error with ajax request! Check out python logs" );
+            $.post(`/autonomy/${type}`, JSON.stringify({
+                name
+              }), function(data) {
+                $(".result").html(data);
                 setArrangementUi()
+              }, 'json')
+              .fail(function(error) {
+                setArrangementUi()
+                if (error.status === 200) {
+                  console.log('successful api response', error)
+                } else {
+                  alert("Error with ajax request! Check out python logs");
+                  console.error('populateSetAutonomyModal', error)
+                }
               });
           });
         })
@@ -622,11 +638,19 @@ code post 4/1 updated by Brett
         const author = $('#autonomyFormAuthor').val();
         const name = $('#autonomyFormName').val();
         const category = $('#autonomyFormCategory').val();
-        console.log('submit things', {name, author, category})
-        $.post( `/new/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {
-          $( ".result" ).html( data );
-          setArrangementUi()
-        }, 'json')
+        console.log('submit things', {
+          name,
+          author,
+          category
+        })
+        $.post(`/new/autonomy/${type}`, JSON.stringify({
+            name,
+            author,
+            category
+          }), function(data) {
+            $(".result").html(data);
+            setArrangementUi()
+          }, 'json')
           .fail(function() {
             // alert( "Error with ajax request! Check out python logs" );
             setArrangementUi()
@@ -634,13 +658,13 @@ code post 4/1 updated by Brett
       });
     }
 
-    $(document).ready(function(){ // TODO remove button
-        $("button").click(function(){
-            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>");
-        });
-        $(document).on("click", "a.remove" , function() {
-            $(this).parent().remove();
-        });
+    $(document).ready(function() { // TODO remove button
+      $("button").click(function() {
+        $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>");
+      });
+      $(document).on("click", "a.remove", function() {
+        $(this).parent().remove();
+      });
     });
 
     // modal controls
@@ -655,7 +679,7 @@ code post 4/1 updated by Brett
           populateSetAutonomyModal('formation')
           break;
         default:
-          alert('Autonomy mode not recognized by UI: '+ e.targed.id)
+          alert('Autonomy mode not recognized by UI: ' + e.targed.id)
           break;
       }
     }
@@ -668,7 +692,7 @@ code post 4/1 updated by Brett
           populateSaveArrangementModal('arrangement') // FIXME update to real arrangements
           break;
         default:
-          alert('Autonomy mode not recognized by UI: '+ e.targed.id)
+          alert('Autonomy mode not recognized by UI: ' + e.targed.id)
           break;
       }
     }

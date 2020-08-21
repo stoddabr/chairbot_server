@@ -139,10 +139,12 @@ class TrackingCamera(object):
                                 # Stream movement commands to robot
                                 # based on localization data
                                 # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
+                                tmpRobotId = int(index[0])
                                 self.robotController.updateRobotLocation(
-                                    int(index[0]), # fiducial id
+                                    tmpRobotId, # fiducial id
                                     (midcords[0], midcords[1], degree), # x,y,angle, position tuple
                                 )
+                                self.robotController.command(tmpRobotId)
                                 # robotController will send commands to the robot
 
                     except IndexError:

@@ -18,6 +18,7 @@ import threading
 
 from robot_command import CommandClass
 
+# already setup in main.py
 threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
 
 chair_ids = range(20)
@@ -114,6 +115,7 @@ class RobotEntity:
             x,y coordinates
         """
 
+        print "Goal updated for "+str(self.robotId)
         self.goal = newGoal
 
     def clearGoal(self):
@@ -128,7 +130,7 @@ class RobotEntity:
 
         Returns int distance to goal in coords
         """
-        [goalx, goaly] = self.goal
+        [goalx, goaly, _] = self.goal
         [currx, curry, _] = self.coords  # current
 
         # eucledian distance
@@ -141,7 +143,7 @@ class RobotEntity:
 
         Returns float angle in degrees [0,360]
         """
-        [goalx, goaly] = self.goal
+        [goalx, goaly, _] = self.goal
         [currx, curry, _] = self.coords  # current
 
         diffx = (goalx-currx)
@@ -161,20 +163,20 @@ class RobotEntity:
         # check if distance within margin
         dist = self._calculateDistanceToGoal()
         if (dist < distTolerance):
-            return CommandClass('Stop', self.robotId)
+            return CommandClass('Stop')
 
         # check if angle within margin
         goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
         if goalAngle + angleTolerance > currAngle \
                 and goalAngle - angleTolerance < currAngle:
-            return CommandClass('Forward', self.robotId)
+            return CommandClass('Forward')
 
         # turn so angle is within margin
         if goalAngle < currAngle:
-            return CommandClass('Right', self.robotId)
+            return CommandClass('Right')
         else:
-            return CommandClass('Left', self.robotId)
+            return CommandClass('Left')
 
     def move(self, newGoal=None):
         """ Calculates and triggers a robot movement
@@ -194,6 +196,7 @@ class RobotEntity:
             If coords not found
         """
 
+        # print "Moving robot "+str(self.robotId)
         if (newGoal != None):
             # TODO assert format before running
             self.goal = newGoal
@@ -208,8 +211,10 @@ class RobotEntity:
                 .format(self.robotId)
             )
 
+
         # calculate and send command to neato
         command = self.generateCommand()
+
         if command.isNothing():
             return False
 
@@ -230,12 +235,13 @@ class RobotEntity:
             If socket fails or if brett is lazy
         """
 
-        id = self.robotId
+        id = 4 # FIXME for testing with limited fiducials # self.robotId
         message = command.generateCommand()
         if (message == 'stop'):
             pub_stop_arr[id].publish( message )
             return '<h2>Stop Command Published</h2>'
         else:
+            # print 'sending to '+message+' '+str(id)
             pub_motion_arr[id].publish( message )
             return '<h2>Direction Command Published</h2>'
 
