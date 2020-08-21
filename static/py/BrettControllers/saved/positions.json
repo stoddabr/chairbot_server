@@ -1,1 +1,77 @@
-{"formation": {"test 743": {"data": {"coords": {"10": [-74, 257, 89], "1": [0, 0, 0], "0": [287, 254, 92], "3": null, "2": null, "5": [41, 89, 174]}, "originId": 1}, "created": 1597441265000, "type": "temporary", "author": "Brett"}, "667": {"data": {"coords": {"10": [-75, 257, 90], "1": [0, 0, 0], "0": [287, 254, 92], "3": null, "2": null, "5": [41, 89, 173]}, "originId": 1}, "created": 1597441154000, "type": "default", "author": "brett"}, "test 3": {"type": "temporary", "author": "Brett", "data": {"coords": {"10": [-74, 257, 87], "1": [0, 0, 0], "0": [287, 254, 90], "3": null, "2": null, "5": [41, 89, 172]}, "originId": 1}, "created": 1597441235000}, "566": {"type": "temporary", "author": "brett", "data": {"coords": {"10": [-74, 257, 87], "1": [0, 0, 0], "0": [286, 255, 88], "3": null, "2": null, "5": [37, 91, -90]}, "originId": 1}, "created": 1597441084000}, "5555": {"data": {"coords": {"10": [-119, 243, 177], "1": [0, 0, 0], "0": [241, 241, 178], "3": null, "2": null, "5": [-8, 77, 0]}, "originId": 1}, "created": 1597441014000, "type": "temporary", "author": "Brett"}, "test positions": {"type": "Default", "created": 1595699632000, "data": {}, "author": "Brett Snottard"}, "test 743 - rotated": {"type": "temporary", "author": "Brett", "data": {"coords": {"0": [287, 254, 92], "1": [0, 0, 0], "2": null, "3": null, "5": [38, 89, 78], "10": [-74, 257, 89]}, "originId": 1}, "created": 1597441299000}}, "testpos": {"random2": {"type": "Temp", "created": 964547632000, "data": {"y": 25, "x": 25, "angle": 25}, "author": "Dave Franco"}, "random": {"type": "Default", "created": 1595699632000, "data": {"y": 25, "x": 25, "angle": 25}, "author": "Brett Snottard"}}, "testformations": {"random2": {"data": {"y": 25, "x": 25, "angle": 25}, "epoch_time": 2342523533}, "random": {"data": {"y": 25, "x": 25, "angle": 25}, "epoch_time": 2342523533}}, "arrangement": {"Facing chairs": {"type": "Brett", "author": "temporary", "data": {"10": [27, 349, 268], "1": [137, 181, 258], "0": [388, 345, 268], "3": null, "2": null, "5": [205, 168, 194]}, "created": 1596834556000}, "test positions": {"type": "Default", "created": 1595699632000, "data": {"a": 2}, "author": "Brett Snottard"}, "test 3": {"type": "brett", "author": "temporary", "data": {"10": [27, 346, 268], "1": [147, 104, 90], "0": [388, 343, 270], "3": null, "2": null, "5": [139, 180, 90]}, "created": 1597440590000}, "test ": {"data": {"10": [26, 352, 270], "1": [137, 184, 255], "0": [388, 348, 270], "3": null, "2": null, "5": [205, 171, 194]}, "created": 1597248263000, "type": "Abrar Fallatah", "author": "temporary"}}}
+{
+  "formation": {
+    "test positions": {
+      "type": "Default",
+      "created": 1595699632000,
+      "data": {},
+      "author": "Brett Snottard"
+    },
+    "Together51": {
+      "type": "temporary",
+      "author": "Brett",
+      "data": {
+        "coords": {
+          "0": [138, 158, -56],
+          "1": [0, 0, 0],
+          "2": null,
+          "3": null,
+          "5": [-16, -18, -271],
+          "7": [106, -40, -73],
+          "10": [-222, 161, -57]
+        },
+        "originId": 1
+      },
+      "created": 1598042790000
+    }
+  },
+  "testpos": {
+    "random2": {
+      "type": "Temp",
+      "created": 964547632000,
+      "data": {
+        "y": 25,
+        "x": 25,
+        "angle": 25
+      },
+      "author": "Dave Franco"
+    },
+    "random": {
+      "type": "Default",
+      "created": 1595699632000,
+      "data": {
+        "y": 25,
+        "x": 25,
+        "angle": 25
+      },
+      "author": "Brett Snottard"
+    }
+  },
+  "testformations": {
+    "random2": {
+      "data": {
+        "y": 25,
+        "x": 25,
+        "angle": 25
+      },
+      "epoch_time": 2342523533
+    },
+    "random": {
+      "data": {
+        "y": 25,
+        "x": 25,
+        "angle": 25
+      },
+      "epoch_time": 2342523533
+    }
+  },
+  "arrangement": {
+    "test positions": {
+      "type": "Default",
+      "created": 1595699632000,
+      "data": {
+        "a": 2
+      },
+      "author": "Brett Snottard"
+    }
+  }
+}

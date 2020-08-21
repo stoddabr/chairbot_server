@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='templates')
 threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
-chair_ids = range(4)
+chair_ids = range(10)
 gen_move_task = lambda x: rospy.Publisher(
     ('/requestMotion0'+str(x)), String, queue_size=1)
 gen_stop_task = lambda x: rospy.Publisher(
@@ -90,7 +90,7 @@ def send_movement_command(direction, id):
             pub_stop_arr[id].publish( direction.upper() )
             return '<h2>Stop Command Published</h2>'
         else:
-            pub_motion_arr[id].publish( direction.upper() )
+            pub_motion_arr[int(id)].publish( direction.upper() )
             return '<h2>Direction Command Published</h2>'
     else:
         mgs = 'Direction not recognized'

@@ -44,7 +44,7 @@ class RobotControllerClass:
     updateRobotGoal( robotId: int, coords: tuple )
         updates a robot's goal location coordinates and angles
 
-    command()
+    command( robotId: int )
         tells robot_entities to calculate paths and move robots to their goals
 
     getPositions( type: str )
@@ -236,6 +236,7 @@ class RobotControllerClass:
         """
 
         allPositions = pos.getPositions(type, False)
+        print('get positions', type, name)
         position = allPositions[name]
         print position
         raise Exception('setPositioning not yet implemented')

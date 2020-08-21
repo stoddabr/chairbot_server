@@ -143,6 +143,7 @@ class TrackingCamera(object):
                                     int(index[0]), # fiducial id
                                     (midcords[0], midcords[1], degree), # x,y,angle, position tuple
                                 )
+                                self.robotController.command(int(index[0]))
                                 # robotController will send commands to the robot
 
                     except IndexError:

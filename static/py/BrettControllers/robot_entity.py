@@ -18,7 +18,8 @@ import threading
 
 from robot_command import CommandClass
 
-threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
+# run in main.py
+# threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
 
 chair_ids = range(20)
 gen_move_task = lambda x: rospy.Publisher(
