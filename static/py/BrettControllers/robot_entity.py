@@ -235,7 +235,7 @@ class RobotEntity:
             If socket fails or if brett is lazy
         """
 
-        id = 4 # FIXME for testing with limited fiducials # self.robotId
+        id = self.robotId # TODO setup mapping from robotId to chairId
         message = command.generateCommand()
         if (message == 'stop'):
             pub_stop_arr[id].publish( message )
