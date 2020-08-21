@@ -19,7 +19,7 @@ app = Flask(__name__, template_folder='templates')
 # The parameter *disable_signals* must be set if node is not initialized
 # in the main thread.
 # tutorial
-threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
+# threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
 chair_ids = range(4)
