@@ -49,8 +49,7 @@ const STOP = 'STOP'
 
 
 function askToRunSequence(motion) {
-	console.log("The requested motion is:" + motion);
-
+	//console.log("The requested motion is:" + motion);
 	//what chairs are we sending the data to ?
 	//figure out based on if they are checked or not
 	chairs = $('.chair_selectors')
@@ -58,7 +57,7 @@ function askToRunSequence(motion) {
 	if (motion == STOP) { //this is the STOP command
 		//encode the packet to make it processesable by ROS
 		requestStopPacket = new ROSLIB.Message({data: motion})
-		console.log("Stop Packet is " + requestStopPacket)
+		// console.log("Stop Packet is " + requestStopPacket)
 
 		//send it to those chair's topic which were selected
 		for (var chair of chairs)
@@ -83,7 +82,7 @@ function askToRunSequence(motion) {
 	{
 		//encode the packet to make it processesable by ROS
 		requestMotionPacket = new ROSLIB.Message({data: motion})
-		console.log("Motion Packet is " + requestMotionPacket)
+		// console.log("Motion Packet is " + requestMotionPacket)
 
 		//send it to those chair's topic which were selected
 		for (var chair of chairs)

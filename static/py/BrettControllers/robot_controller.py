@@ -98,8 +98,8 @@ class RobotControllerClass:
 
         # move robot if no existential crisis
         if toMoveOrNotToMove:
-            self.robots[robotId].move()
-        return True
+            return self.robots[robotId].move()
+        return 'stop' # else
 
     def updateRobotGoal(self, robotId, coords):
         """ Updates a robots saved goal which can then be used to calculate
@@ -184,18 +184,22 @@ class RobotControllerClass:
 
         return info
 
-    def _getRelativeRobotPositions(self, masterId=2):
+    def _getRelativeRobotPositions(self, masterId=10):
         """ gets the current locations for the robots relative to a master"""
 
         info = {}
         for robotId, robotEntity in self.robots.items():
             if robotId is not masterId:
               absCords = robotEntity.getCoords()
-              info[key] =  absCords
-        return info # TODO master id
+              if absCords:
+                  info[robotId] =  [int(x) for x in absCords]
+        return {
+            'coords': info,
+            'originId': masterId,
+        }
 
 
-    def saveNewPosition( self, name, postype, category="temporary", author="Default" ):
+    def saveNewPosition( self, name, postype,  author="Default", category="temporary" ):
         """ creates and saves a new possible positions for a type (arrangement,
         formation, ect) based on current robot snapshot
 
@@ -231,14 +235,14 @@ class RobotControllerClass:
         """
 
         for robotId, robotEntity in self.robots.items():
-            if positionData['data'].has_key(str(robotId)):
-                coordsArray = positionData['data'][str(robotId)]
-                if coordsArray != None:
+            if str(robotId) in positionData:
+                coordsArray = positionData[str(robotId)]
+                if coordsArray:
                     coords = tuple(coordsArray)
                     robotEntity.updateGoal(coords)
 
 
-    def _rotate(self, origin, point, angle):
+    def _rotate(origin, point, angle):
         """
         Rotate a point counterclockwise by a given angle around a given origin.
 
@@ -265,7 +269,7 @@ class RobotControllerClass:
         return qx, qy
 
 
-    def _calculateRelativePosition(self, origin, newOrigin, point):
+    def _calculateRelativePosition(origin, newOrigin, point):
         """ calculates relative position using previous and new origin
 
         Parameters
@@ -283,7 +287,7 @@ class RobotControllerClass:
         dy = newOrigin[1] - origin[1]
         dt = newOrigin[2] - origin[2]
         # calculate new point wrt origin rotation
-        xrot,yrot = self._rotate(origin[:2], point[:2], dt)
+        xrot,yrot = _rotate(origin[:2], point[:2], dt)
         # calculate new point wrt origin translation
         x = xrot + dx
         y = yrot + dy
@@ -303,32 +307,32 @@ class RobotControllerClass:
             where coordinate array is [x,y,angle]
         """
 
-        originId = positionData['data']['originId']
+        originId = positionData['originId']
         # avoid case where original origin robotId was not recorded
-        if not positionData['data']['coords'].has_key(str(originId)):
+        if not positionData['coords'].has_key(originId):
             errString = 'Brett: Origin id not recorded in coordinates: ' + str(originId)
             print('Error: '+errString)
             raise Exception(errString) # possibly comment out during production?
             return False
         # avoid case where origin robotId is not valid
         if not self.robots.has_key(originId):
-            errString = 'Brett: Origin robot id not recorded in current entities: ' + str(originId)
+            errString = 'Brett: Origin robot id not recorded in current entities: ' + originId
             print('Error: '+errString)
             raise Exception(errString) # possibly comment out during production?
             return False
 
-        print 'update goals'
-        originCoords = positionData['data']['coords'][ str(originId) ]
+        originCoords = positionData['coords'][ originId ]
         newOriginCoords = self.robots[originId].getCoords()
         for robotId, robotEntity in self.robots.items():
-            print 'update goals for '+str(robotId)
-            if positionData['data']['coords'].has_key(str(robotId)):
-                recordedCoords = positionData['data']['coords'][str(robotId)]
+            if positionData['coords'].has_key(str(robotId)):
+                recordedCoords = positionData[str(robotId)]
                 newCoords = tuple(
                   self._calculateRelativePosition( originCoords, newOriginCoords, recordedCoords )
                 )
                 robotEntity.updateGoal(newCoords)
-                print 'goal '+str(self.robots[robotId].goal)
+            else:
+                print('robot not in coords', robotId)
+        raise Exception('see above')
 
 
     def setPositioning( self, posType, name ):
@@ -349,10 +353,10 @@ class RobotControllerClass:
 
         if posType == 'arrangement':
             # set goals as absolute positions
-            self._setGoalsFromAbsolutePosition(position)
+            self._setGoalsFromAbsolutePosition(positionData)
         elif posType == 'formation':
             # set goals as calculated relative positions
-            self._setGoalsFromRelativePosition(position)
+            self._setGoalsFromRelativePosition(positionData)
         else:
             raise Exception('Position type not recognized. Should be "formation" or "arrangement". Given: '+posType)
 

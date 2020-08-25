@@ -120,8 +120,8 @@ class TrackingCamera(object):
                             degree = theta * (180 / math.pi) + 180
 
                             # draw circle on video stream to mark fiducial as processed
-                            circlesize = 15
-                            cv2.circle(gray,(midcords[0],midcords[1]), circlesize, (0,0,255), -1)
+                            #circlesize = 15
+                            #cv2.circle(gray,(midcords[0],midcords[1]), circlesize, (0,0,255), -1)
 
                             if WRITE_TO_FILE:
                                 # Append data onto corresponding file
@@ -139,13 +139,19 @@ class TrackingCamera(object):
                                 # Stream movement commands to robot
                                 # based on localization data
                                 # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
-                                tmpRobotId = int(index[0])
-                                self.robotController.updateRobotLocation(
-                                    tmpRobotId, # fiducial id
+                                command = self.robotController.updateRobotLocation(
+                                    int(index[0]), # fiducial id
                                     (midcords[0], midcords[1], degree), # x,y,angle, position tuple
                                 )
-                                self.robotController.command(tmpRobotId)
-                                # robotController will send commands to the robot
+                                # display sent commands
+                                if command: # updateRobotLocation will return falsy if error
+                                    # print('tracking markers command', command, index[0])
+                                    font = cv2.FONT_HERSHEY_SIMPLEX
+                                    fontScale = 1
+                                    color = (255,0,255)
+                                    thickness = 2
+                                    cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
+
 
                     except IndexError:
                         pass

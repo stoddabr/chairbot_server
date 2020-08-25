@@ -58,7 +58,7 @@ class RobotEntity:
     clearGoal()
         Resets a robot's saved goal
 
-    generateCommand( id: int ) -> CommandClass
+    calculateCommand( id: int ) -> CommandClass
         calculates and returns which command to send to the robot (eg turn, forward)
 
     move()
@@ -151,7 +151,7 @@ class RobotEntity:
         theta = atan2(diffy, diffx)
         return theta * 180 / pi + 180
 
-    def generateCommand(self):
+    def calculateCommand(self):
         """ Calculates the next best robot command to get towards the goal
 
         Returns CommandClass instance
@@ -186,8 +186,8 @@ class RobotEntity:
         newGoal : tuple < int, int > optional
             new goal to move towards, will used saved goal if not defined
 
-        Returns : boolean
-            True if robot motion was sent
+        Returns : str | bool
+            Command string
             False if robot motion was not sent
 
         Raises
@@ -203,7 +203,7 @@ class RobotEntity:
 
         # abort if goals aren't defined
         if not self.goal:
-            return False
+            return 'Goal not set'
 
         if not self.coords:
             raise SystemError(
@@ -213,14 +213,10 @@ class RobotEntity:
 
 
         # calculate and send command to neato
-        command = self.generateCommand()
+        command = self.calculateCommand()
+        # print('trying to send command', command.generateCommand())
 
-        if command.isNothing():
-            return False
-
-        self.sendCommand(command)
-
-        return True
+        return self.sendCommand(command)
 
     def sendCommand(self, command):
         """ Sends a command via ROS socket
@@ -239,11 +235,10 @@ class RobotEntity:
         message = command.generateCommand()
         if (message == 'stop'):
             pub_stop_arr[id].publish( message )
-            return '<h2>Stop Command Published</h2>'
         else:
             # print 'sending to '+message+' '+str(id)
             pub_motion_arr[id].publish( message )
-            return '<h2>Direction Command Published</h2>'
+        return message
 
 #        raise SystemError('Command not implemented. Blame Brett Stoddard stoddardbrett@gmail.com')
 

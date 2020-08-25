@@ -1,1 +1,120 @@
-{"formation": {"MoveTogether": {"data": {"coords": {"1": [42, 42, 42], "10": [42, 42, 42], "5": [42, 42, 42]}, "originId": 1}, "author": "Brett Snottard", "type": "Default", "created": 1595699632000}}, "testpos": {"random2": {"data": {"y": 25, "x": 25, "angle": 25}, "author": "Dave Franco", "type": "Temp", "created": 964547632000}, "random": {"data": {"y": 25, "x": 25, "angle": 25}, "author": "Brett Snottard", "type": "Default", "created": 1595699632000}}, "testformations": {"random2": {"data": {"y": 25, "x": 25, "angle": 25}, "epoch_time": 2342523533}, "random": {"data": {"y": 25, "x": 25, "angle": 25}, "epoch_time": 2342523533}}, "arrangement": {"test": {"type": "brett", "author": "default", "data": {"0": [389, 339, 270], "1": [251, 179, 327], "2": null, "3": null, "5": [235, 161, 56], "10": [30, 340, 267]}, "created": 1598047860000}, "testPositions": {"data": {"a": 2}, "author": "Brett Snottard", "type": "Default", "created": 1595699632000}, "FacingChairs": {"data": {"10": [27, 349, 268], "1": [137, 181, 258], "0": [388, 345, 268], "3": null, "2": null, "5": [205, 168, 194]}, "created": 1596834556000, "type": "Brett", "author": "temporary"}}}
+{
+  "snap": {
+    "Down": {
+      "type": "default",
+      "author": "Brett S",
+      "data": {
+        "dir": 270
+      },
+      "created": 1598385609000
+    },
+    "Right": {
+      "type": "default",
+      "author": "Brett S",
+      "data": {
+        "dir": 180
+      },
+      "created": 1598385609000
+    },
+    "Up": {
+      "type": "default",
+      "author": "Brett S",
+      "data": {
+        "dir": 90
+      },
+      "created": 1598385609000
+    },
+    "Left": {
+      "type": "default",
+      "author": "Brett S",
+      "data": {
+        "dir": 0
+      },
+      "created": 1598385609000
+    }
+  },
+  "formation": {
+    "test_3": {
+      "type": "temporary",
+      "author": "brett",
+      "data": {
+        "coords": {
+          "1": [93, 134, 205],
+          "0": [389, 341, 271],
+          "5": [33, 101, 73],
+          "10": [28, 344, 268]
+        },
+        "originId": 10
+      },
+      "created": 1598390837000
+    },
+    "Test_1": {
+      "data": {
+        "coords": {
+          "1": [251, 185, 325],
+          "0": [389, 342, 270],
+          "5": [81, 62, 36],
+          "10": [28, 345, 268]
+        },
+        "originId": 10
+      },
+      "created": 1598385558000,
+      "type": "default",
+      "author": "Brett S"
+    }
+  },
+  "arrangement": {
+    "Example_2": {
+      "data": {
+        "10": [28, 345, 268],
+        "1": [251, 186, 327],
+        "0": [389, 344, 267],
+        "3": null,
+        "2": null,
+        "5": [81, 62, 36]
+      },
+      "created": 1598386412000,
+      "type": "default",
+      "author": "Brett S"
+    },
+    "5_right": {
+      "type": "default",
+      "author": "bs",
+      "data": {
+        "0": [389, 342, 268],
+        "1": [85, 126, 346],
+        "2": null,
+        "3": null,
+        "5": [47, 83, 181],
+        "10": [29, 344, 267]
+      },
+      "created": 1598392290000
+    },
+    "Example_1": {
+      "type": "default",
+      "author": "Brett S",
+      "data": {
+        "10": [28, 345, 268],
+        "1": [251, 185, 325],
+        "0": [389, 342, 270],
+        "3": null,
+        "2": null,
+        "5": [81, 63, 36]
+      },
+      "created": 1598385609000
+    },
+    "test_3": {
+      "data": {
+        "10": [28, 344, 268],
+        "1": [93, 134, 205],
+        "0": [389, 341, 270],
+        "3": null,
+        "2": null,
+        "5": [33, 101, 73]
+      },
+      "created": 1598390987000,
+      "type": "default",
+      "author": "brett"
+    }
+  }
+}

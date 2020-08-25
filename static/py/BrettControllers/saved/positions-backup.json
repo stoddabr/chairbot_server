@@ -1,60 +1,74 @@
 {
+  "snap": {},
   "formation": {
-    "test positions": {
-      "data": {},
-      "author": "Brett Snottard",
-      "type": "Default",
-      "created": 1595699632000
-    }
-  },
-  "testpos": {
-    "random2": {
+    "test_3": {
       "data": {
-        "y": 25,
-        "x": 25,
-        "angle": 25
+        "coords": {
+          "1": [93, 134, 205],
+          "0": [389, 341, 271],
+          "5": [33, 101, 73],
+          "10": [28, 344, 268]
+        },
+        "originId": 10
       },
-      "author": "Dave Franco",
-      "type": "Temp",
-      "created": 964547632000
+      "created": 1598390837000,
+      "type": "temporary",
+      "author": "brett"
     },
-    "random": {
+    "Test_1": {
+      "type": "default",
+      "author": "Brett S",
       "data": {
-        "y": 25,
-        "x": 25,
-        "angle": 25
+        "coords": {
+          "1": [251, 185, 325],
+          "0": [389, 342, 270],
+          "5": [81, 62, 36],
+          "10": [28, 345, 268]
+        },
+        "originId": 10
       },
-      "author": "Brett Snottard",
-      "type": "Default",
-      "created": 1595699632000
-    }
-  },
-  "testformations": {
-    "random2": {
-      "data": {
-        "y": 25,
-        "x": 25,
-        "angle": 25
-      },
-      "epoch_time": 2342523533
-    },
-    "random": {
-      "data": {
-        "y": 25,
-        "x": 25,
-        "angle": 25
-      },
-      "epoch_time": 2342523533
+      "created": 1598385558000
     }
   },
   "arrangement": {
-    "test positions": {
+    "Example_2": {
+      "type": "default",
+      "author": "Brett S",
       "data": {
-        "a": 2
+        "10": [28, 345, 268],
+        "1": [251, 186, 327],
+        "0": [389, 344, 267],
+        "3": null,
+        "2": null,
+        "5": [81, 62, 36]
       },
-      "author": "Brett Snottard",
-      "type": "Default",
-      "created": 1595699632000
+      "created": 1598386412000
+    },
+    "Example_1": {
+      "data": {
+        "10": [28, 345, 268],
+        "1": [251, 185, 325],
+        "0": [389, 342, 270],
+        "3": null,
+        "2": null,
+        "5": [81, 63, 36]
+      },
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
+    },
+    "test_3": {
+      "type": "default",
+      "author": "brett",
+      "data": {
+        "0": [389, 341, 270],
+        "1": [93, 134, 205],
+        "2": null,
+        "3": null,
+        "5": [33, 101, 73],
+        "10": [28, 344, 268]
+      },
+      "created": 1598390987000
     }
   }
 }
