@@ -139,17 +139,25 @@ class TrackingCamera(object):
                                 # Stream movement commands to robot
                                 # based on localization data
                                 # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
-                                command = self.robotController.updateRobotLocation(
+                                command, goal = self.robotController.updateRobotLocation(
                                     int(index[0]), # fiducial id
                                     (midcords[0], midcords[1], degree), # x,y,angle, position tuple
                                 )
-                                # display sent commands
+                                # display sent commands and goal coordinates
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                thickness = 2
+                                if goal:
+                                    color = (255,255,0)
+                                    circlesize = 5
+                                    fontScale = 0.5
+                                    goalStr = 'Goal'+str(index[0])
+                                    # print ('goal for ',index[0], goal)
+                                    cv2.putText(gray,goalStr,(goal[0],goal[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
+                                    cv2.circle(gray,(goal[0],goal[1]), circlesize, color, -1)
                                 if command: # updateRobotLocation will return falsy if error
                                     # print('tracking markers command', command, index[0])
-                                    font = cv2.FONT_HERSHEY_SIMPLEX
+                                    color = (0,255,255)
                                     fontScale = 1
-                                    color = (255,0,255)
-                                    thickness = 2
                                     cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
 
 

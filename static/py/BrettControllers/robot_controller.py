@@ -99,7 +99,7 @@ class RobotControllerClass:
         # move robot if no existential crisis
         if toMoveOrNotToMove:
             return self.robots[robotId].move()
-        return 'stop' # else
+        return 'stop', False # stop command has no goal
 
     def updateRobotGoal(self, robotId, coords):
         """ Updates a robots saved goal which can then be used to calculate

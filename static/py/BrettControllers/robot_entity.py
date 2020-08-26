@@ -186,9 +186,9 @@ class RobotEntity:
         newGoal : tuple < int, int > optional
             new goal to move towards, will used saved goal if not defined
 
-        Returns : str | bool
+        Returns : tuple <str, goalCoords | False>
             Command string
-            False if robot motion was not sent
+            False if robot goal coords not set
 
         Raises
         ------
@@ -203,7 +203,7 @@ class RobotEntity:
 
         # abort if goals aren't defined
         if not self.goal:
-            return 'Goal not set'
+            return 'No Goal', False
 
         if not self.coords:
             raise SystemError(
@@ -216,7 +216,7 @@ class RobotEntity:
         command = self.calculateCommand()
         # print('trying to send command', command.generateCommand())
 
-        return self.sendCommand(command)
+        return self.sendCommand(command), self.goal
 
     def sendCommand(self, command):
         """ Sends a command via ROS socket
