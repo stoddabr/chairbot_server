@@ -1,42 +1,40 @@
 {
   "snap": {
     "Down": {
-      "type": "default",
-      "author": "Brett S",
       "data": {
         "dir": 270
       },
-      "created": 1598385609000
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
     },
     "Right": {
-      "type": "default",
-      "author": "Brett S",
       "data": {
         "dir": 180
       },
-      "created": 1598385609000
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
     },
     "Up": {
-      "type": "default",
-      "author": "Brett S",
       "data": {
         "dir": 90
       },
-      "created": 1598385609000
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
     },
     "Left": {
-      "type": "default",
-      "author": "Brett S",
       "data": {
         "dir": 0
       },
-      "created": 1598385609000
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
     }
   },
   "formation": {
     "test_3": {
-      "type": "temporary",
-      "author": "brett",
       "data": {
         "coords": {
           "1": [93, 134, 205],
@@ -46,9 +44,25 @@
         },
         "originId": 10
       },
-      "created": 1598390837000
+      "created": 1598390837000,
+      "type": "temporary",
+      "author": "brett"
+    },
+    "right10": {
+      "type": "temporary",
+      "author": "Brett",
+      "data": {
+        "coords": {
+          "1": [134, 111, 265],
+          "5": [214, 105, 91]
+        },
+        "originId": 1
+      },
+      "created": 1598929851000
     },
     "Test_1": {
+      "type": "default",
+      "author": "Brett S",
       "data": {
         "coords": {
           "1": [251, 185, 325],
@@ -58,13 +72,13 @@
         },
         "originId": 10
       },
-      "created": 1598385558000,
-      "type": "default",
-      "author": "Brett S"
+      "created": 1598385558000
     }
   },
   "arrangement": {
     "Example_2": {
+      "type": "default",
+      "author": "Brett S",
       "data": {
         "10": [28, 345, 268],
         "1": [251, 186, 327],
@@ -73,26 +87,22 @@
         "2": null,
         "5": [81, 62, 36]
       },
-      "created": 1598386412000,
-      "type": "default",
-      "author": "Brett S"
+      "created": 1598386412000
     },
     "5_right": {
-      "type": "default",
-      "author": "bs",
       "data": {
-        "0": [389, 342, 268],
+        "10": [29, 344, 267],
         "1": [85, 126, 346],
-        "2": null,
+        "0": [389, 342, 268],
         "3": null,
-        "5": [47, 83, 181],
-        "10": [29, 344, 267]
+        "2": null,
+        "5": [47, 83, 181]
       },
-      "created": 1598392290000
+      "created": 1598392290000,
+      "type": "default",
+      "author": "bs"
     },
     "Example_1": {
-      "type": "default",
-      "author": "Brett S",
       "data": {
         "10": [28, 345, 268],
         "1": [251, 185, 325],
@@ -101,9 +111,13 @@
         "2": null,
         "5": [81, 63, 36]
       },
-      "created": 1598385609000
+      "created": 1598385609000,
+      "type": "default",
+      "author": "Brett S"
     },
     "test_3": {
+      "type": "default",
+      "author": "brett",
       "data": {
         "10": [28, 344, 268],
         "1": [93, 134, 205],
@@ -112,9 +126,7 @@
         "2": null,
         "5": [33, 101, 73]
       },
-      "created": 1598390987000,
-      "type": "default",
-      "author": "brett"
+      "created": 1598390987000
     }
   }
 }

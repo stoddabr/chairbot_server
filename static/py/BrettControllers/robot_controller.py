@@ -184,7 +184,7 @@ class RobotControllerClass:
 
         return info
 
-    def _getRelativeRobotPositions(self, masterId=10):
+    def _getRelativeRobotPositions(self, masterId=1):
         """ gets the current locations for the robots relative to a master"""
 
         info = {}
@@ -242,7 +242,7 @@ class RobotControllerClass:
                     robotEntity.updateGoal(coords)
 
 
-    def _rotate(origin, point, angle):
+    def _rotate(self, origin, point, angle):
         """
         Rotate a point counterclockwise by a given angle around a given origin.
 
@@ -269,7 +269,7 @@ class RobotControllerClass:
         return qx, qy
 
 
-    def _calculateRelativePosition(origin, newOrigin, point):
+    def _calculateRelativePosition(self, origin, newOrigin, point):
         """ calculates relative position using previous and new origin
 
         Parameters
@@ -283,11 +283,12 @@ class RobotControllerClass:
         """
 
         # calculate origin translation and rotation
+        print('new old', newOrigin, origin)
         dx = newOrigin[0] - origin[0]
         dy = newOrigin[1] - origin[1]
         dt = newOrigin[2] - origin[2]
         # calculate new point wrt origin rotation
-        xrot,yrot = _rotate(origin[:2], point[:2], dt)
+        xrot,yrot = self._rotate(origin[:2], point[:2], dt)
         # calculate new point wrt origin translation
         x = xrot + dx
         y = yrot + dy
@@ -309,7 +310,7 @@ class RobotControllerClass:
 
         originId = positionData['originId']
         # avoid case where original origin robotId was not recorded
-        if not positionData['coords'].has_key(originId):
+        if not positionData['coords'].has_key(str(originId)):
             errString = 'Brett: Origin id not recorded in coordinates: ' + str(originId)
             print('Error: '+errString)
             raise Exception(errString) # possibly comment out during production?
@@ -321,19 +322,36 @@ class RobotControllerClass:
             raise Exception(errString) # possibly comment out during production?
             return False
 
-        originCoords = positionData['coords'][ originId ]
+        originCoords = positionData['coords'][ str(originId) ]
+        print(originCoords)
         newOriginCoords = self.robots[originId].getCoords()
         for robotId, robotEntity in self.robots.items():
             if positionData['coords'].has_key(str(robotId)):
-                recordedCoords = positionData[str(robotId)]
+                recordedCoords = positionData['coords'][str(robotId)]
                 newCoords = tuple(
                   self._calculateRelativePosition( originCoords, newOriginCoords, recordedCoords )
                 )
                 robotEntity.updateGoal(newCoords)
             else:
                 print('robot not in coords', robotId)
-        raise Exception('see above')
+        # raise Exception('see above')
 
+    def _setSnapGoals( self, positionData ):
+        """ set angle based on snap-to-grid features
+
+        Parameters
+        ----------
+        positionData: dictionary
+            dictionary with robotIds as keys and coordinate array as values
+            where coordinate array is [x,y,angle]
+        """
+
+        for robotId, robotEntity in self.robots.items():
+            angle = positionData['dir']
+            print(angle, robotId)
+            goalArray = [False, False, angle]
+            coords = tuple(goalArray)
+            robotEntity.updateGoal(coords)
 
     def setPositioning( self, posType, name ):
         """ recalls a positioning and updates goals for robotEntities
@@ -357,6 +375,8 @@ class RobotControllerClass:
         elif posType == 'formation':
             # set goals as calculated relative positions
             self._setGoalsFromRelativePosition(positionData)
+        elif posType == 'snap':
+            self._setSnapGoals(positionData)
         else:
             raise Exception('Position type not recognized. Should be "formation" or "arrangement". Given: '+posType)
 

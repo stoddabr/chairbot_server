@@ -30,6 +30,9 @@ pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 
+distTolerance = 10  # pixels FIXME experimentally determine
+angleTolerance = 45 / 2  # degrees
+
 class RobotEntity:
     """
     A class used to contain data about a specific robot such as it's goals and location
@@ -130,8 +133,12 @@ class RobotEntity:
 
         Returns int distance to goal in coords
         """
+
         [goalx, goaly, _] = self.goal
         [currx, curry, _] = self.coords  # current
+
+        if goalx == False or goaly == False: # for angular goal
+            return 0
 
         # eucledian distance
         xcube = (goalx-currx)**2
@@ -143,6 +150,7 @@ class RobotEntity:
 
         Returns float angle in degrees [0,360]
         """
+
         [goalx, goaly, _] = self.goal
         [currx, curry, _] = self.coords  # current
 
@@ -151,14 +159,36 @@ class RobotEntity:
         theta = atan2(diffy, diffx)
         return theta * 180 / pi + 180
 
+    def _calculateAngularCommand(self):
+        """ Calculates an angular command based on goal and theta angle
+
+        Returns CommandClass instance
+        """
+
+        # check if angle within margin
+        [_, _, goalAngle] = self.goal
+        [_, _, currAngle] = self.coords
+        angleDiff = goalAngle - currAngle
+        if(angleDiff < 0):
+             angleDiff += 360
+
+        if angleDiff < angleTolerance:
+            return CommandClass('Stop')
+        if(angleDiff > 180):
+            return CommandClass('Left')
+        else:
+            return CommandClass('Right')
+
     def calculateCommand(self):
         """ Calculates the next best robot command to get towards the goal
 
         Returns CommandClass instance
         """
 
-        distTolerance = 10  # pixels FIXME experimentally determine
-        angleTolerance = 45 / 2  # degrees
+        # check if angular goal
+        [goalx, goaly, _] = self.goal
+        if goalx == False or goaly == False:
+            return self._calculateAngularCommand()
 
         # check if distance within margin
         dist = self._calculateDistanceToGoal()
@@ -168,15 +198,16 @@ class RobotEntity:
         # check if angle within margin
         goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
-        if goalAngle + angleTolerance > currAngle \
-                and goalAngle - angleTolerance < currAngle:
-            return CommandClass('Forward')
+        angleDiff = goalAngle - currAngle
+        if(angleDiff < 0):
+             angleDiff += 360
 
-        # turn so angle is within margin
-        if goalAngle < currAngle:
-            return CommandClass('Right')
-        else:
+        if angleDiff < angleTolerance:
+            return CommandClass('Forward')
+        if(angleDiff > 180):
             return CommandClass('Left')
+        else:
+            return CommandClass('Right')
 
     def move(self, newGoal=None):
         """ Calculates and triggers a robot movement
