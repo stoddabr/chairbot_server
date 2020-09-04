@@ -74,6 +74,10 @@ class RobotControllerClass:
 
         if fiducialIds is not None:
             self.robots = {x: RobotEntity(x) for x in fiducialIds}
+        self.MOVEMENT_LOCK = False # enabled for snap, formation for example
+        self.LAST_SET_POSITON_INFO = False
+        self.LAST_SET_POSITON_TYPE = False
+
 
     def updateRobotLocation(self, robotId, coords, toMoveOrNotToMove=True):
         """ Updates a robots saved location which can then be used to calculate
@@ -90,15 +94,16 @@ class RobotControllerClass:
         """
 
         # if robot doesn't exist, initialize one
-        if not self.robots.has_key(robotId):
-            self.robots[robotId] = RobotEntity(robotId)
-
+        if not self.robots.has_key( robotId ):
+            self.robots[robotId] = RobotEntity( robotId )
         # update coords
-        self.robots[robotId].updateCoords(coords)
-
+        self.robots[robotId].updateCoords( coords )
+        # check if movememnt lock and update goal if so
+        if self.MOVEMENT_LOCK:
+            self._updateGoalPositions()
         # move robot if no existential crisis
         if toMoveOrNotToMove:
-            return self.robots[robotId].move()
+            return self.robots[ robotId ].move()
         return 'stop', False # stop command has no goal
 
     def updateRobotGoal(self, robotId, coords):
@@ -116,7 +121,6 @@ class RobotControllerClass:
         # if robot doesn't exist, initialize one
         if not self.robots.has_key(robotId):
             self.robots[robotId] = RobotEntity(robotId)
-
         self.robots[robotId].updateGoal(coords)
 
     def command(self, robotId, newRobotCoords=None):  # TODO finish writing
@@ -387,6 +391,34 @@ class RobotControllerClass:
             coords = tuple(goalArray)
             robotEntity.updateGoal(coords)
 
+    def _updateGoalPositions( self ):
+        """ updates goal positions for all relevant robots based on the passed
+        position information
+
+        """
+
+        position = self.LAST_SET_POSITON_INFO
+        posType = self.LAST_SET_POSITON_TYPE
+        print('Updating Goal Position based on: ',position)
+        positionData = position['data']
+        if posType == 'arrangement':
+            # set goals as absolute positions
+            self._setGoalsFromAbsolutePosition(positionData)
+        elif posType == 'formation':
+            # formations imply movement lock
+            self.MOVEMENT_LOCK = True
+            # set goals as calculated relative positions
+            self._setGoalsFromRelativePosition(positionData)
+        elif posType == 'snap':
+            # formations imply movement lock
+            self.MOVEMENT_LOCK = True
+            # set angular snap goals
+            self._setSnapGoals(positionData)
+        else:
+            errBase = 'Position type not equal to "formation" "arrangement" or "snap": '
+            raise Exception( errBase + posType )
+
+
     def setPositioning( self, posType, name ):
         """ recalls a positioning and updates goals for robotEntities
 
@@ -400,19 +432,9 @@ class RobotControllerClass:
 
         allPositions = pos.getPositions(posType, False)
         position = allPositions[name]
-        print('Position: ',position)
-        positionData = position['data']
-
-        if posType == 'arrangement':
-            # set goals as absolute positions
-            self._setGoalsFromAbsolutePosition(positionData)
-        elif posType == 'formation':
-            # set goals as calculated relative positions
-            self._setGoalsFromRelativePosition(positionData)
-        elif posType == 'snap':
-            self._setSnapGoals(positionData)
-        else:
-            raise Exception('Position type not recognized. Should be "formation" or "arrangement". Given: '+posType)
+        self.LAST_SET_POSITON_TYPE = posType
+        self.LAST_SET_POSITON_INFO = position
+        self._updateGoalPositions()
 
 
     def stop( self ):
