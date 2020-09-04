@@ -268,9 +268,43 @@ class RobotControllerClass:
         qy = oy + math.sin(angleRad) * (px - ox) + math.cos(angleRad) * (py - oy)
         return qx, qy
 
-
     def _calculateRelativePosition(self, origin, newOrigin, point):
         """ calculates relative position using previous and new origin
+
+        for cases of rotation, secondary chairs match the primary instead of
+        the entire formation rotating. Only calculated translation
+
+        Parameters
+        ----------
+        origin: array
+            [x, y, angle] coordinates of the point to rotate around
+        newOrigin: array
+            [x, y, angle] coordinates of the new origin coordinates
+        point: array
+            [x, y, angle] coordinates of the point to be rotate
+        """
+        # calculate origin translation and rotation
+        print('new old', newOrigin, origin)
+        dx = newOrigin[0] - origin[0]
+        dy = newOrigin[1] - origin[1]
+        dt = newOrigin[2] - origin[2]
+        # calculate new point wrt origin translation
+        x = point[0] + dx
+        y = point[1] + dy
+        t = newOrigin[2]
+        return [x,y,t]
+
+
+    def _calculateRelativePositionWithRotationLock(self, origin, newOrigin, point):
+        """ DEPRECATED calculates relative position using previous and new origin
+        while preserving the formation in the case of a rotation: if the primary robot
+        turns, the formation turns.
+
+        for cases of rotation, the entire formation rotates. Calculates then adds
+        two linear transformations: rotation and translation.
+
+        DEPRECATED because it causes goals to "jump" long distances for long "radii"
+        between primary and secondary chairbots.
 
         Parameters
         ----------
