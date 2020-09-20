@@ -188,7 +188,7 @@ class RobotControllerClass:
 
         return info
 
-    def _getRelativeRobotPositions(self, masterId=1):
+    def _getRelativeRobotPositions(self, masterId=5):
         """ gets the current locations for the robots relative to a master"""
 
         info = {}
@@ -374,7 +374,8 @@ class RobotControllerClass:
                 print('robot not in coords', robotId)
         # raise Exception('see above')
 
-    def _setSnapGoals( self, positionData ):
+
+    def _setSnapRoomGoals( self, positionData ):
         """ set angle based on snap-to-grid features
 
         Parameters
@@ -384,12 +385,35 @@ class RobotControllerClass:
             where coordinate array is [x,y,angle]
         """
 
+        angle = positionData['dir']
         for robotId, robotEntity in self.robots.items():
-            angle = positionData['dir']
             print(angle, robotId)
             goalArray = [False, False, angle]
             coords = tuple(goalArray)
             robotEntity.updateGoal(coords)
+
+
+    def _setSnapObjectGoals( self, positionData ):
+        """ set angle based on snap-to-grid features
+
+        Parameters
+        ----------
+        positionData: dictionary
+            dictionary with robotIds as keys and coordinate array as values
+            where coordinate array is [x,y,angle]
+        """
+
+        angleDir = positionData['dir']
+        objectId = int(positionData['id'])
+        print(self.robots.keys())
+        objectCoords = self.robots[objectId].getCoords()
+        angle = ( objectCoords[2] + angleDir ) % 360
+        for robotId, robotEntity in self.robots.items():
+            print(angle, robotId)
+            goalArray = [False, False, angle]
+            coords = tuple(goalArray)
+            robotEntity.updateGoal(coords)
+
 
     def _updateGoalPositions( self ):
         """ updates goal positions for all relevant robots based on the passed
@@ -409,13 +433,18 @@ class RobotControllerClass:
             self.MOVEMENT_LOCK = True
             # set goals as calculated relative positions
             self._setGoalsFromRelativePosition(positionData)
-        elif posType == 'snap':
+        elif posType == 'snapObject': # TODO
             # formations imply movement lock
             self.MOVEMENT_LOCK = True
             # set angular snap goals
-            self._setSnapGoals(positionData)
+            self._setSnapObjectGoals(positionData)
+        elif posType == 'snapRoom':
+            # formations imply movement lock
+            self.MOVEMENT_LOCK = True
+            # set angular snap goals
+            self._setSnapRoomGoals(positionData)
         else:
-            errBase = 'Position type not equal to "formation" "arrangement" or "snap": '
+            errBase = 'Position type not equal to "formation" "arrangement" "snapRoom" or "snapObject": '
             raise Exception( errBase + posType )
 
 
@@ -425,7 +454,7 @@ class RobotControllerClass:
         Parameters
         ----------
         posType: str
-            position type, ie "arrangement", "formation", "snap"
+            position type, ie "arrangement", "formation", "snapObject", "snapRoom"
         name: str
             human-readable name for the position
         """
@@ -444,7 +473,8 @@ class RobotControllerClass:
         """
 
         stopped = []
-
+        self.LAST_SET_POSITON_TYPE = False
+        self.LAST_SET_POSITON_INFO = False
         stopCommand = CommandClass( 'stop' )
         for robotId, robotEntity in self.robots.items():
             robotEntity.sendCommand( stopCommand )

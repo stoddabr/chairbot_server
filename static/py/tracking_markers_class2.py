@@ -46,7 +46,7 @@ class TrackingCamera(object):
         print 'saving tracking information to directory: '+os.getcwd()
 
         # Initialize files using list comprehension
-        self.numTrackers = 11 # default 8, higher fiducial numbers will be ignored
+        self.numTrackers = 20 # default 8, higher fiducial numbers will be ignored
         self.filenames = [
             "{}chairbotTracking-CB0{}-{}.txt".format(
             self.filePath, str(i), time.strftime("%Y-%m-%d %H-%M-%S"))

@@ -408,8 +408,11 @@ code post 4/1 updated by Brett
         </div>
         <div>
           <h3 class='header-text'>Snap-To-Grid</h3>
-            <button class="control-formation-button" type="button" id='snapEnableButton'>
-              Set
+          <button class="control-formation-button" type="button" id='snapEnableButton'>
+              Set Room
+          </button>
+          <button class="control-formation-button" type="button" id='snapObjectEnableButton'>
+            Set Object
           </button>
         </div>
         <div>
@@ -546,6 +549,15 @@ code post 4/1 updated by Brett
       console.log('arrangement saved')
       hideModals()
     }
+    function formatTypeUi(type) {
+      const prefix = type.charAt(0).toLowerCase() === 'a'?'an':'a'
+      if (type === 'snapRoom')
+        return prefix + " Snap-To-Grid angle relative to the Room"
+      if (type === 'snapObject')
+        return prefix + "Snap-To-Grid angle relative to an object (fiducial)"
+      // else
+      return `${prefix} ${type}`
+    }
     function resetAutonomy() {
       $.ajax({
         url:  '/autonomy/all',
@@ -572,19 +584,21 @@ code post 4/1 updated by Brett
         console.log('ajax requrest to dynamically render', data)
 
         console.log('ajax ', type.charAt(0).toLowerCase())
+        const typeHumanReadable = formatTypeUi(type)
         $("#autonomyModalContent").html(`
           <div class='autonomyModalTitle'>
             <h1>
-              Select ${type.charAt(0).toLowerCase() === 'a'?'an':'a' } ${type}
+              Select ${typeHumanReadable}
             </h1>
             <span style="color: gray;">Default items have a black outline</span>
           </div>
         `)
         Object.keys(data).forEach((key, i)=>{
           const ts = new Date(data[key].created)
+          console.log({key})
           $("#autonomyModalContent").append(`
             <div class='autonomyButtonContainer'>
-              <button class='autonomyButton${i}${data[key].type}' data-name=${key} data-type=${type}>
+              <button class='autonomyButton${i}${data[key].type}' data-name="${key}" data-type=${type}>
                 <h3 class="autononmyButtonName">${key}</h3>
                 <div class="autononmyButtonInfo">${data[key].author} - ${ts.getMonth()}/${ts.getDay()}/${ts.getFullYear()}</div>
               </button>
@@ -677,7 +691,10 @@ code post 4/1 updated by Brett
           populateSetAutonomyModal('formation')
           break;
         case 'snapEnableButton':
-          populateSetAutonomyModal('snap')
+          populateSetAutonomyModal('snapRoom')
+          break;
+        case 'snapObjectEnableButton':
+          populateSetAutonomyModal('snapObject')
           break;
         default:
           alert('Autonomy mode not recognized by UI: '+ e.target.id)
@@ -727,6 +744,7 @@ code post 4/1 updated by Brett
     $('#formationSaveButton').on('click', showSaveAutonomyModal)
     $('#formationEnableButton').on('click', toggleFormationEnabled)
     $('#snapEnableButton').on('click', showSetAutonomyModal)
+    $('#snapObjectEnableButton').on('click', showSetAutonomyModal)
 
     $('#arrangementSaveButton').on('click', resetAutonomy)
     $('#arrangementSetButton').on('click', resetAutonomy)

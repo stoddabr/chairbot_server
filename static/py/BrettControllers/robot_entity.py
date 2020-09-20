@@ -21,7 +21,7 @@ from robot_command import CommandClass
 # already setup in main.py
 threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
 
-chair_ids = range(20)
+chair_ids = range(21)
 gen_move_task = lambda x: rospy.Publisher(
     ('/requestMotion0'+str(x)), String, queue_size=1)
 gen_stop_task = lambda x: rospy.Publisher(
@@ -173,11 +173,11 @@ class RobotEntity:
              angleDiff += 360
 
         if angleDiff < angleTolerance:
-            return CommandClass('Stop')
+            return CommandClass('STOP')
         if(angleDiff > 180):
-            return CommandClass('Left')
+            return CommandClass('LEFT')
         else:
-            return CommandClass('Right')
+            return CommandClass('RIGHT')
 
     def calculateCommand(self):
         """ Calculates the next best robot command to get towards the goal
@@ -203,11 +203,11 @@ class RobotEntity:
              angleDiff += 360
 
         if angleDiff < angleTolerance:
-            return CommandClass('Forward')
+            return CommandClass('FORWARD')
         if(angleDiff > 180):
-            return CommandClass('Left')
+            return CommandClass('LEFT')
         else:
-            return CommandClass('Right')
+            return CommandClass('RIGHT')
 
     def move(self, newGoal=None):
         """ Calculates and triggers a robot movement

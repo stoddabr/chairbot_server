@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='templates')
 threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
-chair_ids = range(4)
+chair_ids = range(21)
 gen_move_task = lambda x: rospy.Publisher(
     ('/requestMotion0'+str(x)), String, queue_size=1)
 gen_stop_task = lambda x: rospy.Publisher(
@@ -30,7 +30,7 @@ gen_stop_task = lambda x: rospy.Publisher(
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
-RobotController = RobotControllerClass([1,2,3])
+RobotController = RobotControllerClass(chair_ids)
 
 @app.route('/')
 def index():
@@ -58,7 +58,7 @@ def arrange(type):
     elif request.method == 'POST':
         httpBody = request.get_json(force=True)
         name = httpBody['name'].encode('ascii','replace')
-        RobotController.setPositioning(type, name) 
+        RobotController.setPositioning(type, name)
         return 'Position set success'
 
     elif request.method == 'DELETE':

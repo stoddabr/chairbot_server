@@ -27,7 +27,7 @@ def getPositions(type, toJson=True):
     Parameters
     ----------
     type : str
-      position type, ie "arrangement", "formation", "snap"
+      position type, ie "arrangement", "formation", "snapObject", "snapRoom"
     toJson : bool (optional)
       if the response should be a json string or dictionary
       default dictionary
@@ -52,7 +52,7 @@ def saveNewPosition(name, type, positioningInfo, author, category):
     name: str
         human-readable name for the position
     type: str
-        position type, ie "arrangement", "formation", "snap"
+        position type, ie "arrangement", "formation", "snapObject", "snapRoom"
     positioningInfo : any
         data containing information that can be later recalled to snap
         the chairbots to desired positions.
