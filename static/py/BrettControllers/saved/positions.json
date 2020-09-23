@@ -38,19 +38,7 @@
     }
   },
   "formation": {
-    "front primary 4": {
-      "type": "default",
-      "author": "Brett",
-      "data": {
-        "coords": {
-          "5": [285, 154, 158],
-          "4": [0,0,0]
-        },
-        "originId": 4
-      },
-      "created": 1600643225000
-    },
-    "follow5": {
+    "Diamond": {
       "type": "temporary",
       "author": "Brett",
       "data": {
@@ -65,57 +53,17 @@
       },
       "created": 1600642858000
     },
-    "test_3": {
+    "5 and 4 Facing": {
       "type": "temporary",
-      "author": "brett",
+      "author": "Brett S",
       "data": {
         "coords": {
-          "1": [93, 134, 205],
-          "0": [389, 341, 271],
-          "5": [33, 101, 73],
-          "10": [28, 344, 268]
+          "4": [350, 201, 14],
+          "5": [251, 172, 198]
         },
-        "originId": 10
+        "originId": 5
       },
-      "created": 1598390837000
-    },
-    "Test_1": {
-      "data": {
-        "coords": {
-          "1": [251, 185, 325],
-          "0": [389, 342, 270],
-          "5": [81, 62, 36],
-          "10": [28, 345, 268]
-        },
-        "originId": 10
-      },
-      "created": 1598385558000,
-      "type": "default",
-      "author": "Brett S"
-    },
-    "front": {
-      "data": {
-        "coords": {
-          "5": [182, 94, 182],
-          "4": [285, 154, 158]
-        },
-        "originId": 4
-      },
-      "created": 1600643139000,
-      "type": "default",
-      "author": "bs"
-    },
-    "right10": {
-      "data": {
-        "coords": {
-          "1": [134, 111, 265],
-          "5": [214, 105, 91]
-        },
-        "originId": 1
-      },
-      "created": 1598929851000,
-      "type": "temporary",
-      "author": "Brett"
+      "created": 1600820453000
     }
   },
   "snapRoom": {
@@ -153,76 +101,7 @@
     }
   },
   "arrangement": {
-    "5_right": {
-      "type": "default",
-      "author": "bs",
-      "data": {
-        "10": [29, 344, 267],
-        "1": [85, 126, 346],
-        "0": [389, 342, 268],
-        "3": null,
-        "2": null,
-        "5": [47, 83, 181]
-      },
-      "created": 1598392290000
-    },
-    "Test2": {
-      "type": "temporary",
-      "author": "Brett",
-      "data": {
-        "11": null,
-        "10": null,
-        "13": null,
-        "12": null,
-        "15": null,
-        "14": null,
-        "17": null,
-        "16": null,
-        "19": null,
-        "18": null,
-        "1": null,
-        "0": [388, 339, 270],
-        "3": null,
-        "2": [298, 135, 9],
-        "5": null,
-        "4": null,
-        "7": null,
-        "6": null,
-        "9": null,
-        "20": [245, 249, 265],
-        "8": null
-      },
-      "created": 1600640147000
-    },
-    "test4": {
-      "data": {
-        "11": null,
-        "10": [476, 182, 64],
-        "13": null,
-        "12": null,
-        "15": null,
-        "14": null,
-        "17": [612, 266, 10],
-        "16": null,
-        "19": null,
-        "18": null,
-        "1": null,
-        "0": [593, 195, 85],
-        "3": null,
-        "2": [143, 148, 254],
-        "5": null,
-        "4": [326, 135, 327],
-        "7": null,
-        "6": null,
-        "9": null,
-        "20": [376, 183, 297],
-        "8": null
-      },
-      "created": 1600641996000,
-      "type": "temporary",
-      "author": "Brett"
-    },
-    "Example_2": {
+    "Birthday Party Seating": {
       "data": {
         "10": [28, 345, 268],
         "1": [251, 186, 327],
@@ -235,20 +114,7 @@
       "type": "default",
       "author": "Brett S"
     },
-    "Example_1": {
-      "type": "default",
-      "author": "Brett S",
-      "data": {
-        "10": [28, 345, 268],
-        "1": [251, 185, 325],
-        "0": [389, 342, 270],
-        "3": null,
-        "2": null,
-        "5": [81, 63, 36]
-      },
-      "created": 1598385609000
-    },
-    "test_3": {
+    "Row Seating": {
       "data": {
         "10": [28, 344, 268],
         "1": [93, 134, 205],
@@ -260,6 +126,75 @@
       "created": 1598390987000,
       "type": "default",
       "author": "brett"
+    },
+    "Line Centered": {
+      "type": "default",
+      "author": "bs",
+      "data": {
+        "10": [29, 344, 267],
+        "1": [85, 126, 346],
+        "0": [389, 342, 268],
+        "3": null,
+        "2": null,
+        "5": [47, 83, 181]
+      },
+      "created": 1598392290000
+    },
+    "Circle Small": {
+      "data": {
+        "11": null,
+        "10": null,
+        "13": null,
+        "12": null,
+        "15": null,
+        "14": null,
+        "17": [605, 322, 92],
+        "16": null,
+        "19": null,
+        "18": null,
+        "1": [207, 97, 320],
+        "0": [490, 361, 267],
+        "3": [249, 239, 318],
+        "2": [362, 216, 298],
+        "5": [42, 35, 180],
+        "4": [280, 33, 5],
+        "7": null,
+        "6": null,
+        "9": null,
+        "20": null,
+        "8": null
+      },
+      "created": 1600736423000,
+      "type": "default",
+      "author": "Brett S"
+    },
+    "Test Angle": {
+      "type": "temporary",
+      "author": "Brett",
+      "data": {
+        "11": null,
+        "10": null,
+        "13": null,
+        "12": null,
+        "15": null,
+        "14": null,
+        "17": [158, 462, 188],
+        "16": null,
+        "19": null,
+        "18": null,
+        "1": null,
+        "0": null,
+        "3": null,
+        "2": null,
+        "5": [25, 27, 178],
+        "4": [346, 192, 31],
+        "7": null,
+        "6": null,
+        "9": null,
+        "20": null,
+        "8": null
+      },
+      "created": 1600819830000
     }
   }
 }

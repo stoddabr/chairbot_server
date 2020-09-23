@@ -152,13 +152,13 @@ class TrackingCamera(object):
                                     fontScale = 0.5
                                     goalStr = 'Goal'+str(index[0])
                                     # print ('goal for ',index[0], goal)
-                                    cv2.putText(gray,goalStr,(int(goal[0]),int(goal[1])), font, fontScale, color, thickness, cv2.LINE_AA, False)
-                                    cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
+                                    # cv2.putText(gray,goalStr,(int(goal[0]),int(goal[1])), font, fontScale, color, thickness, cv2.LINE_AA, False)
+                                    # cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
                                 if command: # updateRobotLocation will return falsy if error
                                     # print('tracking markers command', command, index[0])
                                     color = (0,255,255)
                                     fontScale = 1
-                                    cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
+                                    # cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
 
 
                     except IndexError:

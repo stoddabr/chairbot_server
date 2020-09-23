@@ -68,6 +68,7 @@ def arrange(type):
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
 
+
 # get/set formations and arrangements
 @app.route('/new/autonomy/<type>', methods = ['POST'])
 def record_position(type):
@@ -80,6 +81,7 @@ def record_position(type):
         return 'Position save success'
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
+
 
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])

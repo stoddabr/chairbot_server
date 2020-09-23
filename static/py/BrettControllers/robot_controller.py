@@ -193,10 +193,9 @@ class RobotControllerClass:
 
         info = {}
         for robotId, robotEntity in self.robots.items():
-            if robotId is not masterId:
-              absCords = robotEntity.getCoords()
-              if absCords:
-                  info[robotId] =  [int(x) for x in absCords]
+          absCords = robotEntity.getCoords()
+          if absCords:
+              info[robotId] =  [int(x) for x in absCords]
         return {
             'coords': info,
             'originId': masterId,
@@ -424,6 +423,8 @@ class RobotControllerClass:
         position = self.LAST_SET_POSITON_INFO
         posType = self.LAST_SET_POSITON_TYPE
         print('Updating Goal Position based on: ',position)
+        if not position: # avoid error if position is False
+            return
         positionData = position['data']
         if posType == 'arrangement':
             # set goals as absolute positions

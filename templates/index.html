@@ -399,11 +399,11 @@ code post 4/1 updated by Brett
           <h3 class='header-text'>Formation</h3>
           <button class="control-formation-button" type="button" id='formationSaveButton'>
             Save
-            <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'>
+            <!-- <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'> -->
           </button>
           <button class="control-formation-button" type="button" id='formationEnableButton'>
             Set
-            <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'>
+            <!-- <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'> -->
           </button>
         </div>
         <div>
@@ -473,8 +473,9 @@ code post 4/1 updated by Brett
 
     /* joystick controller */
     const joystickStyleProps = {
-      internalFillColor: '#0000AA',
-      internalStrokeColor: '#00AA00',
+      internalFillColor: '#0000AA', // blue
+      internalStrokeColor: '#aaaaaa', // white
+      externalStrokeColor: '#0000AA', // blue
     }
     var joy = new JoyStick('joyDiv', joystickStyleProps);
     var joystickEnabled = true;
@@ -554,7 +555,7 @@ code post 4/1 updated by Brett
       if (type === 'snapRoom')
         return prefix + " Snap-To-Grid angle relative to the Room"
       if (type === 'snapObject')
-        return prefix + "Snap-To-Grid angle relative to an object (fiducial)"
+        return prefix + " Snap-To-Grid angle relative to an object (fiducial)"
       // else
       return `${prefix} ${type}`
     }
@@ -656,7 +657,7 @@ code post 4/1 updated by Brett
         e.preventDefault(); // avoid to execute the actual submit of the form.
 
         const author = $('#autonomyFormAuthor').val();
-        const name = $('#autonomyFormName').val().replace(' ', '_'); // ui button click doesn't like spaces
+        const name = $('#autonomyFormName').val(); // ui button click doesn't like spaces
         const category = $('#autonomyFormCategory').val();
         console.log('submit things', {name, author, category})
         $.post( `/new/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {

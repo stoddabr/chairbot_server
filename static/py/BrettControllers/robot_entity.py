@@ -168,10 +168,14 @@ class RobotEntity:
         # check if angle within margin
         [_, _, goalAngle] = self.goal
         [_, _, currAngle] = self.coords
+        # check if goalAngle is falsy
+        if not goalAngle:
+            return CommandClass('STOP')
+        # calculate angle diff
         angleDiff = goalAngle - currAngle
         if(angleDiff < 0):
              angleDiff += 360
-
+        # use angleDiff to make next decision
         if angleDiff < angleTolerance:
             return CommandClass('STOP')
         if(angleDiff > 180):
@@ -193,15 +197,16 @@ class RobotEntity:
         # check if distance within margin
         dist = self._calculateDistanceToGoal()
         if (dist < distTolerance):
-            return CommandClass('Stop')
+            return self._calculateAngularCommand()
 
-        # check if angle within margin
+        # calculate angle to goal x,y coords
         goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
         angleDiff = goalAngle - currAngle
+        # angleDiff needs to be positive
         if(angleDiff < 0):
              angleDiff += 360
-
+        # check if angle within margin
         if angleDiff < angleTolerance:
             return CommandClass('FORWARD')
         if(angleDiff > 180):
@@ -231,22 +236,17 @@ class RobotEntity:
         if (newGoal != None):
             # TODO assert format before running
             self.goal = newGoal
-
         # abort if goals aren't defined
         if not self.goal:
             return 'No Goal', False
-
         if not self.coords:
             raise SystemError(
                 'Location coordinates not defined for robot {}'
                 .format(self.robotId)
             )
-
-
         # calculate and send command to neato
         command = self.calculateCommand()
         # print('trying to send command', command.generateCommand())
-
         return self.sendCommand(command), self.goal
 
     def sendCommand(self, command):
