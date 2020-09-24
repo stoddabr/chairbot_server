@@ -57,14 +57,14 @@ function askToRunSequence(motion) {
 	if (motion == STOP) { //this is the STOP command
 		//encode the packet to make it processesable by ROS
 		requestStopPacket = new ROSLIB.Message({data: motion})
-		// console.log("Stop Packet is " + requestStopPacket)
+		console.log("Stop Packet is ", requestStopPacket)
 
 		//send it to those chair's topic which were selected
 		for (var chair of chairs)
 		{
 			if (chair.checked == true)
 			{
-				console.log("Sending STOP to " + chair.id)
+				// console.log("Sending STOP to " + chair.id)
 				//construct the topic name by using hte chair id
 				requestStop_topic_name = 'requestStop' + chair.id.substr(-2)
 				//actually get the topic object for that chair's requestStopTopic and then publish

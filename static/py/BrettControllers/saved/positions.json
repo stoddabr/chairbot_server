@@ -1,6 +1,6 @@
 {
   "snapObject": {
-    "Up (id 20)": {
+    "Up": {
       "type": "default",
       "author": "Brett S",
       "data": {
@@ -9,7 +9,7 @@
       },
       "created": 1598385609000
     },
-    "Right (id 20)": {
+    "Right": {
       "type": "default",
       "author": "Brett S",
       "data": {
@@ -18,7 +18,7 @@
       },
       "created": 1598385609000
     },
-    "Down (id 20)": {
+    "Down": {
       "type": "default",
       "author": "Brett S",
       "data": {
@@ -27,12 +27,12 @@
       },
       "created": 1598385609000
     },
-    "Left (id 20)": {
+    "Left": {
       "type": "default",
       "author": "Brett S",
       "data": {
         "id": "20",
-        "dir": 0
+        "dir": 1
       },
       "created": 1598385609000
     }
@@ -61,7 +61,7 @@
           "4": [350, 201, 14],
           "5": [251, 172, 198]
         },
-        "originId": 5
+        "originId": 4
       },
       "created": 1600820453000
     }
@@ -95,7 +95,7 @@
       "type": "default",
       "author": "Brett S",
       "data": {
-        "dir": 0
+        "dir": 1
       },
       "created": 1598385609000
     }

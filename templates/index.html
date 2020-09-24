@@ -479,6 +479,7 @@ code post 4/1 updated by Brett
     }
     var joy = new JoyStick('joyDiv', joystickStyleProps);
     var joystickEnabled = true;
+    var lastStopSent = false;
 
     var toggleJoystickEnabled = () => {
       joystickEnabled = !joystickEnabled
@@ -496,19 +497,26 @@ code post 4/1 updated by Brett
       if (joystickEnabled)
         switch (direction) {
           case 'C': // center
-            stop()
+            if (!lastStopSent) {
+              stop()
+              lastStopSent = true
+            }
             break;
           case 'N':
             forward()
+            lastStopSent = false
             break;
           case 'E':
             turnRight()
+            lastStopSent = false
             break
           case 'W':
             turnLeft()
+            lastStopSent = false
             break
           case 'S':
             backward()
+            lastStopSent = false
             break
           default:
             console.log('direction not recognized', direction, typeof direction)
@@ -559,6 +567,20 @@ code post 4/1 updated by Brett
       // else
       return `${prefix} ${type}`
     }
+    // parse the primary charibot number and note for formations
+    // and snap to object
+    // for other positions types nothing will be displayed
+    function parsePrimaryString(data) {
+      const prefix = '(following id '
+      const suffix = ')'
+      if (data && data.data && data.data.originId) {
+        return `${prefix}${data.data.originId}${suffix}`
+      } else if (data && data.data && data.data.id) {
+        return `${prefix}${data.data.id}${suffix}`
+      } else {
+        return ''
+      }
+    }
     function resetAutonomy() {
       $.ajax({
         url:  '/autonomy/all',
@@ -597,10 +619,11 @@ code post 4/1 updated by Brett
         Object.keys(data).forEach((key, i)=>{
           const ts = new Date(data[key].created)
           console.log({key})
+          const primaryString = parsePrimaryString(data[key])
           $("#autonomyModalContent").append(`
             <div class='autonomyButtonContainer'>
               <button class='autonomyButton${i}${data[key].type}' data-name="${key}" data-type=${type}>
-                <h3 class="autononmyButtonName">${key}</h3>
+                <h3 class="autononmyButtonName">${key} ${primaryString}</h3>
                 <div class="autononmyButtonInfo">${data[key].author} - ${ts.getMonth()}/${ts.getDay()}/${ts.getFullYear()}</div>
               </button>
             </div>

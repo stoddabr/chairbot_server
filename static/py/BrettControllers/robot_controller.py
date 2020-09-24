@@ -358,12 +358,16 @@ class RobotControllerClass:
             print('Error: '+errString)
             raise Exception(errString) # possibly comment out during production?
             return False
-
+        # calculate and set goals for a formation
         originCoords = positionData['coords'][ str(originId) ]
         print(originCoords)
         newOriginCoords = self.robots[originId].getCoords()
         for robotId, robotEntity in self.robots.items():
-            if positionData['coords'].has_key(str(robotId)):
+            # clear goal for primary bot
+            if str(robotId) == str(originId):
+                robotEntity.updateGoal(False)
+            # set goal for secondary bot(s)
+            elif positionData['coords'].has_key(str(robotId)):
                 recordedCoords = positionData['coords'][str(robotId)]
                 newCoords = tuple(
                   self._calculateRelativePosition( originCoords, newOriginCoords, recordedCoords )
@@ -476,7 +480,7 @@ class RobotControllerClass:
         stopped = []
         self.LAST_SET_POSITON_TYPE = False
         self.LAST_SET_POSITON_INFO = False
-        stopCommand = CommandClass( 'stop' )
+        stopCommand = CommandClass( 'STOP' )
         for robotId, robotEntity in self.robots.items():
             robotEntity.sendCommand( stopCommand )
             robotEntity.clearGoal()

@@ -31,7 +31,7 @@ pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 
 distTolerance = 10  # pixels FIXME experimentally determine
-angleTolerance = 45 / 2  # degrees
+angleTolerance = 36 / 2  # degrees
 
 class RobotEntity:
     """
@@ -90,6 +90,7 @@ class RobotEntity:
         self.robotId = robotId
         self.coords = coords
         self.goal = goal
+        self.isStopped = False
 
     def updateCoords(self, newCoords):
         """ Updates robot's current location which can then be used to calculate
@@ -246,6 +247,8 @@ class RobotEntity:
             )
         # calculate and send command to neato
         command = self.calculateCommand()
+        # required on init
+        self.sendCommand( CommandClass('STOP') )
         # print('trying to send command', command.generateCommand())
         return self.sendCommand(command), self.goal
 
@@ -264,9 +267,13 @@ class RobotEntity:
 
         id = self.robotId # TODO setup mapping from robotId to chairId
         message = command.generateCommand()
-        if (message == 'stop'):
-            pub_stop_arr[id].publish( message )
+        if (message == 'STOP'):
+            if not self.isStopped:
+                pub_motion_arr[id].publish( message )
+                self.isStopped = True
+                # pub_stop_arr[id].publish( message )
         else:
+            self.isStopped = False
             # print 'sending to '+message+' '+str(id)
             pub_motion_arr[id].publish( message )
         return message
