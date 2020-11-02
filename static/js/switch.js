@@ -1,7 +1,9 @@
+// legacy, ROS bridge deprecated 10/20 by Brett
+
 // Connecting to ROS
 // -----------------
 // create a Ros node object to communicate with a rosbridge v2.0 server.
-var ros_server = '192.168.1.196' // 'localhost' will only work if running on machine
+var ros_server = '10.214.152.222' // '192.168.1.196' // 'localhost' will only work if running on machine
 var ros_port = '9090'
 var ros = new ROSLIB.Ros({
   url: 'ws://' + ros_server + ':' + ros_port
@@ -47,17 +49,25 @@ var chairOn = new ROSLIB.Message({
 var chairOff = new ROSLIB.Message({
   data: 0 //false
 });
+// end legacy code
 
+// define server requests
+function enable(chairId) {
+  $.post( "/toggle/enable/"+chairId );
+}
+function disable(chairId) {
+  $.post( "/toggle/disable/"+chairId );
+}
 
 (function() {
   // Initialization: Set all chairs to be OFF. This means that everytime the webpage is loaded all the chairs ar OFF
-  chair01.publish(chairOff);
+  disable(1) // chair01.publish(chairOff);
   //document.getElementById("Switch01").checked = false;
-  chair02.publish(chairOff);
+  disable(2) // chair02.publish(chairOff);
   //document.getElementById("Switch02").checked = false;
-  chair03.publish(chairOff);
+  disable(3) // chair03.publish(chairOff);
   //document.getElementById("Switch03").checked = false;
-  chair04.publish(chairOff);
+  disable(4) // chair04.publish(chairOff);
   //document.getElementById("Switch04").checked = false;
 })();
 
@@ -65,13 +75,13 @@ var chairOff = new ROSLIB.Message({
 function toggle_chair01() {
   var checkBox = document.getElementById("Switch01");
   if (checkBox.checked == true) {
-    chair01.publish(chairOn);
+    enable(1) // chair01.publish(chairOn);
     toggle_chair01_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
 
   } else {
-    chair01.publish(chairOff);
+    disable(1) // chair01.publish(chairOff);
     toggle_chair01_text();
 
     // if any of the chairs are unselected, uncheck select all.
@@ -95,13 +105,13 @@ function toggle_chair01_text() {
 function toggle_chair02() {
   var checkBox = document.getElementById("Switch02");
   if (checkBox.checked == true) {
-    chair02.publish(chairOn);
+    enable(2) // chair02.publish(chairOn);
     toggle_chair02_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
 
   } else {
-    chair02.publish(chairOff);
+    disable(2) // chair02.publish(chairOff);
     toggle_chair02_text();
     // if any of the chairs are unselected, uncheck select all.
     document.getElementById('SwitchAll').checked = false;
@@ -125,13 +135,13 @@ function toggle_chair02_text() {
 function toggle_chair03() {
   var checkBox = document.getElementById("Switch03");
   if (checkBox.checked == true) {
-    chair03.publish(chairOn);
+    enable(3) // chair03.publish(chairOn);
     toggle_chair03_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
 
   } else {
-    chair03.publish(chairOff);
+    disable(3) // chair03.publish(chairOff);
     toggle_chair03_text();
     // if any of the chairs are unselected, uncheck select all.
     document.getElementById('SwitchAll').checked = false;
@@ -155,12 +165,12 @@ function toggle_chair03_text() {
 function toggle_chair04() {
   var checkBox = document.getElementById("Switch04");
   if (checkBox.checked == true) {
-    chair04.publish(chairOn);
+    enable(4) // chair04.publish(chairOn);
     toggle_chair04_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
   } else {
-    chair04.publish(chairOff);
+    disable(4) // chair04.publish(chairOff);
     toggle_chair04_text();
     // if any of the chairs are unselected, uncheck select all.
     document.getElementById('SwitchAll').checked = false;
@@ -189,30 +199,30 @@ chairNamesArr = [1,2,3,4].map(el=>{ // get names from html
       return chairText + ", ";
 });
 
-    chair01.publish(chairOn);
+    enable(1) // chair01.publish(chairOn);
     document.getElementById("Switch01").checked = true;
     document.getElementById("Toggle01").innerHTML = chairNamesArr[0]; // chairNamesArr is 0-indexed
-    chair02.publish(chairOn);
+    enable(2) // chair02.publish(chairOn);
     document.getElementById("Switch02").checked = true;
     document.getElementById("Toggle02").innerHTML =chairNamesArr[1]
-    chair03.publish(chairOn);
+    enable(3) // chair03.publish(chairOn);
     document.getElementById("Switch03").checked = true;
     document.getElementById("Toggle03").innerHTML = chairNamesArr[2];
-    chair04.publish(chairOn);
+    enable(4) // chair04.publish(chairOn);
     document.getElementById("Switch04").checked = true;
     document.getElementById("Toggle04").innerHTML = chairNamesArr[3];
 
   } else { //uncheck the checkbox
-    chair01.publish(chairOff);
+    disable(1) // chair01.publish(chairOff);
     document.getElementById("Switch01").checked = false;
     document.getElementById("Toggle01").innerHTML = "";
-    chair02.publish(chairOff);
+    disable(2) // chair02.publish(chairOff);
     document.getElementById("Switch02").checked = false;
     document.getElementById("Toggle02").innerHTML = "";
-    chair03.publish(chairOff);
+    disable(3) // chair03.publish(chairOff);
     document.getElementById("Switch03").checked = false;
     document.getElementById("Toggle03").innerHTML = "";
-    chair04.publish(chairOff);
+    disable(4) // chair04.publish(chairOff);
     document.getElementById("Switch04").checked = false;
     document.getElementById("Toggle04").innerHTML = "";
   }

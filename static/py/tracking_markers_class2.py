@@ -26,7 +26,7 @@ import time
 # variables that enable/disable features
 WRITE_TO_FILE = False
 STREAM_TO_ROBOT = True  # stream movement data to the robot
-DEBUG_OVERLAY = True # overlay commands and goal in UI
+DEBUG_OVERLAY = False # overlay commands and goal in UI
 
 class TrackingCamera(object):
     def __init__(self, robotController):
@@ -87,7 +87,8 @@ class TrackingCamera(object):
     # Returns an modified video image with tracking id markers
     def process(self):
 
-        ret, frame = self.cap.read()
+        ret, framefull = self.cap.read()
+        frame = framefull[:-150, 40:-100] # crop y,x
         gray = frame
         # detectMarkers returns: (corners, ids, rejectedImgPoints)
         corners, ids, _ = cv2.aruco.detectMarkers(gray,self.dictionary)

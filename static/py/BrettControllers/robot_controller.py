@@ -188,7 +188,7 @@ class RobotControllerClass:
 
         return info
 
-    def _getRelativeRobotPositions(self, masterId=5):
+    def _getRelativeRobotPositions(self, masterId=1):
         """ gets the current locations for the robots relative to a master"""
 
         info = {}
@@ -426,7 +426,7 @@ class RobotControllerClass:
 
         position = self.LAST_SET_POSITON_INFO
         posType = self.LAST_SET_POSITON_TYPE
-        print('Updating Goal Position based on: ',position)
+        # print('Updating Goal Position based on: ',position)
         if not position: # avoid error if position is False
             return
         positionData = position['data']

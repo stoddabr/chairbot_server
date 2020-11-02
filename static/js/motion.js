@@ -47,6 +47,11 @@ const RIGHT = 'RIGHT'
 const LEFT=  'LEFT'
 const STOP = 'STOP'
 
+function sendMotion(motion, chairId) {
+	const motionstr = String(motion)
+	const chairIdstr = String(chairId)
+  $.post( "/move/"+motionstr+'/'+chairIdstr);
+}
 
 function askToRunSequence(motion) {
 	//console.log("The requested motion is:" + motion);
@@ -64,6 +69,9 @@ function askToRunSequence(motion) {
 		{
 			if (chair.checked == true)
 			{
+				console.log("Sending STOP to " + chair.id)
+				sendMotion(motion, chair.id.substr(-1))
+				/* legacy code from using ROSjslib socket
 				// console.log("Sending STOP to " + chair.id)
 				//construct the topic name by using hte chair id
 				requestStop_topic_name = 'requestStop' + chair.id.substr(-2)
@@ -71,6 +79,7 @@ function askToRunSequence(motion) {
 				eval(requestStop_topic_name).publish(requestStopPacket);
 				//this is for testing
 				eval(requestStop_topic_name).subscribe(printData)
+				*/
 			}
 			else
 			{
@@ -81,7 +90,7 @@ function askToRunSequence(motion) {
 	else
 	{
 		//encode the packet to make it processesable by ROS
-		requestMotionPacket = new ROSLIB.Message({data: motion})
+		// requestMotionPacket = new ROSLIB.Message({data: motion})
 		// console.log("Motion Packet is " + requestMotionPacket)
 
 		//send it to those chair's topic which were selected
@@ -90,13 +99,15 @@ function askToRunSequence(motion) {
 			if (chair.checked == true)
 			{
 				//construct the topic name by using hte chair id
-				requestMotion_topic_name = 'requestMotion' + chair.id.substr(-2)
+				// requestMotion_topic_name = 'requestMotion' + chair.id.substr(-2)
 				//actually get the topic object for that chair's requestMotionTopic and then publish
 				console.log("Sending MOTION command to ", chair.id, ' through ', requestMotion_topic_name)
 
-				eval(requestMotion_topic_name).publish(requestMotionPacket);
+				sendMotion(motion, chair.id.substr(-1))
+				// eval(requestMotion_topic_name).publish(requestMotionPacket);
+
 				//this is for testing
-				eval(requestMotion_topic_name).subscribe(printData)
+				// eval(requestMotion_topic_name).subscribe(printData)
 			}
 			else
 			{

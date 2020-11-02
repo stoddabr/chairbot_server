@@ -145,7 +145,7 @@
     },
     "Left": {
       "data": {
-        "dir": 0
+        "dir": 1
       },
       "created": 1598385609000,
       "type": "default",

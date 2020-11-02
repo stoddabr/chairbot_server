@@ -31,7 +31,7 @@ pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 
 distTolerance = 10  # pixels FIXME experimentally determine
-angleTolerance = 36 / 2  # degrees
+angleTolerance = 60 / 2  # degrees
 
 class RobotEntity:
     """

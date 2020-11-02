@@ -6,12 +6,13 @@ import sys
 from flask import Flask, render_template, Response, request, jsonify
 import os
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int8
 import threading
 import html
 from static.py.tracking_markers_class2 import TrackingCamera
 from static.py.BrettControllers.robot_controller import RobotControllerClass
 
+print('starting flask')
 app = Flask(__name__, template_folder='templates')
 
 # ROS node, publisher, and parameter.
@@ -19,16 +20,24 @@ app = Flask(__name__, template_folder='templates')
 # The parameter *disable_signals* must be set if node is not initialized
 # in the main thread.
 # tutorial
-threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
+print('starting ros in new thread')
+# threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
-chair_ids = range(21)
+chair_ids = range(5)
 gen_move_task = lambda x: rospy.Publisher(
-    ('/requestMotion0'+str(x)), String, queue_size=1)
+    ('/requestMotion0'+str(x)), String, queue_size=1
+)
 gen_stop_task = lambda x: rospy.Publisher(
-    ('/requestStop0'+str(x)), String, queue_size=1)
+    ('/requestStop0'+str(x)), String, queue_size=1
+)
+gen_toggle = lambda x : rospy.Publisher(
+    ('/cbon0'+str(x)), Int8, queue_size=1
+)
+
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
+pub_toggle_arr = list(map(gen_toggle , chair_ids))
 
 RobotController = RobotControllerClass(chair_ids)
 
@@ -83,16 +92,31 @@ def record_position(type):
         raise Exception('Route "/autonomy/<type>", method not accepted')
 
 
+@app.route('/toggle/<command>/<id>', methods = ['POST'])
+def toggle_chair(command, id):
+    if request.method == 'POST':
+        if command == 'enable':
+            pub_toggle_arr[int(id)].publish(1)
+            return 'enable published'
+        elif command == 'disable':
+            pub_toggle_arr[int(id)].publish(0)
+            return 'disable published'
+        else:
+            print("toggle command not recognized.", command)
+            return "toggle command not recognized: should be enable or disable"
+    else:
+        raise Exception('Route "/autonomy/<type>", method not accepted')
+
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction, id):
     if any(direction in d for d in ['forward','backward','left','right', 'stop']):
         # new ROSLIB.Message({data: motion})
         if (direction == 'stop'):
-            pub_stop_arr[id].publish( direction.upper() )
+            pub_stop_arr[int(id)].publish( direction.upper() )
             return '<h2>Stop Command Published</h2>'
         else:
-            pub_motion_arr[id].publish( direction.upper() )
+            pub_motion_arr[int(id)].publish( direction.upper() )
             return '<h2>Direction Command Published</h2>'
     else:
         mgs = 'Direction not recognized'
