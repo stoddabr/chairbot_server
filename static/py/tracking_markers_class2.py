@@ -15,6 +15,7 @@ import cv2
 import time
 import math
 import os
+# from imutils.video import WebcamVideoStream
 from datetime import datetime
 import time
 
@@ -28,6 +29,11 @@ WRITE_TO_FILE = False
 STREAM_TO_ROBOT = True  # stream movement data to the robot
 DEBUG_OVERLAY = False # overlay commands and goal in UI
 
+# from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
+def make_480p(cap):
+    cap.set(3, 640)
+    cap.set(4, 480)
+
 class TrackingCamera(object):
     def __init__(self, robotController):
         # robot controller class
@@ -35,6 +41,9 @@ class TrackingCamera(object):
 
         # USB-Connected Camera
         self.cap = cv2.VideoCapture(1)  # 1 for usb camera, 0 for local
+
+        # limit stream
+        self.cap.set(cv2.CAP_PROP_FPS, 1); # internal buffer will now store only 3 frames
 
         # Fiducial Marker Dictionary
         self.dictionary = cv2.aruco.getPredefinedDictionary(
@@ -90,9 +99,10 @@ class TrackingCamera(object):
         ret, framefull = self.cap.read()
         frame = framefull[:-150, 40:-100] # crop y,x
         gray = frame
+
+
         # detectMarkers returns: (corners, ids, rejectedImgPoints)
         corners, ids, _ = cv2.aruco.detectMarkers(gray,self.dictionary)
-
         # Checks all fiducials in ditionary
         if len(corners) > 0:
             # fids corners, findex fiducial index
@@ -167,11 +177,18 @@ class TrackingCamera(object):
                     except IndexError:
                         pass
 
-        # if no corners
+        # if corners
         if len(corners) > 0:
             cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 
         # Turns into image
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        scale_percent = 50 # percent of original size
+        width = int(frame.shape[1] * scale_percent / 100)
+        height = int(frame.shape[0] * scale_percent / 100)
+        dim = (width, height)
+        # resize image
+        resized = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+
+        ret, jpeg = cv2.imencode('.jpg', resized) # frame for og resolution
         return jpeg.tobytes()
