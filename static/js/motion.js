@@ -1,3 +1,8 @@
+/**
+ * note: ROSLIB is no longer being used
+ * all calls to it need to be sergically removed - Brett 12/11
+ */
+
 var requestMotion01 = new ROSLIB.Topic({
 	ros : ros,
 	name: '/requestMotion01',

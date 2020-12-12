@@ -9,7 +9,7 @@ import rospy
 from std_msgs.msg import String, Int8
 import threading
 import html
-from static.py.tracking_markers_class2 import TrackingCamera
+from static.py.tracking_markers import TrackingCamera
 from static.py.BrettControllers.robot_controller import RobotControllerClass
 
 print('starting flask')
@@ -91,6 +91,20 @@ def record_position(type):
     else:
         raise Exception('Route "/autonomy/<type>", method not accepted')
 
+# directly set goal position TODO implement in UI
+@app.route('/goal/autonomy', methods = ['POST'])
+def set_goal():
+    if request.method == 'POST':
+        httpBody = request.get_json(force=True)
+        robotId = httpBody['id'].encode('ascii','replace')
+        x_goal = httpBody['x'].encode('ascii','replace')
+        y_goal = httpBody['y'].encode('ascii','replace')
+        angle_goal = httpBody['angle'].encode('ascii','replace')
+        coords = (x_goal, y_goal, angle_goal)
+        RobotController.updateRobotGoal(robotId, coords)
+        return 'Goal set success'
+    else:
+        raise Exception('Route "/goal/autonomy", method not accepted')
 
 @app.route('/toggle/<command>/<id>', methods = ['POST'])
 def toggle_chair(command, id):
