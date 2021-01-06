@@ -96,10 +96,10 @@ def record_position(type):
 def set_goal():
     if request.method == 'POST':
         httpBody = request.get_json(force=True)
-        robotId = httpBody['id'].encode('ascii','replace')
-        x_goal = httpBody['x'].encode('ascii','replace')
-        y_goal = httpBody['y'].encode('ascii','replace')
-        angle_goal = httpBody['angle'].encode('ascii','replace')
+        robotId = httpBody['id']
+        x_goal = httpBody['x']
+        y_goal = httpBody['y']
+        angle_goal = httpBody['angle']
         coords = (x_goal, y_goal, angle_goal)
         RobotController.updateRobotGoal(robotId, coords)
         return 'Goal set success'
@@ -124,10 +124,11 @@ def toggle_chair(command, id):
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction, id):
-    if any(direction in d for d in ['forward','backward','left','right', 'stop']):
+    if any(direction in d for d in ['FORWARD','BACKWARD','LEFT','RIGHT', 'STOP']):
         # new ROSLIB.Message({data: motion})
-        if (direction == 'stop'):
-            pub_stop_arr[int(id)].publish( direction.upper() )
+        if (direction == 'STOP'):
+            print 'stopping robot '+str(id)
+            pub_stop_arr[int(id)].publish( 'STOP' )
             return '<h2>Stop Command Published</h2>'
         else:
             pub_motion_arr[int(id)].publish( direction.upper() )

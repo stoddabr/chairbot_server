@@ -50,6 +50,7 @@ code post 4/1 updated by Brett
     }
 
     .camera-frame-class {
+      cursor: cell;
       position: fixed;
       top: 0; left: 0; right:0;
       margin-left: auto; margin-right: auto;
@@ -57,7 +58,7 @@ code post 4/1 updated by Brett
       max-width: 100vw;
       max-height: 100vh;
       object-fit: contain;
-      z-index: -1;
+      /* z-index: -1; remove to make clickable */
       overflow-y:visible
     }
 
@@ -95,6 +96,13 @@ code post 4/1 updated by Brett
     .big-red-button:hover {
       background-color: white;
       color: red;
+    }
+
+    .tap-goal-button {
+      background-color: green;
+      border: 1px solid green;
+      color: white;
+      font-weight: bold;
     }
 
     .custom-row {
@@ -333,9 +341,9 @@ code post 4/1 updated by Brett
 </head>
 
 <body>
-  <div class="bottom-flex-container">
+  <div class="bottom-flex-container" id='bottomFlexContainer'>
     <!-- controls div -->
-    <div class="custom-row">
+    <div class="custom-row" id='customRow'>
       <div class='button-container'>
         <!-- buttons div -->
         <div class='button-header'>
@@ -413,6 +421,11 @@ code post 4/1 updated by Brett
           </button>
           <button class="control-formation-button" type="button" id='snapObjectEnableButton'>
             Set Object
+          </button>
+        </div>
+        <div>
+          <button class="tap-goal-button" type="button" id='tapGoalButton'>
+            Set goal
           </button>
         </div>
         <div>
@@ -498,6 +511,7 @@ code post 4/1 updated by Brett
         switch (direction) {
           case 'C': // center
             if (!lastStopSent) {
+              console.log('stopping')
               stop()
               lastStopSent = true
             }
@@ -762,7 +776,55 @@ code post 4/1 updated by Brett
         showSetAutonomyModal(e)
     }
 
-    // handlers
+    // image click
+    var enableGoalOnImageClick = false;  // clicable
+
+    function mapFromScreenXYtoImageXY(screenX, screenY, imgWidth, imgHeight) {
+      // map using calibration
+      // default screen size is 330, 500
+      console.log({screenX, screenY, imgWidth, imgHeight})
+      const imgX = Math.round(screenX/imgWidth*500)  // TODO linear transform
+      const imgY = Math.round(screenY/imgHeight*330)  // TODO change of basis
+      return {
+        x: imgX,
+        y: imgY,
+      }
+    }
+
+    function imageClick(e) {
+      console.log('image click', enableGoalOnImageClick)
+      const offset = $(this).offset();
+      const relativeX = (e.pageX - offset.left);
+      const relativeY = (e.pageY - offset.top);
+      const imgWidth = $("#camera-frame").width();
+      const imgHeight = $("#camera-frame").height();
+      console.log(relativeX+':'+relativeY);
+      $("#bottomFlexContainer").show();
+
+      if (enableGoalOnImageClick) {
+        // TODO post request
+        const coords = mapFromScreenXYtoImageXY(
+          relativeX, relativeY, imgWidth, imgHeight
+        );
+        const bodyObj = {
+          id: 4, // for testing, in reality this should be based on toggles
+          angle: 2, // TODO think of a UI for this
+          ...coords, // spread operator
+        }
+
+        $.post( `/goal/autonomy`, JSON.stringify(bodyObj), function( resp ) {
+          //alert('goal set', {resp})
+        }, 'text')
+        enableGoalOnImageClick = false
+        $('#customRow').show()
+      }
+    };
+
+    function setGoalTrigger() {
+      enableGoalOnImageClick = true;
+      $('#customRow').hide()
+    }
+
     $('#arrangementSetButton').on('click', showSetAutonomyModal)
     $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
     $('#formationSaveButton').on('click', showSaveAutonomyModal)
@@ -775,6 +837,8 @@ code post 4/1 updated by Brett
     $('#formationSaveButton').on('click', resetAutonomy)
     $('#formationEnableButton').on('click', resetAutonomy)
     $('#bigRedStopButton').on('click', resetAutonomy)
+    $('#tapGoalButton').on('click', setGoalTrigger)
+    $("#camera-frame").on('click', imageClick)
 
     $('#closeModalArea').on('click', hideModals)
   </script>
