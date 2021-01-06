@@ -38,7 +38,6 @@ def getPositions(type, toJson=True):
 
     # Output: {'name': 'Bob', 'languages': ['English', 'Fench']}
     positions = data[type]
-    print(positions)
 
     if toJson:
       return json.dumps(positions)

@@ -97,7 +97,7 @@ class TrackingCamera(object):
     # Returns an modified video image with tracking id markers
     def process(self):
 
-        ret, framefull = self.cap.read()
+        ret, framefull = self.cap.read() # full dimensions of the frame
         frame = framefull[:-150, 40:-100] # crop y,x
         gray = frame
 
