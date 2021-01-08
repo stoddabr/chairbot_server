@@ -28,7 +28,7 @@ import time
 # variables that enable/disable features
 WRITE_TO_FILE = False
 STREAM_TO_ROBOT = True  # stream movement data to the robot
-DEBUG_OVERLAY = False # overlay commands and goal in UI
+DEBUG_OVERLAY = True # overlay commands and goal in UI
 
 # from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
 def make_480p(cap):
@@ -99,6 +99,7 @@ class TrackingCamera(object):
 
         ret, framefull = self.cap.read() # full dimensions of the frame
         frame = framefull[:-150, 40:-100] # crop y,x
+        # print 'frame size '+ str(frame.shape)
         gray = frame
 
 

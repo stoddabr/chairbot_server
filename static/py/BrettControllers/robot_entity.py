@@ -119,7 +119,7 @@ class RobotEntity:
             x,y coordinates
         """
 
-        print "Goal updated for "+str(self.robotId)
+        print "Goal updated for "+str(self.robotId)+' '+str(newGoal)
         self.goal = newGoal
 
     def clearGoal(self):
@@ -127,6 +127,7 @@ class RobotEntity:
 
         """
 
+        print 'clearing goal for robot '+str(self.robotId)
         self.goal = None
 
     def _calculateDistanceToGoal(self):
@@ -233,7 +234,7 @@ class RobotEntity:
             If coords not found
         """
 
-        # print "Moving robot "+str(self.robotId)
+        # print "Moving robot "+str(self.robotId)+' to '+str(self.goal)
         if (newGoal != None):
             # TODO assert format before running
             self.goal = newGoal
@@ -248,7 +249,7 @@ class RobotEntity:
         # calculate and send command to neato
         command = self.calculateCommand()
         # required on init
-        self.sendCommand( CommandClass('STOP') )
+        # self.sendCommand( CommandClass('STOP') )
         # print('trying to send command', command.generateCommand())
         return self.sendCommand(command), self.goal
 
@@ -269,13 +270,13 @@ class RobotEntity:
         message = command.generateCommand()
         if (message == 'STOP'):
             if not self.isStopped:
-                pub_motion_arr[id].publish( message )
+                print 'stopping robot '+str(self.robotId)
+                pub_stop_arr[int(id)].publish( message )
                 self.isStopped = True
-                # pub_stop_arr[id].publish( message )
         else:
             self.isStopped = False
-            # print 'sending to '+message+' '+str(id)
-            pub_motion_arr[id].publish( message )
+            print 'sending to '+message+' '+str(id)
+            pub_motion_arr[int(id)].publish( message )
         return message
 
 #        raise SystemError('Command not implemented. Blame Brett Stoddard stoddardbrett@gmail.com')
