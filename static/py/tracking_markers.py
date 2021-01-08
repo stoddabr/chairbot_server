@@ -8,7 +8,8 @@ chair as a variable in the class, now there is an array
 of filenames saved in the self.filenames variable
 
 TODO write a full description of the class
-TODO understand the gemoetry used
+TODO understand the gemoetry used and compensate for height of markers
+TODO calibrate camera for aeruco markers
 '''
 
 import cv2
@@ -96,7 +97,7 @@ class TrackingCamera(object):
     # Returns an modified video image with tracking id markers
     def process(self):
 
-        ret, framefull = self.cap.read()
+        ret, framefull = self.cap.read() # full dimensions of the frame
         frame = framefull[:-150, 40:-100] # crop y,x
         gray = frame
 
