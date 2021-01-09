@@ -32,6 +32,7 @@ pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 distTolerance = 10  # pixels FIXME experimentally determine
 angleTolerance = 60 / 2  # degrees
+angleToleranceTight = 20 / 2 # tolerance for fine/slow adjustments
 
 class RobotEntity:
     """
@@ -179,7 +180,12 @@ class RobotEntity:
              angleDiff += 360
         # use angleDiff to make next decision
         if angleDiff < angleTolerance:
-            return CommandClass('STOP')
+            if angleDiff < angleToleranceTight:
+                return CommandClass('STOP')
+            if (angleDiff > 180):
+                return CommandClass('LEFT_SLOW')
+            else:
+                return CommandClass('RIGHT_SLOW')
         if(angleDiff > 180):
             return CommandClass('LEFT')
         else:
