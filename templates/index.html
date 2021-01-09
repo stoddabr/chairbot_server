@@ -103,6 +103,7 @@ code post 4/1 updated by Brett
       border: 1px solid green;
       color: white;
       font-weight: bold;
+      margin-top: 5px;
     }
 
     .custom-row {
@@ -465,6 +466,12 @@ code post 4/1 updated by Brett
     <img id="camera-frame" src="{{ url_for('video_feed') }}" class='camera-frame-class' />
   </div>
 
+  <div style="position: absolute; " id='cancel-tap-goal'>
+    <div class='big-red-button' >
+      <p>Cancel Goal</p>
+    </div>
+  </div>
+
   <script type=text/javascript>
     // get the server url for ajax requests
     var $SCRIPT_ROOT = '{{ request.script_root|tojson|safe }}';
@@ -777,7 +784,21 @@ code post 4/1 updated by Brett
     }
 
     // image click
+    $('#cancel-tap-goal').hide()
+
     var enableGoalOnImageClick = false;  // clicable
+
+    function showTapGoalUI() {
+      $("#camera-frame").css("z-index", "1");
+      $('#cancel-tap-goal').show();
+      $('#customRow').hide();
+    }
+
+    function hideTapGoalUI() {
+      $("#camera-frame").css("z-index", "-1");
+      $('#cancel-tap-goal').hide();
+      $('#customRow').show();
+    }
 
     function mapFromScreenXYtoImageXY(screenX, screenY, imgWidth, imgHeight) {
       // map using calibration
@@ -789,6 +810,26 @@ code post 4/1 updated by Brett
         x: imgX,
         y: imgY,
       }
+    }
+
+    function getSelectedChairId() {
+      /* returns the id of a selected chair as int
+         if no chairs or multiple chairs are selected, will return false
+      */
+      chairs = $('.chair_selectors')
+      var selectedChair = false;
+      console.log({chairs})
+      for (var chair of chairs) {
+        if (chair.checked == true) {
+          if(!selectedChair) {
+            const selectedChairIdStr = chair.id
+            selectedChair = parseInt(selectedChairIdStr.slice(-1));
+          } else {
+            return false;
+          }
+        }
+      }
+      return selectedChair
     }
 
     function imageClick(e) {
@@ -806,39 +847,55 @@ code post 4/1 updated by Brett
         const coords = mapFromScreenXYtoImageXY(
           relativeX, relativeY, imgWidth, imgHeight
         );
-        const bodyObj = {
-          id: 4, // for testing, in reality this should be based on toggles
-          angle: 2, // TODO think of a UI for this
-          ...coords, // spread operator
-        }
-
-        $.post( `/goal/autonomy`, JSON.stringify(bodyObj), function( resp ) {
-          //alert('goal set', {resp})
-        }, 'text')
+        const selectedChairId = getSelectedChairId();
+        if (selectedChairId) { // if no or multiple chairs are selected
+          const bodyObj = {
+            id: selectedChairId, // for testing, in reality this should be based on toggles
+            angle: 2, // TODO think of a UI for this
+            ...coords, // spread operator
+          }
+          $.post( `/goal/autonomy`, JSON.stringify(bodyObj), function( resp ) {
+            //alert('goal set', {resp})
+          }, 'text');
+        } // end if selectedChairId
         enableGoalOnImageClick = false
-        $('#customRow').show()
       }
+      hideTapGoalUI();
     };
 
     function setGoalTrigger() {
-      enableGoalOnImageClick = true;
-      $('#customRow').hide()
+      const selectedChairId = getSelectedChairId();
+      console.log({selectedChairId})
+      if (selectedChairId) {
+        enableGoalOnImageClick = true;
+        showTapGoalUI();
+      }  else { // if no or multiple chairs are selected
+        alert('Only one chair can be selected while setting a goal')
+      }
     }
 
-    $('#arrangementSetButton').on('click', showSetAutonomyModal)
-    $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
-    $('#formationSaveButton').on('click', showSaveAutonomyModal)
-    $('#formationEnableButton').on('click', toggleFormationEnabled)
-    $('#snapEnableButton').on('click', showSetAutonomyModal)
-    $('#snapObjectEnableButton').on('click', showSetAutonomyModal)
+    function cancelTapGoal() {
+      enableGoalOnImageClick = false;
+      hideTapGoalUI()
+    }
 
-    $('#arrangementSaveButton').on('click', resetAutonomy)
-    $('#arrangementSetButton').on('click', resetAutonomy)
-    $('#formationSaveButton').on('click', resetAutonomy)
-    $('#formationEnableButton').on('click', resetAutonomy)
-    $('#bigRedStopButton').on('click', resetAutonomy)
-    $('#tapGoalButton').on('click', setGoalTrigger)
-    $("#camera-frame").on('click', imageClick)
+    $('#arrangementSetButton').on('click', showSetAutonomyModal);
+    $('#arrangementSaveButton').on('click', showSaveAutonomyModal);
+    $('#formationSaveButton').on('click', showSaveAutonomyModal);
+    $('#formationEnableButton').on('click', toggleFormationEnabled);
+
+    $('#snapEnableButton').on('click', showSetAutonomyModal);
+    $('#snapObjectEnableButton').on('click', showSetAutonomyModal);
+
+    $('#arrangementSaveButton').on('click', resetAutonomy);
+    $('#arrangementSetButton').on('click', resetAutonomy);
+    $('#formationSaveButton').on('click', resetAutonomy);
+    $('#formationEnableButton').on('click', resetAutonomy);
+    $('#bigRedStopButton').on('click', resetAutonomy);
+
+    $('#tapGoalButton').on('click', setGoalTrigger);
+    $("#camera-frame").on('click', imageClick);
+    $('#cancel-tap-goal').on('click', cancelTapGoal);
 
     $('#closeModalArea').on('click', hideModals)
   </script>
