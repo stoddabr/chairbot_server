@@ -39,8 +39,10 @@ class RobotEntity:
 
     Attributes
     ----------
-    coords : tuple <int,int>
-        x,y coordinates of the robot
+    coords : tuple <int,int,int>
+        x,y,angle current coordinates of the robot
+    goal : tuple <int,int,int>
+       x,y,angle coordinates of the robot's final goal location
     id : int
         the id assigned to this robot. Could be related to fiducial id
 
