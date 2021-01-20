@@ -58,8 +58,14 @@ code post 4/1 updated by Brett
       max-width: 100vw;
       max-height: 100vh;
       object-fit: contain;
-      /* z-index: -1; remove to make clickable */
-      overflow-y:visible
+      z-index: -1; /*remove to make clickable*/
+      overflow-y:visible;
+      user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;  /*avoid drag while rearrange*/
     }
 
     .bottom-flex-container {
@@ -832,9 +838,14 @@ code post 4/1 updated by Brett
       return selectedChair
     }
 
+    var clickCoords = {x:-1,y:-1}
     function imageClick(e) {
-      console.log('image click', enableGoalOnImageClick)
+      console.log('image click', {x: e.pageX, y: e.pageY, enableGoalOnImageClick})
       const offset = $(this).offset();
+      clickCoords = {
+        x: e.pageX,
+        y: e.pageY,
+      }
       const relativeX = (e.pageX - offset.left);
       const relativeY = (e.pageY - offset.top);
       const imgWidth = $("#camera-frame").width();
@@ -860,8 +871,14 @@ code post 4/1 updated by Brett
         } // end if selectedChairId
         enableGoalOnImageClick = false
       }
-      hideTapGoalUI();
     };
+
+    function imageRelease(e) {  // used to set angle
+      console.log('image relsease',{x: e.pageX, y: e.pageY})
+      // TODO find angle from clickCoords
+      hideTapGoalUI();
+    }
+
 
     function setGoalTrigger() {
       const selectedChairId = getSelectedChairId();
@@ -894,7 +911,9 @@ code post 4/1 updated by Brett
     $('#bigRedStopButton').on('click', resetAutonomy);
 
     $('#tapGoalButton').on('click', setGoalTrigger);
-    $("#camera-frame").on('click', imageClick);
+    $("#camera-frame").on('vmousedown', imageClick);
+    $("#camera-frame").on('vmouseup', imageRelease);
+
     $('#cancel-tap-goal').on('click', cancelTapGoal);
 
     $('#closeModalArea').on('click', hideModals)
