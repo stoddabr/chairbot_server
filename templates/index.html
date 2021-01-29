@@ -838,23 +838,40 @@ code post 4/1 updated by Brett
       return selectedChair
     }
 
-    var clickCoords = {x:-1,y:-1}
+    var clickPageCoords = {x:-1,y:-1}
     function imageClick(e) {
       console.log('image click', {x: e.pageX, y: e.pageY, enableGoalOnImageClick})
       const offset = $(this).offset();
-      clickCoords = {
+      clickPageCoords = {
         x: e.pageX,
         y: e.pageY,
       }
-      const relativeX = (e.pageX - offset.left);
-      const relativeY = (e.pageY - offset.top);
+      clickImgCoords = {
+        x: e.pageX - offset.left,
+        y: e.pageY - offset.top,
+      }
+    };
+
+    function imageRelease(e) {  // used to set angle
+      const relativeX = (clickImgCoords.x);
+      const relativeY = (clickImgCoords.y);
       const imgWidth = $("#camera-frame").width();
       const imgHeight = $("#camera-frame").height();
       console.log(relativeX+':'+relativeY);
       $("#bottomFlexContainer").show();
+      const delta = {
+        x: e.pageX - clickPageCoords.x,
+        y: e.pageY - clickPageCoords.y
+      }
+      // TODO find angle from clickPageCoords
+      var angle = Math.floor(
+        Math.atan2(delta.y,delta.x) * 180 / Math.PI  // rads to degrees
+      ) - 180  // adjust to chairbot angle
+      console.log('image relsease',angle,delta, clickPageCoords, {x_up:e.pageX})
+      if (angle < 0) // prevent from being negative
+        angle = angle + 360
 
       if (enableGoalOnImageClick) {
-        // TODO post request
         const coords = mapFromScreenXYtoImageXY(
           relativeX, relativeY, imgWidth, imgHeight
         );
@@ -862,7 +879,7 @@ code post 4/1 updated by Brett
         if (selectedChairId) { // if no or multiple chairs are selected
           const bodyObj = {
             id: selectedChairId, // for testing, in reality this should be based on toggles
-            angle: 2, // TODO think of a UI for this
+            angle: Math.max(angle, 1), // prevent 0
             ...coords, // spread operator
           }
           $.post( `/goal/autonomy`, JSON.stringify(bodyObj), function( resp ) {
@@ -871,11 +888,6 @@ code post 4/1 updated by Brett
         } // end if selectedChairId
         enableGoalOnImageClick = false
       }
-    };
-
-    function imageRelease(e) {  // used to set angle
-      console.log('image relsease',{x: e.pageX, y: e.pageY})
-      // TODO find angle from clickCoords
       hideTapGoalUI();
     }
 
