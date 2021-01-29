@@ -28,7 +28,7 @@ import time
 # variables that enable/disable features
 WRITE_TO_FILE = False
 STREAM_TO_ROBOT = True  # stream movement data to the robot
-DEBUG_OVERLAY = True # overlay commands and goal in UI
+DEBUG_OVERLAY = False # overlay commands and goal in UI
 
 # from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
 def make_480p(cap):
@@ -181,7 +181,8 @@ class TrackingCamera(object):
 
         # if corners
         if len(corners) > 0:
-            cv2.aruco.drawDetectedMarkers(gray,corners,ids)
+            if DEBUG_OVERLAY:
+                cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 
         # Turns into image
