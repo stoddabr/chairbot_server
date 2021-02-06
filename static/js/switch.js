@@ -57,7 +57,9 @@ function enable(chairId) {
   $.post( "/toggle/enable/"+chairId );
 }
 function disable(chairId) {
-  $.post( "/toggle/disable/"+chairId );
+  // disabled disable function so that chairs will continue to move
+  // to their goals even when not selected
+  // $.post( "/toggle/disable/"+chairId );
 }
 
 (function() {
