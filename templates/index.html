@@ -12,6 +12,9 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
 <!DOCTYPE html>
 
+<!-- logging software -->
+<script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+<script>window.LogRocket && window.LogRocket.init('mc1jdm/chairbot_study1');</script>
 <!-- import bootstrap and jquery -->
 <link href="{{ url_for('static', filename='css/dependencies/bootstrap.min.css') }}" rel="stylesheet"
   integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
@@ -38,6 +41,10 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
 
 <html lang="en">
+<head>
+  <title>ChairBots UI</title>
+</head>
+
 <body style="background-color: rgb(33,37,41); width: 100vw; height: 100vh;">
 
   <div style="text-align: center">
@@ -201,6 +208,27 @@ $(document).ready(function () { // ensure jquery is loaded
   })
 
   //////////////////////////////////
+  /* SECTION user logging tools */
+  //////////////////////////////////
+  const user_id_str = '{{ user_tracking_id }}'
+  user_data = {
+    windowHeight: $(window).height(),
+    windowWidth: $(window).width(),
+    // Add your own custom user variables here, ie:
+    // subscriptionType: 'pro'
+  }
+  LogRocket.identify(user_id_str, user_data);
+
+  // log page clicks anywhere
+  $(document).click(function(e){
+    LogRocket.log('click', {
+      target: e.target,
+      x: e.pageX,
+      y: e.pageY,
+    });
+  });
+
+  //////////////////////////////////
   /* SECTION joystick controller */
   //////////////////////////////////
   var joystickEnabled = true;
@@ -295,6 +323,7 @@ $(document).ready(function () { // ensure jquery is loaded
    $('#dropdown-snap-down').on('click', snapDown);
    $('#dropdown-snap-left').on('click', snapLeft);
    $('#dropdown-snap-right').on('click', snapRight);
+
   /////////////////////////////////////////////////////
   /* SECTION tap goal */
   /////////////////////////////////////////////////////

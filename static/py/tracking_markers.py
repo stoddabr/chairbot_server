@@ -25,18 +25,19 @@ import time
 # HOST = "127.0.0.1"
 # PORT = "9600"
 
-# variables that enable/disable features
-WRITE_TO_FILE = False
-STREAM_TO_ROBOT = True  # stream movement data to the robot
-DEBUG_OVERLAY = True # overlay commands and goal in UI
-
 # from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
 def make_480p(cap):
     cap.set(3, 640)
     cap.set(4, 480)
 
 class TrackingCamera(object):
-    def __init__(self, robotController):
+    def __init__(self, robotController, WRITE_TO_FILE=False, STREAM_TO_ROBOT=True, DEBUG_OVERLAY=True):
+        # study config
+        # variables that enable/disable features
+        self.WRITE_TO_FILE = WRITE_TO_FILE
+        self.STREAM_TO_ROBOT = STREAM_TO_ROBOT  # stream movement data to the robot
+        self.DEBUG_OVERLAY = DEBUG_OVERLAY # overlay commands and goal in UI
+
         # robot controller class
         self.robotController = robotController
 
@@ -63,7 +64,7 @@ class TrackingCamera(object):
             for i in xrange(self.numTrackers)
         ]
 
-        if WRITE_TO_FILE:
+        if self.WRITE_TO_FILE:
             # test write to all initialized files
             columnLabelHeader = "x/ll[0] \t y/ll[1] \t degree \t time"
             for filepath in self.filenames:
@@ -136,7 +137,7 @@ class TrackingCamera(object):
                             #circlesize = 15
                             #cv2.circle(gray,(midcords[0],midcords[1]), circlesize, (0,0,255), -1)
 
-                            if WRITE_TO_FILE:
+                            if self.WRITE_TO_FILE:
                                 # Append data onto corresponding file
                                 filename = self.filenames[int(index[0])]
                                 with open(filename, 'a') as f:
@@ -148,7 +149,7 @@ class TrackingCamera(object):
                                     f.write('\t')
                                     f.write(str(time.time())) # time
                                     f.write('\t\n')
-                            if STREAM_TO_ROBOT:
+                            if self.STREAM_TO_ROBOT:
                                 # Stream movement commands to robot
                                 # based on localization data
                                 # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
@@ -164,7 +165,7 @@ class TrackingCamera(object):
                                     circlesize = 5
                                     fontScale = 0.5
                                     goalStr = 'Goal'+str(index[0])
-                                    if DEBUG_OVERLAY:
+                                    if self.DEBUG_OVERLAY:
                                         # print ('goal for ',index[0], goal)
                                         cv2.putText(gray,goalStr,(int(goal[0]),int(goal[1])), font, fontScale, color, thickness, cv2.LINE_AA, False)
                                         cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
@@ -172,7 +173,7 @@ class TrackingCamera(object):
                                     # print('tracking markers command', command, index[0])
                                     color = (0,255,255)
                                     fontScale = 1
-                                    if DEBUG_OVERLAY:
+                                    if self.DEBUG_OVERLAY:
                                         cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
 
 
@@ -181,7 +182,7 @@ class TrackingCamera(object):
 
         # if corners
         if len(corners) > 0:
-            if DEBUG_OVERLAY:
+            if self.DEBUG_OVERLAY:
                 cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 

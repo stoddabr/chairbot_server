@@ -12,6 +12,12 @@ import html
 from static.py.tracking_markers import TrackingCamera
 from static.py.BrettControllers.robot_controller import RobotControllerClass
 
+
+# study config files
+SHOW_AR_OVERLAY = True  # overlay goal and command data
+USER_ID = 'TEST'  # will change logging data
+
+
 print('starting flask')
 app = Flask(__name__, template_folder='templates')
 
@@ -43,7 +49,7 @@ RobotController = RobotControllerClass(chair_ids)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', user_tracking_id=USER_ID)
 
 def gen(camera):
     while True:
@@ -54,7 +60,7 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(TrackingCamera(RobotController)),
+    return Response(gen(TrackingCamera(RobotController, DEBUG_OVERLAY=SHOW_AR_OVERLAY)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -138,5 +144,6 @@ def send_movement_command(direction, id):
         return '<h2>Direction not recognized: unable to publish</h2>'
 
 
+
 if __name__ == '__main__':
-	app.run(threaded=True, host='0.0.0.0', debug=False)
+    app.run(threaded=True, host='0.0.0.0', debug=False)
