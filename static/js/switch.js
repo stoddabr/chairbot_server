@@ -3,6 +3,7 @@
 // Connecting to ROS
 // -----------------
 // create a Ros node object to communicate with a rosbridge v2.0 server.
+
 var ros_server = '10.214.152.222' // '192.168.1.196' // 'localhost' will only work if running on machine
 var ros_port = '9090'
 var ros = new ROSLIB.Ros({
@@ -56,7 +57,9 @@ function enable(chairId) {
   $.post( "/toggle/enable/"+chairId );
 }
 function disable(chairId) {
-  $.post( "/toggle/disable/"+chairId );
+  // disabled disable function so that chairs will continue to move
+  // to their goals even when not selected
+  // $.post( "/toggle/disable/"+chairId );
 }
 
 (function() {
@@ -92,8 +95,7 @@ function toggle_chair01() {
 function toggle_chair01_text() {
   var checkBox = document.getElementById("Switch01");
   var text = document.getElementById("Toggle01");
-  const chairText = document.getElementById("Toggle01Text").innerHTML
-  || 'Chair1' // update based on html, if not found default value
+  const chairText = 'Chair1' // update based on html, if not found default value
   if (checkBox.checked == true) {
     text.innerHTML = chairText + ",";
   } else {
@@ -122,8 +124,7 @@ function toggle_chair02() {
 function toggle_chair02_text() {
   var checkBox = document.getElementById("Switch02");
   var text = document.getElementById("Toggle02");
-  const chairText = document.getElementById("Toggle02Text").innerHTML
-  || 'Chair2' // update based on html, if not found default value
+  const chairText = 'Chair2' // update based on html, if not found default value
   if (checkBox.checked == true) {
     text.innerHTML = chairText + ",";
   } else {
@@ -152,8 +153,7 @@ function toggle_chair03() {
 function toggle_chair03_text() {
   var checkBox = document.getElementById("Switch03");
   var text = document.getElementById("Toggle03");
-  const chairText = document.getElementById("Toggle03Text").innerHTML
-  || 'Chair3' // update based on html, if not found default value
+  const chairText = 'Chair3' // update based on html, if not found default value
   if (checkBox.checked == true) {
     text.innerHTML = chairText + ",";
   } else {
@@ -181,8 +181,7 @@ function toggle_chair04() {
 function toggle_chair04_text() {
   var checkBox = document.getElementById("Switch04");
   var text = document.getElementById("Toggle04");
-  const chairText = document.getElementById("Toggle04Text").innerHTML
-  || 'Chair4' // update based on html, if not found
+  const chairText = 'Chair4' // update based on html, if not found
   if (checkBox.checked == true) {
     text.innerHTML = chairText + ",";
   } else {
@@ -194,8 +193,7 @@ function toggle_all() {
   var checkBox = document.getElementById("SwitchAll");
   if (checkBox.checked == true) { //check the checkbox
 chairNamesArr = [1,2,3,4].map(el=>{ // get names from html
-  const chairText = document.getElementById("Toggle0"+el+"Text").innerHTML
-    || 'Chair'+el // update based on html, if not found default value
+  const chairText = 'Chair'+el // update based on html, if not found default value
       return chairText + ", ";
 });
 

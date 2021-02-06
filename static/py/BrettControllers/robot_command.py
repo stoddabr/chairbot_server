@@ -22,6 +22,8 @@ class CommandClass:
     Backward: move backward
     Right:    turn right
     Left:     turn left
+    RightSlow: turn right slowly
+    LeftSlow: turn left slowly
 
     Attributes
     ----------
@@ -34,7 +36,9 @@ class CommandClass:
       generates a command for a robot of specific ID
     """
 
-    VALID_COMMANDS = ['FORWARD','BACKWARD','RIGHT','LEFT','STOP']
+    VALID_COMMANDS = [
+        'FORWARD','BACKWARD','RIGHT','LEFT','STOP','LEFT_SLOW','RIGHT_SLOW'
+    ]
 
     def __init__(self, command):
         """ Initializes a specific type of command

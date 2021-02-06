@@ -3,6 +3,7 @@
  * all calls to it need to be sergically removed - Brett 12/11
  */
 
+/*
 var requestMotion01 = new ROSLIB.Topic({
 	ros : ros,
 	name: '/requestMotion01',
@@ -44,6 +45,7 @@ var requestStop04 = new ROSLIB.Topic({
 	name: '/requestStop04',
 	messageType : 'std_msgs/String'
 });
+*/
 
 /* These are the constants recognized by our python ros api including the packet replicator */
 const FORWARD = 'FORWARD'
@@ -66,8 +68,8 @@ function askToRunSequence(motion) {
 
 	if (motion == STOP) { //this is the STOP command
 		//encode the packet to make it processesable by ROS
-		requestStopPacket = new ROSLIB.Message({data: motion})
-		console.log("Stop Packet is ", requestStopPacket)
+		// requestStopPacket = new ROSLIB.Message({data: motion})
+		//console.log("Stop Packet is ", requestStopPacket)
 
 		//send it to those chair's topic which were selected
 		for (var chair of chairs)
@@ -106,8 +108,8 @@ function askToRunSequence(motion) {
 				//construct the topic name by using hte chair id
 				// requestMotion_topic_name = 'requestMotion' + chair.id.substr(-2)
 				//actually get the topic object for that chair's requestMotionTopic and then publish
-				console.log("Sending MOTION command to ", chair.id, ' through ', requestMotion_topic_name)
-
+				//console.log("Sending MOTION command to ", chair.id, ' through ', requestMotion_topic_name)
+				console.log('Sending MOTION command',{motion, id:chair.id});
 				sendMotion(motion, chair.id.substr(-1))
 				// eval(requestMotion_topic_name).publish(requestMotionPacket);
 

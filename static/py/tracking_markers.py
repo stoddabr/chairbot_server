@@ -181,11 +181,12 @@ class TrackingCamera(object):
 
         # if corners
         if len(corners) > 0:
-            cv2.aruco.drawDetectedMarkers(gray,corners,ids)
+            if DEBUG_OVERLAY:
+                cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 
         # Turns into image
-        scale_percent = 50 # percent of original size
+        scale_percent = 80 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)

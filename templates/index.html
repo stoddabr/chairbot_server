@@ -2,846 +2,481 @@
 
 index.html
 
-chairbot server UI
+chairbot server UI v2
 
 uses bootstrap, jquery frameworks
 
-code post 4/1 updated by Brett
+code overhaul 4/1/20 by Brett
+ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 -->
 
 <!DOCTYPE html>
-<html>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+<!-- import bootstrap and jquery -->
+<link href="{{ url_for('static', filename='css/dependencies/bootstrap.min.css') }}" rel="stylesheet"
+  integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+<link href="{{ url_for('static', filename='css/dependencies/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous" />
+<script src="{{ url_for('static', filename='css/dependencies/bootstrap.bundle.min.js') }}"> </script>
+<script src="{{ url_for('static', filename='js/dependencies/jquery-3.2.1.min.js') }}"></script>
+<link src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.css') }}"></link>
+<script src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.js') }}"></script>
 
-  <title>ChairBot</title>
-  <!-- Charisma Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+<!-- custom css styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chairSelector.css') }}" />
+<link rel="stylesheet"  href="{{ url_for('static', filename='css/camera-frame.css') }}" />
+<link rel="stylesheet"  href="{{ url_for('static', filename='css/joystick.css') }}" />
 
-  <!-- Custom styles for this template -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
-  <!-- Bootstrap core JavaScript
-  <script src="{{ url_for('static', filename='dist/jquery/jquery.min.js') }}"> </script>
-  <script src="{{ url_for('static', filename='dist/js/bootstrap.bundle.min.js') }}"> </script> -->
-  <!-- scripts for touch interfaces -->
-  <!--  <link rel="stylesheet" href="{{ url_for('static', filename='chairbot/touch/jquery.mobile-1.5.0-alpha.1.min.css') }}"> -->
-  <script src="{{ url_for('static', filename='js/dependencies/jquery-3.2.1.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.js') }}"></script>
-  <!-- robotwebtools scripts -->
-  <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/eventemitter2.min.js')}}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script>
-  <!-- Custom scripts -->
-  <script src="{{ url_for('static', filename='js/switch.js') }}"> </script>
-  <!--contains turn/forward/... functions-->
-  <script src="{{ url_for('static', filename='js/motion.js') }}"> </script>
-
-  <!-- joystick https://github.com/bobboteck/JoyStick -->
-  <script src="{{ url_for('static', filename='js/joystick.js') }}"></script>
-
-  <style>
-    body {
-      /*avoid scroll on small screens */
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .camera-frame-class {
-      cursor: cell;
-      position: fixed;
-      top: 0; left: 0; right:0;
-      margin-left: auto; margin-right: auto;
-      width: 100%;
-      max-width: 100vw;
-      max-height: 100vh;
-      object-fit: contain;
-      /* z-index: -1; remove to make clickable */
-      overflow-y:visible
-    }
-
-    .bottom-flex-container {
-      /*
-      uses flexbox instead of absolute positioning
-      absolute positioning interfeared with joystick mouse-positioning
-      */
-      /* fallback in case custom properties are not supported */
-      height: 100vh;
-      /*@link:www.css-tricks.com/the-trick-to-viewport-units-on-mobile*/
-      height: calc(var(--1, 1vh)*100);
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      flex: 1;
-      flex-direction: column;
-      overflow: hidden;
-
-      /*hidden to prevent scroll */
-      z-index: 1;
-      /*border: 3px solid #23dfa2*/
-      /* show infront of image */
-    }
-
-    .big-red-button {
-      background-color: red;
-      border: 1px solid red; /* Green */
-      color: white;
-      font-weight: bold;
-      border-radius: 12px;
-      margin: 10px;
-      padding: 5px;
-    }
-    .big-red-button:hover {
-      background-color: white;
-      color: red;
-    }
-
-    .tap-goal-button {
-      background-color: green;
-      border: 1px solid green;
-      color: white;
-      font-weight: bold;
-    }
-
-    .custom-row {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      color: #f1f1f1;
-      /* light gray, semi-transparent background to enforce contrast*/
-      background: rgba(0, 0, 0, 0.25);
-      /* border: 2px solid #fa223d */
-    }
-
-    .control-center {
-      grid-column: span 4;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-content: center;
-      text-align: center;
-    }
-
-    .control-arrangement-button {
-      padding: 5px;
-    }
-
-    .control-toggle-button {
-      margin-top: 15px;
-      padding-left: 7px;
-      padding-right: 7px;
-      align-self: flex-end;
-    }
-
-    .control-header-main {
-      margin-bottom: 5px;
-      margin-top: 5px;
-    }
-
-    .control-formation-button {
-      padding-left: 7px;
-      padding-right: 7px;
-      align-self: flex-end;
-    }
-
-    .control-formaiton-button {
-      margin-top: 15px;
-      padding-left: 7px;
-      padding-right: 7px;
-      align-self: flex-end;
-    }
-
-    .joy-container {
-      grid-column: span 4;
-
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      /*background: rgba(255, 0, 0, 0.25);*/
-      /*border: 1px solid #3427ff*/
-    }
+<!-- robotwebtools scripts -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/eventemitter2.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script>
+<!--contains turn/forward/... functions-->
+<script src="{{ url_for('static', filename='js/motion.js') }}"> </script>
+<!-- contains selector code -->
+<script src="{{ url_for('static', filename='js/switch.js') }}"> </script>
+<!-- joystick https://github.com/bobboteck/JoyStick -->
+<script src="{{ url_for('static', filename='js/joystick.js') }}"></script>
 
 
-    .button-container {
-      grid-column: span 4;
-
-      /*background: rgba(0, 0, 100, 0.25);*/
-      /*border: 1px solid #123755 display: grid;*/
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .button-header {
-      /* border: 1px solid #669000; */
-      flex: 1;
-      /* fill space horizontally*/
-    }
-
-    .button-input {
-      flex: 2;
-      justify-content: center;
-      flex-direction: row;
-      overflow: auto;
-      margin-bottom: 3px;
-    }
-
-    .button-item {
-      flex: 1;
-      padding: 1px;
-    }
-
-    #joystick {
-      /*border: 1px solid #9C9898;*/
-    }
-
-    .header-text {
-      margin-top: 5px;
-      margin-bottom: 2px;
-    }
-
-    /* The Modal (background) */
-    .modal {
-      display: none;
-      /* Hidden by default */
-      position: fixed;
-      /* Stay in place */
-      z-index: 1;
-      /* Sit on top */
-      padding-top: 100px;
-      /* Location of the box */
-      left: 0;
-      top: 0;
-      width: 100%;
-      /* Full width */
-      height: 100%;
-      /* Full height */
-      overflow: auto;
-      /* Enable scroll if needed */
-      background-color: rgb(0, 0, 0);
-      /* Fallback color */
-      background-color: rgba(0, 0, 0, 0.4);
-      /* Black w/ opacity */
-    }
-
-    /* Modal Content */
-    .modal-content {
-      background-color: #fefefe;
-      margin: auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-    }
-
-    /* The Close Button */
-    .close {
-      color: #aaaaaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: #000;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .autonomyButtonContainer {
-      margin: 5px;
-      padding: 5px;
-      justify-content: center;
-    }
-
-    .autonomyButtonContainer button {
-      padding: 10px;
-      font-size: large;
-      background-color: white;
-      color: black;
-      border-radius: 10px;
-      width: 90%;
-      border: 2px solid #4CAF50; /* Green */
-    }
-
-    .autonomyButtonContainer button[class$="Default"] {
-      border: 2px solid black;
-    }
-
-    .autonomyButtonContainer button:hover {
-      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-    }
-
-    .autononmyButtonName {
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .autononmyButtonInfo {
-      text-align: right;
-      color: gray;
-    }
-
-    .autonomyModalTitle {
-      justify-content: center;
-    }
-
-    .autonomyForm {
-      padding: 5px;
-      margin: 5px;
-    }
-
-    .autonomyForm input[type=text], select {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    .autonomyForm input[type=button], input[type=submit], input[type=reset] {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 16px 32px;
-      text-decoration: none;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-
-    /* responsive styles for mobile using media queries */
-    @media screen and (max-width: 620px) {
-      .custom-row {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        color: #f1f1f1;
-      }
-
-      .control-center {
-        grid-column: span 2;
-      }
-
-      .button-container {
-        grid-column: span 6;
-      }
-
-      .button-container {
-        flex-direction: row;
-      }
-
-      .button-input {
-        max-height: 7vh;
-        border: 1px solid #660000;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="bottom-flex-container" id='bottomFlexContainer'>
-    <!-- controls div -->
-    <div class="custom-row" id='customRow'>
-      <div class='button-container'>
-        <!-- buttons div -->
-        <div class='button-header'>
-          <h3 class='control-header-main'>You are driving:</h3>
-          <span id="Toggle01"></span>
-          <span id="Toggle02"></span>
-          <span id="Toggle03"></span>
-          <span id="Toggle04"></span>
-        </div>
-        <div class='button-input'>
-          <div class='button-item'>
-            <label class="switch" style="background: green; color: white">
-              <input class='chair_selectors' type="checkbox" id="Switch01" onclick="toggle_chair01()" style="" />
-              <span class="slider round" style="padding-right:1em" id="Toggle01Text">Chair1</span>
-            </label>
-          </div>
-
-          <div class='button-item'>
-            <label class="switch" style="background: orange; color: white">
-              <input class='chair_selectors' type="checkbox" id="Switch02" onclick="toggle_chair02()">
-              <span class="slider round" style="padding-right:1em" id="Toggle02Text">Chair2</span>
-            </label>
-          </div>
-
-          <div class='button-item'>
-            <label class="switch" style="background: black; color: white">
-              <input class='chair_selectors' type="checkbox" id="Switch03" onclick="toggle_chair03()">
-              <span class="slider round" style="padding-right:1em" id="Toggle03Text">Chair3</span>
-            </label>
-          </div>
-
-          <div class='button-item'>
-            <label class="switch" style="background: purple; color: white">
-              <input class='chair_selectors' type="checkbox" id="Switch04" onclick="toggle_chair04()" style="">
-              <span class="slider round" style="padding-right:1em" id="Toggle04Text">Chair4</span>
-            </label>
-          </div>
-
-          <div class='button-item'>
-            <label class='switch'>
-              <input type="checkbox" id="SwitchAll" onclick="toggle_all()">
-              Select All
-            </label>
-          </div>
-
-        </div>
-      </div> <!-- buttons div -->
-
-      <div class='control-center'>
-        <!-- <h2 class='control-header-main'>Motion Controls</h2> -->
-        <div>
-          <h3 class='header-text'>Arrangement</h3>
-          <button class="control-formation-button" type="button" id="arrangementSaveButton">
-            Save
-          </button>
-          <button class="control-formation-button" type="button" id="arrangementSetButton">
-            Set
-          </button>
-        </div>
-        <div>
-          <h3 class='header-text'>Formation</h3>
-          <button class="control-formation-button" type="button" id='formationSaveButton'>
-            Save
-            <!-- <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'> -->
-          </button>
-          <button class="control-formation-button" type="button" id='formationEnableButton'>
-            Set
-            <!-- <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'> -->
-          </button>
-        </div>
-        <div>
-          <h3 class='header-text'>Snap-To-Grid</h3>
-          <button class="control-formation-button" type="button" id='snapEnableButton'>
-              Set Room
-          </button>
-          <button class="control-formation-button" type="button" id='snapObjectEnableButton'>
-            Set Object
-          </button>
-        </div>
-        <div>
-          <button class="tap-goal-button" type="button" id='tapGoalButton'>
-            Set goal
-          </button>
-        </div>
-        <div>
-          <button class="big-red-button" type="button" id='bigRedStopButton'>
-            Stop Everything!!!
-          </button>
-        </div>
-        <!--
-        <div>
-          <button class="control-toggle-button" type="button" id='joystickDisableButton'>
-            Disable Joystick
-            <input type='checkbox' id='joystickDisableCheckbox' name='joy-disable'>
-          </button>
-        </div>
-        -->
-      </div>
-
-      <div class="joy-container">
-        <!-- joystick div -->
-        <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
-      </div> <!-- joystick div -->
-    </div> <!-- row div -->
-  </div> <!-- content div -->
-
-  <!-- Set Arrangement Modal -->
-  <div id="autonomyModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content" id="autonomyModalContainer">
-      <span class="close" id="closeModalArea">&times;</span>
-      <div id="autonomyModalContent">
-        <p>Set Autonomy Modal</p>
-      </div>
-    </div>
-  </div>
+<html lang="en">
+<body style="background-color: rgb(33,37,41); width: 100vw; height: 100vh;">
 
   <div style="text-align: center">
     <img id="camera-frame" src="{{ url_for('video_feed') }}" class='camera-frame-class' />
   </div>
 
-  <script type=text/javascript>
-    // get the server url for ajax requests
-    var $SCRIPT_ROOT = '{{ request.script_root|tojson|safe }}';
-  </script>
-  <script>
-    // prevent jquery from rendering 'loading' on bottom of screen
-    $.mobile.autoInitializePage = false;
+  <div style="position: absolute; bottom: 10px;" id='cancel-tap-goal'>
+    <div class='big-red-button' >
+      <p>Cancel Goal</p>
+    </div>
+  </div>
 
-    // create custom view height property (--vh)
-    // will adjust properly for mobile tabbars and similar issues
-    // @link: www.css-tricks.com/the-trick-to-viewport-units-on-mobile
+  <!-- top bar with dropdowns -->
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" aria-label="Third navbar example">
+    <div class="container-fluid">
+      <button class="btn btn-danger mx-2" type="submit" id='bigRedStopButton'>
+        STOP!
+      </button>
+      <a class="navbar-brand" href="#">Tele-ChairBot UI</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
+        aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- angle snap -->
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Snap-To-Angle
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
+              <a class="dropdown-item" href="#" id='dropdown-snap-up'>Up</a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-left'>Left <</a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-right'>Right ></a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-down'>Down v</a>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <!-- angle snap -->
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Arrangement Template
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
+              <a class="dropdown-item" href="#" id='dropdown-template-circle'>Circle</a>
+              <a class="dropdown-item" href="#" id='dropdown-template-table'>Around Table</a>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <button class="btn btn-success mx-2" type="submit" id="tapGoalButton">Goal</button>
+      </div>
+
+      <!-- save/set position dropdown (removed for study)
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Autonomy
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
+              <div class='text-center'>
+                <h4 class="dropdown-header">Arrangements</h4>
+              </div>
+              <a class="dropdown-item" href="#" id="arrangementSetButton">Set Arrangement</a>
+              <a class="dropdown-item" href="#">Save Arrangement</a>
+              <div class='text-center'>
+                <h4 class="dropdown-header">Formation</h4>
+              </div>
+              <a class="dropdown-item" href="#">Set Formation</a>
+              <a class="dropdown-item" href="#">Save Formation</a>
+              <div class='text-center'>
+                <h4 class="dropdown-header">Snap-to-Direction</h4>
+              </div>
+              <a class="dropdown-item" href="#">Snap-to-Room</a>
+              <a class="dropdown-item" href="#">Snap-to-Object</a>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      -->
+    </div>
+  </nav>
+
+  <!-- chair selector -->
+  <div class="card fixed-bottom m-1" style="width: 11rem; max-height: 25vh; overflow: auto;" id='chair-selector-card'>
+    <div class="card-body">
+      <!-- prevent close on click -->
+      <div style="margin-bottom: 2px;">
+        <strong>Selected:</strong>
+        <span id="Toggle01"></span>
+        <span id="Toggle02"></span>
+        <span id="Toggle03"></span>
+        <span id="Toggle04"></span>
+      </div>
+      <label>
+        <input type="checkbox" class="chair_selectors" id="Switch01" onclick="toggle_chair01()"/>
+        Chair 1
+      </label>
+      <label>
+        <input type="checkbox" class="chair_selectors" id="Switch02" onclick="toggle_chair02()"/>
+        Chair 2
+      </label>
+      <br />
+      <label>
+        <input type="checkbox" class="chair_selectors" id="Switch03" onclick="toggle_chair03()"/>
+        Chair 3
+      </label>
+      <label>
+        <input type="checkbox" class="chair_selectors" id="Switch04" onclick="toggle_chair04()"/>
+        Chair 4
+      </label>
+      <br/>
+      <label>
+      <input type="checkbox" class="chair_selectors" id="SwitchAll" onclick="toggle_all()"/>
+        Select All
+      </label>
+      </form>
+    </div>
+  </div>
+
+  <!-- joystick code -->
+  <!-- using absolute positioning breaks joystick so this ugly workaround is used -->
+  <!-- from https://stackoverflow.com/a/45999283 -->
+  <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh;">
+    <div style="margin-left: auto; font-size: small; padding: 0 0 4px 20px;font-style: italic;">
+    <!-- joystick div -->
+    <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
+    </div>
+  </div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+$.mobile.autoInitializePage = false;
+$(document).ready(function () { // ensure jquery is loaded
+  //////////////////////////////////
+  /* SECTION UI init */
+  //////////////////////////////////
+  // prevent jquery from rendering 'loading' on bottom of screen
+
+  // create custom view height property (--vh)
+  // will adjust properly for mobile tabbars and similar issues
+  // @link: www.css-tricks.com/the-trick-to-viewport-units-on-mobile
+  let vh = window.innderHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  // listen to resize event and update --vh
+  window.addEventListener('resize', () => {
     let vh = window.innderHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
-    // listen to resize event and update --vh
-    window.addEventListener('resize', () => {
-      let vh = window.innderHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    })
+  })
 
-    /* joystick controller */
-    const joystickStyleProps = {
-      internalFillColor: '#0000AA', // blue
-      internalStrokeColor: '#aaaaaa', // white
-      externalStrokeColor: '#0000AA', // blue
-    }
+  //////////////////////////////////
+  /* SECTION joystick controller */
+  //////////////////////////////////
+  var joystickEnabled = true;
+  var lastStopSent = false;
+  const joystickStyleProps = {
+    internalFillColor: '#5050AA', // gray blue
+    internalStrokeColor: '#aaaaaa', // white
+    externalStrokeColor: '#aaaaaa', // blue
+  }
+  if (joystickEnabled) { // will not load if joystickEnabled init false
     var joy = new JoyStick('joyDiv', joystickStyleProps);
-    var joystickEnabled = true;
-    var lastStopSent = false;
+  }
+  var toggleJoystickEnabled = () => {
+    joystickEnabled = !joystickEnabled
+    console.log('joystick toggled, new val:', joystickEnabled)
+    $('#joystickDisableCheckbox').prop('checked', !joystickEnabled);
+  }
+  // avoid clicking both $('#joystickDisableCheckbox').on('click', toggleJoystickEnabled)
+  $('#joystickDisableButton').on('click', toggleJoystickEnabled)
 
-    var toggleJoystickEnabled = () => {
-      joystickEnabled = !joystickEnabled
-      console.log('joystick toggled, new val:', joystickEnabled)
-      $('#joystickDisableCheckbox').prop('checked', !joystickEnabled);
+  /* joystick control robot */
+  //TODO implement "percise" controls and implement into switch case
+  setInterval(function() {
+    const direction = joy.GetDir();
+    //console.log('joystick data', {direction,x: joy.GetX(),y: joy.GetY(),})
+    if (joystickEnabled)
+      switch (direction) {
+        case 'C': // center
+          if (!lastStopSent) {
+            console.log('stopping')
+            stop()
+            lastStopSent = true
+          }
+          break;
+        case 'N':
+          forward()
+          lastStopSent = false
+          console.log('fio')
+          break;
+        case 'E':
+          turnRight()
+          lastStopSent = false
+          break
+        case 'W':
+          turnLeft()
+          lastStopSent = false
+          break
+        case 'S':
+          backward()
+          lastStopSent = false
+          break
+        default:
+          console.log('direction not recognized', direction, typeof direction)
+      }
+  }, 100); // poll joystick every 0.1 seconds
+  /* add the touch handler events to the navigation buttons to call the resepctive motion function*/
+  $('#forward_button').bind("vmousedown", forward);
+  $('#backward_button').bind("vmousedown", backward);
+  $('#left_button').bind("vmousedown", turnLeft);
+  $('#right_button').bind("vmousedown", turnRight);
+  /* all navigatio buttons when released should stop */
+  $('.navigation_buttons').bind("vmouseup", stop)
+
+
+  /////////////////////////////////////////////////////
+  /* SECTION snap-to-angle */
+  /////////////////////////////////////////////////////
+  function snapDirection(direction){
+    $.post( `/autonomy/snapRoom`, JSON.stringify({name:direction}), function( data ) {
+      $( ".result" ).html( data );
+      console.log('snap set: '+direction)
+    }, 'text')
+      .fail(function() {
+        alert( "Error with ajax request! See python server logs" );
+      });
+  }
+
+  function snapUp(e) {
+    snapDirection('Up')
+  }
+  function snapDown(e) {
+    snapDirection('Down')
+  }
+  function snapLeft(e) {
+    snapDirection('Left')
+  }
+  function snapRight(e) {
+    snapDirection('Right')
+  }
+
+   $('#dropdown-snap-up').on('click', snapUp);
+   $('#dropdown-snap-down').on('click', snapDown);
+   $('#dropdown-snap-left').on('click', snapLeft);
+   $('#dropdown-snap-right').on('click', snapRight);
+  /////////////////////////////////////////////////////
+  /* SECTION tap goal */
+  /////////////////////////////////////////////////////
+  // image click for tap goal
+  $('#cancel-tap-goal').hide()
+  var enableGoalOnImageClick = false;  // clicable
+
+  function showTapGoalUI() {
+    $("#camera-frame").css("z-index", "1");
+    $("#camera-frame").css("cursor", "crosshair");
+    $('#cancel-tap-goal').show();
+    $('#chair-selector-card').hide();
+    $('#joyDiv').hide();
+  }
+
+  function hideTapGoalUI() {
+    $("#camera-frame").css("z-index", "-1");
+    $("#camera-frame").css("cursor", "default");
+    $('#cancel-tap-goal').hide();
+    $('#chair-selector-card').show();
+    $('#joyDiv').show();
+  }
+
+  function mapFromScreenXYtoImageXY(screenX, screenY, imgWidth, imgHeight) {
+    // map using calibration
+    // default screen size is 330, 500
+    console.log({screenX, screenY, imgWidth, imgHeight})
+    const imgX = Math.round(screenX/imgWidth*500)  // TODO linear transform
+    const imgY = Math.round(screenY/imgHeight*330)  // TODO change of basis
+    return {
+      x: imgX,
+      y: imgY,
     }
-    // avoid clicking both $('#joystickDisableCheckbox').on('click', toggleJoystickEnabled)
-    $('#joystickDisableButton').on('click', toggleJoystickEnabled)
+  }
 
-    /* joystick control robot */
-    //TODO implement "percise" controls and implement into switch case
-    setInterval(function() {
-      const direction = joy.GetDir();
-      //console.log('joystick data', {direction,x: joy.GetX(),y: joy.GetY(),})
-      if (joystickEnabled)
-        switch (direction) {
-          case 'C': // center
-            if (!lastStopSent) {
-              console.log('stopping')
-              stop()
-              lastStopSent = true
-            }
-            break;
-          case 'N':
-            forward()
-            lastStopSent = false
-            break;
-          case 'E':
-            turnRight()
-            lastStopSent = false
-            break
-          case 'W':
-            turnLeft()
-            lastStopSent = false
-            break
-          case 'S':
-            backward()
-            lastStopSent = false
-            break
-          default:
-            console.log('direction not recognized', direction, typeof direction)
+  function getSelectedChairId() {
+    /* returns the id of a selected chair as int
+       if no chairs or multiple chairs are selected, will return false
+    */
+    chairs = $('.chair_selectors')
+    var selectedChair = false;
+    console.log({chairs})
+    for (var chair of chairs) {
+      if (chair.checked == true) {
+        if(!selectedChair) {
+          const selectedChairIdStr = chair.id
+          selectedChair = parseInt(selectedChairIdStr.slice(-1));
+        } else {
+          return false;
         }
-    }, 100); // poll joystick every 0.1 seconds
-
-
-    /* add the touch handler events to the navigation buttons to call the resepctive motion function*/
-    $('#forward_button').bind("vmousedown", forward);
-    $('#backward_button').bind("vmousedown", backward);
-    $('#left_button').bind("vmousedown", turnLeft);
-    $('#right_button').bind("vmousedown", turnRight);
-
-    /* all navigatio buttons when released should stop */
-    $('.navigation_buttons').bind("vmouseup", stop)
-
-    /* advertise the topics for all chairs! */
-    for (var chair of $('.chair_selectors')) {
-      //construct the topic name string by using hte chair id
-      requestMotion_topic_name = 'requestMotion' + chair.id.substr(-2)
-      requestStop_topic_name = 'requestStop' + chair.id.substr(-2)
-
-      console.log("Advertising the topic " + requestMotion_topic_name)
-      console.log("Advertising the topic " + requestStop_topic_name)
-      //actually get the topic object for that chair's requestMotionTopic and advertise
-      eval(requestMotion_topic_name).advertise()
-      eval(requestStop_topic_name).advertise()
-    }
-
-
-    ///////////////////////////// positioning/arrangements/formations
-
-    // UI handlers
-    function setArrangementUi() {
-      console.log('formation set')
-      hideModals()
-    }
-    function saveArrangementUi() {
-      console.log('arrangement saved')
-      hideModals()
-    }
-    function formatTypeUi(type) {
-      const prefix = type.charAt(0).toLowerCase() === 'a'?'an':'a'
-      if (type === 'snapRoom')
-        return prefix + " Snap-To-Grid angle relative to the Room"
-      if (type === 'snapObject')
-        return prefix + " Snap-To-Grid angle relative to an object (fiducial)"
-      // else
-      return `${prefix} ${type}`
-    }
-    // parse the primary charibot number and note for formations
-    // and snap to object
-    // for other positions types nothing will be displayed
-    function parsePrimaryString(data) {
-      const prefix = '(following id '
-      const suffix = ')'
-      if (data && data.data && data.data.originId) {
-        return `${prefix}${data.data.originId}${suffix}`
-      } else if (data && data.data && data.data.id) {
-        return `${prefix}${data.data.id}${suffix}`
-      } else {
-        return ''
       }
     }
-    function resetAutonomy() {
-      $.ajax({
-        url:  '/autonomy/all',
-        method: 'DELETE',
-      }).then(function (success) {
-        $('#formationEnableCheckbox').prop('checked', false);
-        $('#snapEnableCheckbox').prop('checked', false);
-        console.log('autonomy reset', success)
-      }).catch(function(err) {
-        alert( "Error with ajax request: reset! Check out python logs" );
-        console.log("Error with ajax reset", err)
-      })
+    return selectedChair
+  }
+
+  var clickPageCoords = {x:-1,y:-1}
+  function imageClick(e) {
+    console.log('image click', {x: e.pageX, y: e.pageY, enableGoalOnImageClick})
+    const offset = $(this).offset();
+    clickPageCoords = {
+      x: e.pageX,
+      y: e.pageY,
     }
-
-    var formationEnabled = false;
-    var arrangementEnabled = false;
-    var snapEnabled = false;
-
-    // modal logic
-    const populateSetAutonomyModal = (type) => {
-      $('#autonomyModal').css('display', 'block')
-      $("#autonomyModalContent").html('Loading...')
-      $.getJSON(`/autonomy/${type}`, function(data) {
-        console.log('ajax requrest to dynamically render', data)
-
-        console.log('ajax ', type.charAt(0).toLowerCase())
-        const typeHumanReadable = formatTypeUi(type)
-        $("#autonomyModalContent").html(`
-          <div class='autonomyModalTitle'>
-            <h1>
-              Select ${typeHumanReadable}
-            </h1>
-            <span style="color: gray;">Default items have a black outline</span>
-          </div>
-        `)
-        Object.keys(data).forEach((key, i)=>{
-          const ts = new Date(data[key].created)
-          console.log({key})
-          const primaryString = parsePrimaryString(data[key])
-          $("#autonomyModalContent").append(`
-            <div class='autonomyButtonContainer'>
-              <button class='autonomyButton${i}${data[key].type}' data-name="${key}" data-type=${type}>
-                <h3 class="autononmyButtonName">${key} ${primaryString}</h3>
-                <div class="autononmyButtonInfo">${data[key].author} - ${ts.getMonth()}/${ts.getDay()}/${ts.getFullYear()}</div>
-              </button>
-            </div>
-            `);
-          $(`button.autonomyButton${i}${data[key].type}`).click( function() {
-            $(this).parent().remove();
-            const name = $(this).data("name")
-            const type = $(this).data("type")
-            console.log('autonomy button', name, type)
-            $.post( `/autonomy/${type}`, JSON.stringify({name}), function( data ) {
-              $( ".result" ).html( data );
-              setArrangementUi()
-            }, 'text')
-              .fail(function() {
-                alert( "Error with ajax request! Check out python logs" );
-                setArrangementUi()
-              });
-          });
-        })
-      });
+    clickImgCoords = {
+      x: e.pageX - offset.left,
+      y: e.pageY - offset.top,
     }
+  };
 
-    const populateSaveArrangementModal = (type) => {
-      $('#autonomyModal').css('display', 'block')
-      $("#autonomyModalContent").html('');
-      // header
-      $("#autonomyModalContent").append(`
-          <div class='autonomyModalTitle'>
-            <h1>
-              Save current ${type}
-            </h1>
-          </div>
-        `)
-      // form
-      $("#autonomyModalContent").append(`
-        <form class="autonomyForm" >
-          <label for="name">${type} Name</label>
-          <input type="text" id="autonomyFormName" name="name" placeholder="Wallflower">
-
-          <label for="author">Your Name</label>
-          <input type="text" id="autonomyFormAuthor" name="author" placeholder="James Dean">
-
-          <label for="category">${type} Category</label>
-          <select id="autonomyFormCategory" name="category">
-            <option value="default">Default</option>
-            <option value="temporary">Temporary</option>
-          </select>
-
-          <input type="submit" value="Submit">
-        </form>
-        `);
-
-      $("form.autonomyForm").submit(function(e) {
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        const author = $('#autonomyFormAuthor').val();
-        const name = $('#autonomyFormName').val(); // ui button click doesn't like spaces
-        const category = $('#autonomyFormCategory').val();
-        console.log('submit things', {name, author, category})
-        $.post( `/new/autonomy/${type}`, JSON.stringify({name, author, category}), function( data ) {
-          $( ".result" ).html( data );
-          setArrangementUi()
-        }, 'json')
-          .fail(function() {
-            // alert( "Error with ajax request! Check out python logs" );
-            setArrangementUi()
-          });
-      });
+  function imageRelease(e) {  // used to set angle
+    const relativeX = (clickImgCoords.x);
+    const relativeY = (clickImgCoords.y);
+    const imgWidth = $("#camera-frame").width();
+    const imgHeight = $("#camera-frame").height();
+    console.log(relativeX+':'+relativeY);
+    $("#bottomFlexContainer").show();
+    const delta = {
+      x: e.pageX - clickPageCoords.x,
+      y: e.pageY - clickPageCoords.y
     }
+    // TODO find angle from clickPageCoords
+    var angle = Math.floor(
+      Math.atan2(delta.y,delta.x) * 180 / Math.PI  // rads to degrees
+    ) - 180  // adjust to chairbot angle
+    console.log('image relsease',angle,delta, clickPageCoords, {x_up:e.pageX})
+    if (angle < 0) // prevent from being negative
+      angle = angle + 360
 
-    $(document).ready(function(){ // TODO remove button
-        $("button").click(function(){
-            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>&times;</a></li>");
-        });
-        $(document).on("click", "a.remove" , function() {
-            $(this).parent().remove();
-        });
-    });
-
-    // modal controls
-    function showSetAutonomyModal(e) {
-      console.log('autonomy set selected', )
-      $('#autonomyModal').css('display', 'block')
-      switch (e.target.id) {
-        case 'arrangementSetButton':
-          populateSetAutonomyModal('arrangement')
-          break;
-        case 'formationEnableButton':
-          populateSetAutonomyModal('formation')
-          break;
-        case 'snapEnableButton':
-          populateSetAutonomyModal('snapRoom')
-          break;
-        case 'snapObjectEnableButton':
-          populateSetAutonomyModal('snapObject')
-          break;
-        default:
-          alert('Autonomy mode not recognized by UI: '+ e.target.id)
-          break;
-      }
-    }
-
-    function showSaveAutonomyModal(e) {
-      console.log('autonomy save selected', e.target.id)
-      $('#autonomyModal').css('display', 'block')
-      switch (e.target.id) {
-        case 'arrangementSaveButton':
-          populateSaveArrangementModal('arrangement')
-          break;
-        case 'formationSaveButton':
-          populateSaveArrangementModal('formation')
-          break;
-        default:
-          alert('Autonomy mode not recognized by UI: '+ e.targed.id)
-          break;
-      }
-    }
-
-    var hideModals = () => {
-      $('#autonomyModal').css('display', 'none')
-    }
-
-    function toggleFormationEnabled(e) {
-      formationEnabled = !formationEnabled
-      console.log('formation toggled, new val:', formationEnabled);
-      $('#formationEnableCheckbox').prop('checked', formationEnabled);
-      if (formationEnabled)
-        showSetAutonomyModal(e)
-    }
-
-    function toggleSnapEnabled(e) {
-      snapEnabled = !snapEnabled
-      console.log('formation toggled, new val:', snapEnabled);
-      $('#snapEnableCheckbox').prop('checked', snapEnabled);
-      if (formationEnabled)
-        showSetAutonomyModal(e)
-    }
-
-    // image click
-    var enableGoalOnImageClick = false;  // clicable
-
-    function mapFromScreenXYtoImageXY(screenX, screenY, imgWidth, imgHeight) {
-      // map using calibration
-      // default screen size is 330, 500
-      console.log({screenX, screenY, imgWidth, imgHeight})
-      const imgX = Math.round(screenX/imgWidth*500)  // TODO linear transform
-      const imgY = Math.round(screenY/imgHeight*330)  // TODO change of basis
-      return {
-        x: imgX,
-        y: imgY,
-      }
-    }
-
-    function imageClick(e) {
-      console.log('image click', enableGoalOnImageClick)
-      const offset = $(this).offset();
-      const relativeX = (e.pageX - offset.left);
-      const relativeY = (e.pageY - offset.top);
-      const imgWidth = $("#camera-frame").width();
-      const imgHeight = $("#camera-frame").height();
-      console.log(relativeX+':'+relativeY);
-      $("#bottomFlexContainer").show();
-
-      if (enableGoalOnImageClick) {
-        // TODO post request
-        const coords = mapFromScreenXYtoImageXY(
-          relativeX, relativeY, imgWidth, imgHeight
-        );
+    if (enableGoalOnImageClick) {
+      const coords = mapFromScreenXYtoImageXY(
+        relativeX, relativeY, imgWidth, imgHeight
+      );
+      const selectedChairId = getSelectedChairId();
+      if (selectedChairId) { // if no or multiple chairs are selected
         const bodyObj = {
-          id: 4, // for testing, in reality this should be based on toggles
-          angle: 2, // TODO think of a UI for this
+          id: selectedChairId, // for testing, in reality this should be based on toggles
+          angle: Math.max(angle, 1), // prevent 0
           ...coords, // spread operator
         }
-
         $.post( `/goal/autonomy`, JSON.stringify(bodyObj), function( resp ) {
           //alert('goal set', {resp})
-        }, 'text')
-        enableGoalOnImageClick = false
-        $('#customRow').show()
-      }
-    };
-
-    function setGoalTrigger() {
-      enableGoalOnImageClick = true;
-      $('#customRow').hide()
+        }, 'text');
+      } // end if selectedChairId
+      enableGoalOnImageClick = false
     }
+    hideTapGoalUI();
+  }
 
-    $('#arrangementSetButton').on('click', showSetAutonomyModal)
-    $('#arrangementSaveButton').on('click', showSaveAutonomyModal)
-    $('#formationSaveButton').on('click', showSaveAutonomyModal)
-    $('#formationEnableButton').on('click', toggleFormationEnabled)
-    $('#snapEnableButton').on('click', showSetAutonomyModal)
-    $('#snapObjectEnableButton').on('click', showSetAutonomyModal)
+  function setGoalTrigger() {
+    const selectedChairId = getSelectedChairId();
+    console.log({selectedChairId})
+    if (selectedChairId) {
+      enableGoalOnImageClick = true;
+      showTapGoalUI();
+    }  else { // if no or multiple chairs are selected
+      alert('Only one chair can be selected while setting a goal')
+    }
+  }
 
-    $('#arrangementSaveButton').on('click', resetAutonomy)
-    $('#arrangementSetButton').on('click', resetAutonomy)
-    $('#formationSaveButton').on('click', resetAutonomy)
-    $('#formationEnableButton').on('click', resetAutonomy)
-    $('#bigRedStopButton').on('click', resetAutonomy)
-    $('#tapGoalButton').on('click', setGoalTrigger)
-    $("#camera-frame").on('click', imageClick)
+  function cancelTapGoal() {
+    enableGoalOnImageClick = false;
+    hideTapGoalUI()
+  }
 
-    $('#closeModalArea').on('click', hideModals)
-  </script>
-</body>
+  // prevent drag image (firefox workaround)
+  $(document).on("dragstart", function(e) {
+    if (e.target.nodeName.toUpperCase() == "IMG") {
+       return false;
+     }
+   });
 
-</html>
+   $('#tapGoalButton').on('click', setGoalTrigger); // TODO add button
+   $("#camera-frame").on('vmousedown', imageClick);
+   $("#camera-frame").on('vmouseup', imageRelease);
+   $('#cancel-tap-goal').on('click', cancelTapGoal);
+
+   /////////////////////////////////////////////////////
+   /* SECTION arrangement templates */
+   /////////////////////////////////////////////////////
+   function setTemplate(name){
+     $.post( `/autonomy/arrangement`, JSON.stringify({name}), function( data ) {
+       $( ".result" ).html( data );
+       console.log('template set: '+name)
+     }, 'text')
+       .fail(function() {
+         alert( "Error with ajax request! See python server logs" );
+       });
+   }
+
+   function setTemplateLeftWall(e) {
+     setTemplate('Left Wall')
+   }
+
+   function setTemplateCircle(e) {
+     setTemplate('Circle')
+   }
+
+   $('#templateLeftWallButton').on('click', setTemplateLeftWall);
+   $('#templateCircleButton').on('click', setTemplateCircle)
+
+   /////////////////////////////////////////////////////
+   /* SECTION stop button */
+   /////////////////////////////////////////////////////
+   function resetAutonomy() {
+     $.ajax({
+       url:  '/autonomy/all',
+       method: 'DELETE',
+     }).then(function (success) {
+       $('#formationEnableCheckbox').prop('checked', false);
+       $('#snapEnableCheckbox').prop('checked', false);
+       console.log('autonomy reset', success)
+     }).catch(function(err) {
+       alert( "Error with ajax request: reset! Check out python logs" );
+       console.log("Error with ajax reset", err)
+     })
+   }
+   $('#bigRedStopButton').on('click', resetAutonomy);
+
+   /////////////////////////////////////////////////////
+   /* SECTION save/set positioning (arrangement/formation/ect) */
+   /////////////////////////////////////////////////////
+
+   // TODO move over if needed from index0.html
+ });
+</script>
