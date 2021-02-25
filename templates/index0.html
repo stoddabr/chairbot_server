@@ -28,15 +28,14 @@ Old deprecated UI for chairbot control
   <!-- scripts for touch interfaces -->
   <!--  <link rel="stylesheet" href="{{ url_for('static', filename='chairbot/touch/jquery.mobile-1.5.0-alpha.1.min.css') }}"> -->
   <script src="{{ url_for('static', filename='js/dependencies/jquery-3.2.1.min.js') }}"></script>
+  <link src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.css') }}"></link>
   <script src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.js') }}"></script>
-  <!-- Bootstrap core JavaScript -->
-  <link href="{{ url_for('static', filename='js/dependencies/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous" />
-  <script src="{{ url_for('static', filename='js/dependencies/bootstrap.bundle.min.js') }}"> </script>
-  <!-- robotwebtools scripts -->
+  <!-- robotwebtools scripts
   <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/eventemitter2.min.js')}}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script>
-  <!-- Custom scripts -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script> -->
+  <!-- Custom scripts
   <script src="{{ url_for('static', filename='js/switch.js') }}"> </script>
+  -->
   <!--contains turn/forward/... functions-->
   <script src="{{ url_for('static', filename='js/motion.js') }}"> </script>
 
@@ -402,7 +401,7 @@ Old deprecated UI for chairbot control
 
       <div class='control-center'>
         <!-- <h2 class='control-header-main'>Motion Controls</h2> -->
-        <!--
+
         <div>
           <h3 class='header-text'>Arrangement</h3>
           <button class="control-formation-button" type="button" id="arrangementSaveButton">
@@ -412,8 +411,6 @@ Old deprecated UI for chairbot control
             Set
           </button>
         </div>
-        -->
-      <!--
         <div>
           <h3 class='header-text'>Formation</h3>
           <button class="control-formation-button" type="button" id='formationSaveButton'>
@@ -424,7 +421,6 @@ Old deprecated UI for chairbot control
            <input type='checkbox' id='formationEnableCheckbox' name='joy-disable'>
           </button>
         </div>
-      -->
         <div>
           <!-- <h3 class='header-text'>Snap-To-Angle</h3> -->
           <button class="control-formation-button" type="button" id='snapEnableButton'>
@@ -575,19 +571,6 @@ Old deprecated UI for chairbot control
 
     /* all navigatio buttons when released should stop */
     $('.navigation_buttons').bind("vmouseup", stop)
-
-    /* advertise the topics for all chairs! */
-    for (var chair of $('.chair_selectors')) {
-      //construct the topic name string by using hte chair id
-      requestMotion_topic_name = 'requestMotion' + chair.id.substr(-2)
-      requestStop_topic_name = 'requestStop' + chair.id.substr(-2)
-
-      console.log("Advertising the topic " + requestMotion_topic_name)
-      console.log("Advertising the topic " + requestStop_topic_name)
-      //actually get the topic object for that chair's requestMotionTopic and advertise
-      eval(requestMotion_topic_name).advertise()
-      eval(requestStop_topic_name).advertise()
-    }
 
 
     ///////////////////////////// positioning/arrangements/formations

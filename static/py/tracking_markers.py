@@ -18,6 +18,7 @@ import math
 import os
 # from imutils.video import WebcamVideoStream
 from datetime import datetime
+import numpy as np
 import time
 
 # import socket
@@ -31,12 +32,14 @@ def make_480p(cap):
     cap.set(4, 480)
 
 class TrackingCamera(object):
-    def __init__(self, robotController, WRITE_TO_FILE=False, STREAM_TO_ROBOT=True, DEBUG_OVERLAY=True):
+    def __init__(self, robotController, WRITE_TO_FILE=False, STREAM_TO_ROBOT=True, OVERLAY_MOTION=False, OVERLAY_ID=True, OVERLAY_GOAL=True):
         # study config
         # variables that enable/disable features
         self.WRITE_TO_FILE = WRITE_TO_FILE
         self.STREAM_TO_ROBOT = STREAM_TO_ROBOT  # stream movement data to the robot
-        self.DEBUG_OVERLAY = DEBUG_OVERLAY # overlay commands and goal in UI
+        self.OVERLAY_MOTION = False # overlay commands and goal in UI
+        self.OVERLAY_ID = OVERLAY_ID
+        self.OVERLAY_GOAL = OVERLAY_GOAL
 
         # robot controller class
         self.robotController = robotController
@@ -99,7 +102,10 @@ class TrackingCamera(object):
     def process(self):
 
         ret, framefull = self.cap.read() # full dimensions of the frame
-        frame = framefull[:-150, 40:-100] # crop y,x
+        if not ret:
+            ret, jpeg = cv2.imencode('.jpg', np.zeros((100,100,3), np.uint8)) # frame for og resolution
+            return jpeg.tobytes()
+        frame = framefull[:-150, 40:-100] # crop y,x  # crash here if framefull not defined
         # print 'frame size '+ str(frame.shape)
         gray = frame
 
@@ -165,7 +171,7 @@ class TrackingCamera(object):
                                     circlesize = 5
                                     fontScale = 0.5
                                     goalStr = 'Goal'+str(index[0])
-                                    if self.DEBUG_OVERLAY:
+                                    if self.OVERLAY_GOAL:
                                         # print ('goal for ',index[0], goal)
                                         cv2.putText(gray,goalStr,(int(goal[0]),int(goal[1])), font, fontScale, color, thickness, cv2.LINE_AA, False)
                                         cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
@@ -173,7 +179,7 @@ class TrackingCamera(object):
                                     # print('tracking markers command', command, index[0])
                                     color = (0,255,255)
                                     fontScale = 1
-                                    if self.DEBUG_OVERLAY:
+                                    if self.OVERLAY_MOTION:
                                         cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
 
 
@@ -182,7 +188,7 @@ class TrackingCamera(object):
 
         # if corners
         if len(corners) > 0:
-            if self.DEBUG_OVERLAY:
+            if self.OVERLAY_ID:
                 cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 

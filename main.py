@@ -16,7 +16,7 @@ from static.py.BrettControllers.robot_controller import RobotControllerClass
 # study config files
 SHOW_AR_OVERLAY = True  # overlay goal and command data
 USER_ID = 'TEST'  # will change logging data
-
+LEGACY_UI = False
 
 print('starting flask')
 app = Flask(__name__, template_folder='templates')
@@ -49,6 +49,8 @@ RobotController = RobotControllerClass(chair_ids)
 
 @app.route('/')
 def index():
+    if LEGACY_UI:
+        return render_template('index0.html')
     return render_template('index.html', user_tracking_id=USER_ID)
 
 def gen(camera):
@@ -60,7 +62,7 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(TrackingCamera(RobotController, DEBUG_OVERLAY=SHOW_AR_OVERLAY)),
+    return Response(gen(TrackingCamera(RobotController)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

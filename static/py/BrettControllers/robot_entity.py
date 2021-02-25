@@ -31,8 +31,8 @@ pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
 
 distTolerance = 10  # pixels FIXME experimentally determine
-angleTolerance = 60 / 2  # degrees
-angleToleranceTight = 20 / 2 # tolerance for fine/slow adjustments
+angleTolerance = 120 / 2  # degrees
+angleToleranceTight = 30 / 2 # tolerance for fine/slow adjustments
 
 class RobotEntity:
     """
@@ -178,20 +178,22 @@ class RobotEntity:
             return CommandClass('STOP')
         # calculate angle diff
         angleDiff = goalAngle - currAngle
-        if(angleDiff < 0):
-             angleDiff += 360
+        angleDiffAbs = abs(angleDiff)
+        if(angleDiffAbs > 180):
+             angleDiffAbs = 360 - angleDiffAbs
+        # print('diff:,'+str(angleDiff)+', g: '+str(goalAngle)+', c:'+str(currAngle)+', |d|:'+str(angleDiffAbs))
         # use angleDiff to make next decision
-        if angleDiff < angleTolerance:
-            if angleDiff < angleToleranceTight:
+        if angleDiffAbs < angleTolerance:
+            if angleDiffAbs < angleToleranceTight:
                 return CommandClass('STOP')
-            if (angleDiff > 180):
-                return CommandClass('LEFT_SLOW')
-            else:
+            if (angleDiff < -181 or 1 < angleDiff < 180):
                 return CommandClass('RIGHT_SLOW')
-        if(angleDiff > 180):
-            return CommandClass('LEFT')
+            else:
+                return CommandClass('LEFT_SLOW')
+        if (angleDiff < -181 or 1 < angleDiff < 180):
+            return CommandClass('RIGHT_3')
         else:
-            return CommandClass('RIGHT')
+            return CommandClass('LEFT')
 
     def calculateCommand(self):
         """ Calculates the next best robot command to get towards the goal
@@ -213,16 +215,22 @@ class RobotEntity:
         goalAngle = self._calculateAngleToGoal()
         [_, _, currAngle] = self.coords
         angleDiff = goalAngle - currAngle
-        # angleDiff needs to be positive
-        if(angleDiff < 0):
-             angleDiff += 360
-        # check if angle within margin
-        if angleDiff < angleTolerance:
-            return CommandClass('FORWARD')
-        if(angleDiff > 180):
-            return CommandClass('LEFT')
-        else:
+        angleDiffAbs = abs(angleDiff)
+        if(angleDiffAbs > 180):
+             angleDiffAbs = 360 - angleDiffAbs
+        # print('diff:,'+str(angleDiff)+', g: '+str(goalAngle)+', c:'+str(currAngle)+', |d|:'+str(angleDiffAbs))
+        # use angleDiff to make next decision
+        if angleDiffAbs < angleTolerance:
+            if angleDiffAbs < angleToleranceTight:
+                return CommandClass('FORWARD')
+            if (angleDiff < -181 or 1 < angleDiff < 180):
+                return CommandClass('RIGHT_SLOW')
+            else:
+                return CommandClass('LEFT_SLOW')
+        if (angleDiff < -181 or 1 < angleDiff < 180):
             return CommandClass('RIGHT')
+        else:
+            return CommandClass('LEFT')
 
     def move(self, newGoal=None):
         """ Calculates and triggers a robot movement

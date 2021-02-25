@@ -60,10 +60,18 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
   <!-- top bar with dropdowns -->
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" aria-label="Third navbar example">
     <div class="container-fluid">
-      <button class="btn btn-danger mx-2" type="submit" id='bigRedStopButton'>
-        STOP!
+
+      <a class="navbar-brand" href="#">Tele-ChairBot UI  </a>
+
+
+      <button class="btn btn-danger mx-3" type="submit" id='bigRedStopButton'>
+        Cancel Goals
       </button>
-      <a class="navbar-brand" href="#">Tele-ChairBot UI</a>
+
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <button class="btn btn-success mx-2" type="submit" id="tapGoalButton">Set Goal</button>
+      </div>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
         aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -71,7 +79,9 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
       <!-- angle snap -->
       <div class="collapse navbar-collapse" id="navbarsExample03">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+        <ul class="navbar-nav">
+          <a class="nav-item nav-link disabled" href="#">Set Multi-Goals:</a>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -84,27 +94,24 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
               <a class="dropdown-item" href="#" id='dropdown-snap-down'>Down v</a>
             </ul>
           </li>
-        </ul>
-      </div>
 
-      <!-- angle snap -->
-      <div class="collapse navbar-collapse" id="navbarsExample03">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-          <li class="nav-item dropdown">
+          <!-- angle snap -->
+          <li class="nav-item dropdown ml-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
               aria-expanded="false">
               Arrangement Template
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
-              <a class="dropdown-item" href="#" id='dropdown-template-circle'>Circle</a>
-              <a class="dropdown-item" href="#" id='dropdown-template-table'>Around Table</a>
+              <a class="dropdown-item" href="#" id='templateCircleButton'>Circle</a>
+              <a class="dropdown-item" href="#" id='templateAroundTableButton'>Around Table</a>
+              <a class="dropdown-item" href="#" id='templateHorizontalLineButton'>Horizontal Line</a>
+              <a class="dropdown-item" href="#" id='templateRightWallButton'>Right Wall</a>
+              <a class="dropdown-item" href="#" id='templateVerticalLineButton'>Vertical Line</a>
             </ul>
           </li>
         </ul>
       </div>
-      <div class="collapse navbar-collapse" id="navbarsExample03">
-        <button class="btn btn-success mx-2" type="submit" id="tapGoalButton">Goal</button>
-      </div>
+
 
       <!-- save/set position dropdown (removed for study)
       <div class="collapse navbar-collapse" id="navbarsExample03">
@@ -473,17 +480,32 @@ $(document).ready(function () { // ensure jquery is loaded
        });
    }
 
-   function setTemplateLeftWall(e) {
-     setTemplate('Left Wall')
+   function setTemplateFromId(e) {
+      if (e.target.id === 'templateHorizontalLineButton'){
+        setTemplate('Horizontal Line')
+      }
+      else if (e.target.id === 'templateRightWallButton'){
+        setTemplate('Right Wall')
+      }
+      else if (e.target.id === 'templateCircleButton'){
+        setTemplate('Center Circle')
+      }
+      else if (e.target.id === 'templateVerticalLineButton'){
+        setTemplate('Vertical Line')
+      }
+      else if (e.target.id === 'templateAroundTableButton'){
+        setTemplate('Around Table')
+      }
+      else {
+        console.warn('setTemplateFromId unidentified template id: '+e.target.id)
+      }
    }
 
-   function setTemplateCircle(e) {
-     setTemplate('Circle')
-   }
-
-   $('#templateLeftWallButton').on('click', setTemplateLeftWall);
-   $('#templateCircleButton').on('click', setTemplateCircle)
-
+   $('#templateHorizontalLineButton').on('click', setTemplateFromId);
+   $('#templateRightWallButton').on('click', setTemplateFromId);
+   $('#templateCircleButton').on('click', setTemplateFromId)
+   $('#templateVerticalLineButton').on('click', setTemplateFromId);
+   $('#templateAroundTableButton').on('click', setTemplateFromId)
    /////////////////////////////////////////////////////
    /* SECTION stop button */
    /////////////////////////////////////////////////////
