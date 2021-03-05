@@ -136,10 +136,16 @@ def send_movement_command(direction, id):
         # new ROSLIB.Message({data: motion})
         if (direction == 'STOP'):
             print 'stopping robot '+str(id)
-            pub_stop_arr[int(id)].publish( 'STOP' )
+            try:
+                pub_stop_arr[int(id)].publish( 'STOP' )
+            except:
+                print('invalid robot id asked to stop', id)
             return '<h2>Stop Command Published</h2>'
         else:
-            pub_motion_arr[int(id)].publish( direction.upper() )
+            try:
+                pub_motion_arr[int(id)].publish( direction.upper() )
+            except:
+                print('invalid robot id asked to stop', id)
             return '<h2>Direction Command Published</h2>'
     else:
         mgs = 'Direction not recognized'

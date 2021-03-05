@@ -191,7 +191,7 @@ class RobotEntity:
             else:
                 return CommandClass('LEFT_SLOW')
         if (angleDiff < -181 or 1 < angleDiff < 180):
-            return CommandClass('RIGHT_3')
+            return CommandClass('RIGHT')
         else:
             return CommandClass('LEFT')
 

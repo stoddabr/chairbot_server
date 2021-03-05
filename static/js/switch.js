@@ -233,7 +233,7 @@ function makeSelectAllIntuitive() {
   if (
     document.getElementById('Switch01').checked == true &&
     document.getElementById('Switch02').checked == true &&
-    document.getElementById('Switch03').checked == true &&
+    //document.getElementById('Switch03').checked == true &&
     document.getElementById('Switch04').checked == true
   ) {
     document.getElementById('SwitchAll').checked = true;
