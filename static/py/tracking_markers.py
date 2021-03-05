@@ -20,11 +20,20 @@ import os
 from datetime import datetime
 import numpy as np
 import time
+from draw_arrow import drawArrow
 
 # import socket
 
 # HOST = "127.0.0.1"
 # PORT = "9600"
+
+robot_colors = {
+ 1: (0,204,0),
+ 2: (204,204,0),
+ 3: (0,102,204),
+ 4: (0,230,255),
+}
+
 
 # from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
 def make_480p(cap):
@@ -139,9 +148,8 @@ class TrackingCamera(object):
                             # Changes theta from radians to positive degrees (0 to 360 rotating counter-clockwise)
                             degree = theta * (180 / math.pi) + 180
 
-                            # draw circle on video stream to mark fiducial as processed
-                            #circlesize = 15
-                            #cv2.circle(gray,(midcords[0],midcords[1]), circlesize, (0,0,255), -1)
+                            # draw arrow overlay on robot
+                            gray = drawArrow(gray, midcords, degree, robot_colors[fid], thickness = 4, delta=15, offset=15)
 
                             if self.WRITE_TO_FILE:
                                 # Append data onto corresponding file

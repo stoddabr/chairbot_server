@@ -23,7 +23,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 <script src="{{ url_for('static', filename='js/dependencies/jquery-3.2.1.min.js') }}"></script>
 <link src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.css') }}"></link>
 <script src="{{ url_for('static', filename='js/dependencies/jquery.mobile-1.5.0-alpha.1.min.js') }}"></script>
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <!-- custom css styles -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chairSelector.css') }}" />
 <link rel="stylesheet"  href="{{ url_for('static', filename='css/camera-frame.css') }}" />
@@ -88,10 +88,10 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
               Snap-To-Angle
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
-              <a class="dropdown-item" href="#" id='dropdown-snap-up'>Up</a>
-              <a class="dropdown-item" href="#" id='dropdown-snap-left'>Left <</a>
-              <a class="dropdown-item" href="#" id='dropdown-snap-right'>Right ></a>
-              <a class="dropdown-item" href="#" id='dropdown-snap-down'>Down v</a>
+              <a  class="dropdown-item" href="#" id='dropdown-snap-up'> <i class = "material-icons"> arrow_upward</i> Up</a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-left'><i class = "material-icons"> arrow_back</i>Left </a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-right'> <i class = "material-icons"> arrow_forward</i>Right </a>
+              <a class="dropdown-item" href="#" id='dropdown-snap-down'><i class = "material-icons"> arrow_downward</i>Down </a>
             </ul>
           </li>
 
