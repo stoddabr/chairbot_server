@@ -40,8 +40,19 @@ def make_480p(cap):
     cap.set(3, 640)
     cap.set(4, 480)
 
+# from https://stackoverflow.com/questions/60674501/how-to-make-black-background-in-cv2-puttext-with-python-opencv
+def draw_text_bg(img, text,pos=(0, 0),font=cv2.FONT_HERSHEY_PLAIN,font_scale=3,text_color=(0, 255, 0),font_thickness=2,text_color_bg=(15, 15, 15)):
+    x, y = pos
+    x, y = int(x), int(y)
+    text_size, _ = cv2.getTextSize(text, font, font_scale, font_thickness)
+    text_w, text_h = text_size
+    print((x,y), (x + text_w, y + text_h), text_color_bg, -1)
+    cv2.rectangle(img, (x,y), (int(x + text_w), int(y + text_h)), text_color_bg, -1)
+    cv2.putText(img, text, (x, int(y + text_h + font_scale - 1)), font, font_scale, text_color, font_thickness)
+    return text_size
+
 class TrackingCamera(object):
-    def __init__(self, robotController, WRITE_TO_FILE=False, STREAM_TO_ROBOT=True, OVERLAY_MOTION=False, OVERLAY_ID=True, OVERLAY_GOAL=True):
+    def __init__(self, robotController, WRITE_TO_FILE=False, STREAM_TO_ROBOT=True, OVERLAY_MOTION=False, OVERLAY_ID=False, OVERLAY_GOAL=True):
         # study config
         # variables that enable/disable features
         self.WRITE_TO_FILE = WRITE_TO_FILE
@@ -118,6 +129,12 @@ class TrackingCamera(object):
         # print 'frame size '+ str(frame.shape)
         gray = frame
 
+        # overlay style defaults
+        color = (255,255,0)
+        circlesize = 5
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        thickness = 2
+        fontScale = 0.5
 
         # detectMarkers returns: (corners, ids, rejectedImgPoints)
         corners, ids, _ = cv2.aruco.detectMarkers(gray,self.dictionary)
@@ -148,49 +165,45 @@ class TrackingCamera(object):
                             # Changes theta from radians to positive degrees (0 to 360 rotating counter-clockwise)
                             degree = theta * (180 / math.pi) + 180
 
-                            # draw arrow overlay on robot
-                            gray = drawArrow(gray, midcords, degree, robot_colors[fid], thickness = 4, delta=15, offset=15)
 
-                            if self.WRITE_TO_FILE:
-                                # Append data onto corresponding file
-                                filename = self.filenames[int(index[0])]
-                                with open(filename, 'a') as f:
-                                    f.write(str(midcords[0])) # x
-                                    f.write('\t')
-                                    f.write(str(midcords[1])) # y
-                                    f.write('\t')
-                                    f.write(str(degree)) # angle
-                                    f.write('\t')
-                                    f.write(str(time.time())) # time
-                                    f.write('\t\n')
-                            if self.STREAM_TO_ROBOT:
-                                # Stream movement commands to robot
-                                # based on localization data
-                                # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
-                                command, goal = self.robotController.updateRobotLocation(
-                                    int(index[0]), # fiducial id
-                                    (midcords[0], midcords[1], degree), # x,y,angle, position tuple
-                                )
-                                # display sent commands and goal coordinates
-                                font = cv2.FONT_HERSHEY_SIMPLEX
-                                thickness = 2
-                                if goal:
-                                    color = (255,255,0)
-                                    circlesize = 5
-                                    fontScale = 0.5
-                                    goalStr = 'Goal'+str(index[0])
-                                    if self.OVERLAY_GOAL:
-                                        # print ('goal for ',index[0], goal)
-                                        cv2.putText(gray,goalStr,(int(goal[0]),int(goal[1])), font, fontScale, color, thickness, cv2.LINE_AA, False)
-                                        cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
-                                if command: # updateRobotLocation will return falsy if error
-                                    # print('tracking markers command', command, index[0])
-                                    color = (0,255,255)
-                                    fontScale = 1
-                                    if self.OVERLAY_MOTION:
-                                        cv2.putText(gray,command,(midcords[0],midcords[1]), font, fontScale, color, thickness, cv2.LINE_AA, False)
+                            # draw arrow overlay on robots
+                            if int(fid) in [0, 1, 2, 3, 4]:
+                                if self.WRITE_TO_FILE:
+                                    # Append data onto corresponding file
+                                    filename = self.filenames[int(index[0])]
+                                    with open(filename, 'a') as f:
+                                        f.write(str(midcords[0])) # x
+                                        f.write('\t')
+                                        f.write(str(midcords[1])) # y
+                                        f.write('\t')
+                                        f.write(str(degree)) # angle
+                                        f.write('\t')
+                                        f.write(str(time.time())) # time
+                                        f.write('\t\n')
+                                if self.STREAM_TO_ROBOT:
+                                    # Stream movement commands to robot
+                                    # based on localization data
+                                    # print("Robot found", int(index[0]), midcords[0], midcords[1], degree )
+                                    command, goal = self.robotController.updateRobotLocation(
+                                        int(index[0]), # fiducial id
+                                        (midcords[0], midcords[1], degree), # x,y,angle, position tuple
+                                    )
+                                    # display sent commands and goal coordinates
+                                    if goal:
+                                        goalStr = 'Goal'+str(index[0])
+                                        if self.OVERLAY_GOAL:
+                                            # print ('goal for ',index[0], goal)
+                                            # cv2.circle(gray,(int(goal[0]),int(goal[1])), circlesize, color, -1)
+                                            draw_text_bg(gray,goalStr,(int(goal[0])+8,int(goal[1])-10), font, fontScale, robot_colors[fid], thickness)
+                                            gray = drawArrow(gray, (int(goal[0]),int(goal[1])), int(goal[2]), robot_colors[fid], thickness=2, delta=7, offset=0)
+                                    if command: # updateRobotLocation will return falsy if error
+                                        # print('tracking markers command', command, index[0])
+                                        if self.OVERLAY_MOTION:
+                                            draw_text_bg(gray,command,(midcords[0],midcords[1]), font, 1, (0,255,255), thickness, cv2.LINE_AA, False)
 
-
+                                    # chair text above everything else
+                                    gray = drawArrow(gray, midcords, degree, robot_colors[fid], thickness = 4, delta=15, offset=15)
+                                    draw_text_bg(gray,'Chair'+str(index[0]),(midcords[0]-20,midcords[1]-5), font, 0.5, robot_colors[fid], thickness)
                     except IndexError:
                         pass
 

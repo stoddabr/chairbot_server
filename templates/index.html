@@ -53,7 +53,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
   <div style="position: absolute; bottom: 10px; z-index: 2" id='cancel-tap-goal'>
     <div class='big-red-button' >
-      <p>Cancel Goal</p>
+      <p>Exit Goal</p>
     </div>
   </div>
 
@@ -61,27 +61,22 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" aria-label="Third navbar example">
     <div class="container-fluid" id='navbar-container'>
 
-      <a class="navbar-brand" href="#">Tele-ChairBot UI  </a>
+      <a class="navbar-brand" href="#">{{ prompt }} </a>
 
-
-      <button class="btn btn-danger mx-3" type="submit" id='bigRedStopButton'>
-        Cancel Goals
+      <button class="btn btn-danger mx-3" id='bigRedStopButton'>
+        Clear Goals
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarsExample03">
+      <div class="collapse navbar-collapse my-2 my-lg-0" id="navbarsExample03">
         <button class="btn btn-success mx-2" type="submit" id="tapGoalButton">Set Goal</button>
       </div>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
-        aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
       <!-- angle snap -->
       <div class="collapse navbar-collapse" id="navbarsExample03">
         <ul class="navbar-nav">
+          <!-- angle snap
           <a class="nav-item nav-link disabled" href="#">Set Multi-Goals:</a>
-
+          -->
+          <!--
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -94,12 +89,13 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
               <a class="dropdown-item" href="#" id='dropdown-snap-down'><i class = "material-icons"> arrow_downward</i>Down </a>
             </ul>
           </li>
+          -->
 
           <!-- angle snap -->
           <li class="nav-item dropdown ml-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutonomy" data-bs-toggle="dropdown"
               aria-expanded="false">
-              Arrangement Template
+              Set Arrangement Template
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
               <a class="dropdown-item" href="#" id='templateCircleButton'>
@@ -109,10 +105,6 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
               <a class="dropdown-item" href="#" id='templateAroundTableButton'>
                 <img id='templateAroundTableButtonImg' src="{{ url_for('static', filename='assets/chairbots_around_table.png') }}" style ="Height:100px;"/>
                 Around Table
-              </a>
-              <a class="dropdown-item" href="#" id='templateHorizontalLineButton'>
-                <img id='templateHorizontalLineButtonImg' src="{{ url_for('static', filename='assets/chairbot_hline.png') }}" style ="Height:100px;"/>
-                Horizontal Line
               </a>
               <a class="dropdown-item" href="#" id='templateRightWallButton'>
                 <img id='templateRightWallButtonImg' src="{{ url_for('static', filename='assets/chairbot_right.png') }}" style ="Height:100px;"/>
@@ -128,6 +120,11 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
       </div>
 
 
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
+        aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <!-- save/set position dropdown (removed for study)
       <div class="collapse navbar-collapse" id="navbarsExample03">
         <ul class="navbar-nav me-auto mb-2 mb-sm-0">
@@ -161,7 +158,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
   </nav>
 
   <!-- chair selector -->
-  <div class="card fixed-bottom m-1" style="width: 11rem; max-height: 25vh; overflow: auto;" id='chair-selector-card'>
+  <div class="card fixed-bottom m-1" style="width: 8rem; max-height: 25vh; overflow: auto;" id='chair-selector-card'>
     <div class="card-body">
       <!-- prevent close on click -->
       <div style="margin-bottom: 2px;">
@@ -171,21 +168,21 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
         <!-- <span id="Toggle03"></span> -->
         <span id="Toggle04"></span>
       </div>
-      <label>
+      <label style="background:rgb(0, 204, 0); color: black; padding-right:5px;">
         <input type="checkbox" class="chair_selectors" id="Switch01" onclick="toggle_chair01()"/>
         Chair 1
       </label>
-      <label>
+      <label style="background:rgb(0, 204, 204); color: black; padding-right:5px;">
         <input type="checkbox" class="chair_selectors" id="Switch02" onclick="toggle_chair02()"/>
         Chair 2
       </label>
       <br />
 
-      <label class="d-none">
+      <label class="d-none" style="background:rgb(204, 102,0); color: black; padding-right:5px;">
         <input type="checkbox" class="chair_selectors" id="Switch03" onclick="toggle_chair03()"/>
         Chair 3
       </label>
-      <label>
+      <label style="background:rgb(255, 230, 0); color: black; padding-right:5px;">
         <input type="checkbox" class="chair_selectors" id="Switch04" onclick="toggle_chair04()"/>
         Chair 4
       </label>
@@ -198,6 +195,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
     </div>
   </div>
 
+
   <!-- joystick code -->
   <!-- using absolute positioning breaks joystick so this ugly workaround is used -->
   <!-- from https://stackoverflow.com/a/45999283 -->
@@ -206,6 +204,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
     <!-- joystick div -->
     <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
     </div>
+    <p style="color:white; text-align:center;">Or use arrow keys</p>
   </div>
 
 </body>
@@ -315,6 +314,43 @@ $(document).ready(function () { // ensure jquery is loaded
   /* all navigatio buttons when released should stop */
   $('.navigation_buttons').bind("vmouseup", stop)
 
+  // keyboard alternitive using arrow keys
+  document.onkeydown = function(e) {
+    switch(e.which) {
+        case 37: // left
+          turnLeft()
+          lastStopSent = false
+          break;
+
+        case 38: // up
+          forward()
+          lastStopSent = false
+          break;
+
+        case 39: // right
+          turnRight()
+          lastStopSent = false
+          break;
+
+        case 40: // down
+          backward()
+          lastStopSent = false
+          break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+  };
+
+  document.onkeyup = function(e) {
+    joy.ResetJoy();
+    if (!lastStopSent) {
+      console.log('stopping')
+      stop()
+      lastStopSent = true
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+  };
 
   /////////////////////////////////////////////////////
   /* SECTION snap-to-angle */
@@ -541,27 +577,24 @@ $(document).ready(function () { // ensure jquery is loaded
    }
 
    function setTemplateFromId(e) {
-      if (e.target.id == 'templateHorizontalLineButton' || e.target.id ==  'templateHorizontalLineButtonImg'){
-        setTemplate('Horizontal Line')
-      }
-      else if (e.target.id == 'templateRightWallButton' || e.target.id == 'templateRightWallButtonImg'){
-        setTemplate('Right Wall')
+      if (e.target.id == 'templateRightWallButton' || e.target.id == 'templateRightWallButtonImg'){
+        setTemplate('right-wall')
       }
       else if (e.target.id == 'templateCircleButton' || e.target.id == 'templateCircleButtonImg'){
-        setTemplate('Center Circle')
+        setTemplate('mid-circle')
       }
       else if (e.target.id == 'templateVerticalLineButton' || e.target.id == 'templateVerticalLineButtonImg'){
-        setTemplate('Vertical Line')
+        setTemplate('mid-line')
       }
       else if (e.target.id == 'templateAroundTableButton' || e.target.id == 'templateAroundTableButtonImg'){
-        setTemplate('Around Table')
+        setTemplate('around-table')
       }
       else {
         console.warn('setTemplateFromId unidentified template id: ' + e.target.id) // happening for around table
       }
    }
 
-   $('#templateHorizontalLineButton').on('click', setTemplateFromId);
+   // $('#templateHorizontalLineButton').on('click', setTemplateFromId);
    $('#templateRightWallButton').on('click', setTemplateFromId);
    $('#templateCircleButton').on('click', setTemplateFromId)
    $('#templateVerticalLineButton').on('click', setTemplateFromId);
@@ -570,6 +603,8 @@ $(document).ready(function () { // ensure jquery is loaded
    /* SECTION stop button */
    /////////////////////////////////////////////////////
    function resetAutonomy() {
+     joy.resetJoy(); // reset joystick
+     // clear goals
      $.ajax({
        url:  '/autonomy/all',
        method: 'DELETE',

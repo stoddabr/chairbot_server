@@ -62,6 +62,8 @@ function disable(chairId) {
   // $.post( "/toggle/disable/"+chairId );
 }
 
+// legacy code, on the chairbot code all are enabled by default
+//   via neato_mover.py: self.status = True
 (function() {
   // Initialization: Set all chairs to be OFF. This means that everytime the webpage is loaded all the chairs ar OFF
   disable(1) // chair01.publish(chairOff);

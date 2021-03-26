@@ -225,7 +225,22 @@ var JoyStick = (function(container, parameters) {
 	/******************************************************
 	 * Public methods
 	 *****************************************************/
-	/**
+	 /**
+ 	 * @desc Resets joystick position
+ 	 */
+	 this.ResetJoy = function ()
+ 	{
+		movedX=centerX;
+		movedY=centerY;
+		// Delete canvas
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		// Redraw object
+		drawExternal();
+		drawInternal();
+		//canvas.unbind('mousemove');
+ 	};
+
+	 /**
 	 * @desc The width of canvas
 	 * @return Number of pixel width
 	 */

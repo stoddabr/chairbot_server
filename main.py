@@ -11,7 +11,7 @@ import threading
 import html
 from static.py.tracking_markers import TrackingCamera
 from static.py.BrettControllers.robot_controller import RobotControllerClass
-
+from static.py.chairbot_study import promptList, uiList
 
 # study config files
 SHOW_AR_OVERLAY = True  # overlay goal and command data
@@ -27,6 +27,14 @@ app = Flask(__name__, template_folder='templates')
 # in the main thread.
 # tutorial
 print('starting ros in new thread')
+
+print
+promptStr = promptList[int(sys.argv[1])]
+uiStr = uiList[int(sys.argv[2])]
+print 'Prompt:', promptStr
+print 'UI:', uiStr
+print
+
 # threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
@@ -51,7 +59,7 @@ RobotController = RobotControllerClass(chair_ids)
 def index():
     if LEGACY_UI:
         return render_template('index0.html')
-    return render_template('index.html', user_tracking_id=USER_ID)
+    return render_template('index.html', user_tracking_id=USER_ID, prompt=promptStr)
 
 def gen(camera):
     while True:
