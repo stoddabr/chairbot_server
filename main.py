@@ -61,9 +61,13 @@ def index():
         return render_template('index0.html')
     return render_template('index.html', user_tracking_id=USER_ID, prompt=promptStr)
 
+save_next_img = False
+
 def gen(camera):
+    global save_next_img
     while True:
-        frame = camera.process()
+        frame = camera.process(save_img=True)
+        save_next_img = False
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -73,6 +77,11 @@ def video_feed():
     return Response(gen(TrackingCamera(RobotController)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/save_img')
+def save_img():
+    global save_next_img
+    save_next_img = True
+    return "done"
 
 # get/set formations and arrangements
 @app.route('/autonomy/<type>', methods = ['GET', 'POST', 'DELETE'])
@@ -140,7 +149,7 @@ def toggle_chair(command, id):
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction, id):
-    if any(direction in d for d in ['FORWARD','BACKWARD','LEFT','RIGHT', 'STOP']):
+    if any(direction in d for d in ['FORWARD','BACKWARD','RIGHT','LEFT','STOP','LEFT_SLOW','RIGHT_SLOW']):
         # new ROSLIB.Message({data: motion})
         if (direction == 'STOP'):
             print 'stopping robot '+str(id)

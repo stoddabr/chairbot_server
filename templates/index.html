@@ -31,7 +31,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
 <!-- robotwebtools scripts -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/eventemitter2.min.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script>
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='js/dependencies/roslib.js')}}"></script> -->
 <!--contains turn/forward/... functions-->
 <script src="{{ url_for('static', filename='js/motion.js') }}"> </script>
 <!-- contains selector code -->
@@ -63,15 +63,18 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
       <a class="navbar-brand" href="#">{{ prompt }} </a>
 
-      <button class="btn btn-danger mx-3" id='bigRedStopButton'>
-        Clear Goals
-      </button>
-
       <div class="collapse navbar-collapse my-2 my-lg-0" id="navbarsExample03">
         <button class="btn btn-success mx-2" type="submit" id="tapGoalButton">Set Goal</button>
       </div>
+
+      <div class="collapse navbar-collapse my-2 my-lg-0" id="navbarsExample03">
+        <button class="btn btn-danger my-lg-2 ml-3" id='bigRedStopButton'>
+          Stop all Chairbots!!
+        </button>
+      </div>
+
       <!-- angle snap -->
-      <div class="collapse navbar-collapse" id="navbarsExample03">
+      <div class="collapse navbar-collapse my-lg-2" style="justify-content: center" id="navbarsExample03">
         <ul class="navbar-nav">
           <!-- angle snap
           <a class="nav-item nav-link disabled" href="#">Set Multi-Goals:</a>
@@ -99,19 +102,19 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutonomy">
               <a class="dropdown-item" href="#" id='templateCircleButton'>
-                <img id='templateCircleButtonImg' src="{{ url_for('static', filename='assets/chairbot_imgtest.png') }}" style ="Height:100px;"/>
+                <img id='templateCircleButtonImg' src="{{ url_for('static', filename='assets/chairbots_center_circle.png') }}" style ="Height:100px;"/>
                 Circle
               </a>
               <a class="dropdown-item" href="#" id='templateAroundTableButton'>
-                <img id='templateAroundTableButtonImg' src="{{ url_for('static', filename='assets/chairbots_around_table.png') }}" style ="Height:100px;"/>
+                <img id='templateAroundTableButtonImg' src="{{ url_for('static', filename='assets/around_table.png') }}" style ="Height:100px;"/>
                 Around Table
               </a>
               <a class="dropdown-item" href="#" id='templateRightWallButton'>
-                <img id='templateRightWallButtonImg' src="{{ url_for('static', filename='assets/chairbot_right.png') }}" style ="Height:100px;"/>
+                <img id='templateRightWallButtonImg' src="{{ url_for('static', filename='assets/chairbots_right_wall.png') }}" style ="Height:100px;"/>
                 Right Wall
               </a>
               <a class="dropdown-item" href="#" id='templateVerticalLineButton'>
-                <img id='templateVerticalLineButtonImg' src="{{ url_for('static', filename='assets/chairbot_vline.png') }}" style ="Height:100px;"/>
+                <img id='templateVerticalLineButtonImg' src="{{ url_for('static', filename='assets/chairbot_center_vertical.png') }}" style ="Height:100px;"/>
                 Vertical Line
               </a>
             </ul>
@@ -272,7 +275,7 @@ $(document).ready(function () { // ensure jquery is loaded
   $('#joystickDisableButton').on('click', toggleJoystickEnabled)
 
   /* joystick control robot */
-  //TODO implement "percise" controls and implement into switch case
+  //TODO implement "percise" controls and implement into switch case for now all turns are slow
   setInterval(function() {
     const direction = joy.GetDir();
     //console.log('joystick data', {direction,x: joy.GetX(),y: joy.GetY(),})
@@ -603,7 +606,7 @@ $(document).ready(function () { // ensure jquery is loaded
    /* SECTION stop button */
    /////////////////////////////////////////////////////
    function resetAutonomy() {
-     joy.resetJoy(); // reset joystick
+     joy.ResetJoy(); // reset joystick
      // clear goals
      $.ajax({
        url:  '/autonomy/all',

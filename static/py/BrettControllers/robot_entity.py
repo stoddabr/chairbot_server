@@ -185,6 +185,7 @@ class RobotEntity:
         # use angleDiff to make next decision
         if angleDiffAbs < angleTolerance:
             if angleDiffAbs < angleToleranceTight:
+                self.clearGoal()
                 return CommandClass('STOP')
             if (angleDiff < -181 or 1 < angleDiff < 180):
                 return CommandClass('RIGHT_SLOW')

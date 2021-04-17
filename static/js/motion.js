@@ -50,8 +50,8 @@ var requestStop04 = new ROSLIB.Topic({
 /* These are the constants recognized by our python ros api including the packet replicator */
 const FORWARD = 'FORWARD'
 const BACKWARD = 'BACKWARD'
-const RIGHT = 'RIGHT'
-const LEFT=  'LEFT'
+const RIGHT = 'RIGHT_SLOW'
+const LEFT=  'LEFT_SLOW'
 const STOP = 'STOP'
 
 function sendMotion(motion, chairId) {

@@ -16,6 +16,7 @@ import cv2
 import time
 import math
 import os
+import random
 # from imutils.video import WebcamVideoStream
 from datetime import datetime
 import numpy as np
@@ -46,7 +47,6 @@ def draw_text_bg(img, text,pos=(0, 0),font=cv2.FONT_HERSHEY_PLAIN,font_scale=3,t
     x, y = int(x), int(y)
     text_size, _ = cv2.getTextSize(text, font, font_scale, font_thickness)
     text_w, text_h = text_size
-    print((x,y), (x + text_w, y + text_h), text_color_bg, -1)
     cv2.rectangle(img, (x,y), (int(x + text_w), int(y + text_h)), text_color_bg, -1)
     cv2.putText(img, text, (x, int(y + text_h + font_scale - 1)), font, font_scale, text_color, font_thickness)
     return text_size
@@ -119,7 +119,7 @@ class TrackingCamera(object):
             # send the payload data to the client
           #  s.send(data)
     # Returns an modified video image with tracking id markers
-    def process(self):
+    def process(self, save_img=False):
 
         ret, framefull = self.cap.read() # full dimensions of the frame
         if not ret:
@@ -213,6 +213,19 @@ class TrackingCamera(object):
                 cv2.aruco.drawDetectedMarkers(gray,corners,ids)
             pass
 
+        # save image 1/10
+        def decision(probability):
+            return random.random() < probability
+        if decision(0.1):
+            now = datetime.now()
+            # dd/mm/YY-H:M:S
+            dt_string = now.strftime("%d-%m-%Y-%H:%M:%S")
+            fname = 'chairbot_study_' + dt_string+'.jpg'
+            path = '/home/charisma/brett/chairbot/study_imgs'
+            pfname = os.path.join(path , fname)
+            cv2.imwrite(pfname, frame)
+            print('image saved: '+pfname)
+
         # Turns into image
         scale_percent = 80 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
@@ -220,6 +233,7 @@ class TrackingCamera(object):
         dim = (width, height)
         # resize image
         resized = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+
 
         ret, jpeg = cv2.imencode('.jpg', resized) # frame for og resolution
         return jpeg.tobytes()

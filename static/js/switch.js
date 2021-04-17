@@ -3,7 +3,7 @@
 // Connecting to ROS
 // -----------------
 // create a Ros node object to communicate with a rosbridge v2.0 server.
-
+/*
 var ros_server = '10.214.152.222' // '192.168.1.196' // 'localhost' will only work if running on machine
 var ros_port = '9090'
 var ros = new ROSLIB.Ros({
@@ -50,6 +50,7 @@ var chairOn = new ROSLIB.Message({
 var chairOff = new ROSLIB.Message({
   data: 0 //false
 });
+*/
 // end legacy code
 
 // define server requests
