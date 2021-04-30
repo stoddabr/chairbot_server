@@ -204,7 +204,8 @@ class TrackingCamera(object):
                                     # chair text above everything else
                                     gray = drawArrow(gray, midcords, degree, robot_colors[fid], thickness = 4, delta=15, offset=15)
                                     draw_text_bg(gray,'Chair'+str(index[0]),(midcords[0]-20,midcords[1]-5), font, 0.5, robot_colors[fid], thickness)
-                    except IndexError:
+                    except:
+                        print('error in tracking_markers')
                         pass
 
         # if corners
@@ -216,7 +217,7 @@ class TrackingCamera(object):
         # save image 1/10
         def decision(probability):
             return random.random() < probability
-        if decision(0.1):
+        if decision(0.03):
             now = datetime.now()
             # dd/mm/YY-H:M:S
             dt_string = now.strftime("%d-%m-%Y-%H:%M:%S")
