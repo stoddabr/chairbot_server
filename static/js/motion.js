@@ -51,7 +51,7 @@ var requestStop04 = new ROSLIB.Topic({
 const FORWARD = 'FORWARD'
 const BACKWARD = 'BACKWARD'
 const RIGHT = 'RIGHT_SLOW'
-const LEFT=  'LEFT_SLOW'
+const LEFT =  'LEFT_SLOW'
 const STOP = 'STOP'
 
 function sendMotion(motion, chairId) {

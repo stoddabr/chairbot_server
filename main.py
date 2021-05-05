@@ -5,8 +5,8 @@
 import sys
 from flask import Flask, render_template, Response, request, jsonify
 import os
-import rospy
-from std_msgs.msg import String, Int8
+
+
 import threading
 import html
 from static.py.tracking_markers import TrackingCamera
@@ -28,27 +28,49 @@ app = Flask(__name__, template_folder='templates')
 # tutorial
 print('starting ros in new thread')
 
-print
-promptStr = promptList[int(sys.argv[1])]
-uiStr = uiList[int(sys.argv[2])]
-print 'Prompt:', promptStr
-print 'UI:', uiStr
-print
+# print
+# promptStr = promptList[int(sys.argv[1])]
+# uiStr = uiList[int(sys.argv[2])]
+# print 'Prompt:', promptStr
+# print 'UI:', uiStr
+# print
 
 # threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
 
 # setup topics related to each chairbot
-chair_ids = range(5)
-gen_move_task = lambda x: rospy.Publisher(
-    ('/requestMotion0'+str(x)), String, queue_size=1
-)
-gen_stop_task = lambda x: rospy.Publisher(
-    ('/requestStop0'+str(x)), String, queue_size=1
-)
-gen_toggle = lambda x : rospy.Publisher(
-    ('/cbon0'+str(x)), Int8, queue_size=1
-)
 
+# allow system to run on non-ros setups
+IS_ROS_RUNNING = True
+try:
+    import rospy
+    from std_msgs.msg import String, Int8
+
+    gen_move_task = lambda x: rospy.Publisher(
+        ('/requestMotion0'+str(x)), String, queue_size=1
+    )
+    gen_stop_task = lambda x: rospy.Publisher(
+        ('/requestStop0'+str(x)), String, queue_size=1
+    )
+    gen_toggle = lambda x : rospy.Publisher(
+        ('/cbon0'+str(x)), Int8, queue_size=1
+    )
+except:
+    IS_ROS_RUNNING = False
+    print('No ROS found, ignoring ros code')
+
+    class fakeRosPublisher:
+        def __init__(self):
+            pass
+        def publish(self, *stuff):
+            pass
+        def __call__(self, *stuff):
+            pass
+
+    gen_move_task = fakeRosPublisher()
+    gen_stop_task = fakeRosPublisher()
+    gen_toggle = fakeRosPublisher()
+
+chair_ids = range(5)
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 pub_toggle_arr = list(map(gen_toggle , chair_ids))
@@ -59,14 +81,18 @@ RobotController = RobotControllerClass(chair_ids)
 def index():
     if LEGACY_UI:
         return render_template('index0.html')
-    return render_template('index.html', user_tracking_id=USER_ID, prompt=promptStr)
+    return render_template('index.html', user_tracking_id='USER_ID', prompt='TeleChairBot UI')
 
 save_next_img = False
 
 def gen(camera):
     global save_next_img
+
     while True:
-        frame = camera.process(save_img=True)
+        if IS_ROS_RUNNING:
+            frame = camera.process(save_img=True)
+        else: 
+            frame = camera.get_fake_img()
         save_next_img = False
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
@@ -171,4 +197,4 @@ def send_movement_command(direction, id):
 
 
 if __name__ == '__main__':
-    app.run(threaded=True, host='0.0.0.0', debug=False)
+    app.run(threaded=True, debug=True)

@@ -11,21 +11,40 @@ Changelogs:
 - 6/20 Brett continued class. extended class to include ROS interface
 '''
 from math import sin, cos, atan2, sqrt, pi
+import sys
 
-import rospy
-from std_msgs.msg import String
+
 import threading
 
 from robot_command import CommandClass
 
-# already setup in main.py
-threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
+
+# allow system to run on non-ros setups
+try:
+    import rospy
+    from std_msgs.msg import String
+
+    threading.Thread(target=lambda: rospy.init_node('robot_entity', disable_signals=True)).start()
+
+    gen_move_task = lambda x: rospy.Publisher(
+        ('/requestMotion0'+str(x)), String, queue_size=1)
+    gen_stop_task = lambda x: rospy.Publisher(
+        ('/requestStop0'+str(x)), String, queue_size=1)
+
+except:
+    class fakeRosPublisher:
+        def __init__(self):
+            pass
+        def publish(self, *stuff):
+            pass
+        def __call__(self, *stuff):
+            pass
+
+    gen_move_task = fakeRosPublisher()
+    gen_stop_task = fakeRosPublisher()
 
 chair_ids = range(21)
-gen_move_task = lambda x: rospy.Publisher(
-    ('/requestMotion0'+str(x)), String, queue_size=1)
-gen_stop_task = lambda x: rospy.Publisher(
-    ('/requestStop0'+str(x)), String, queue_size=1)
+
 pub_motion_arr = list(map(gen_move_task , chair_ids))
 pub_stop_arr = list(map(gen_stop_task , chair_ids))
 
