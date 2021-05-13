@@ -2,6 +2,7 @@
 
 # SOURCE: https://blog.miguelgrinberg.com/post/video-streaming-with-flask
 
+import time
 import sys
 from flask import Flask, render_template, Response, request, jsonify
 import os
@@ -61,6 +62,16 @@ def index():
         return render_template('index0.html')
     return render_template('index.html', user_tracking_id=USER_ID, prompt=promptStr)
 
+
+
+@app.route('/circle')
+def circle():
+    while True:
+        RobotController.setPositioning('arrangement', 'mid-circle')
+        time.sleep(10)
+        RobotController.setPositioning('arrangement', 'mid-circle-offset')
+        time.sleep(10)
+
 save_next_img = False
 
 def gen(camera):
@@ -82,6 +93,9 @@ def save_img():
     global save_next_img
     save_next_img = True
     return "done"
+
+
+
 
 # get/set formations and arrangements
 @app.route('/autonomy/<type>', methods = ['GET', 'POST', 'DELETE'])
@@ -172,3 +186,4 @@ def send_movement_command(direction, id):
 
 if __name__ == '__main__':
     app.run(threaded=True, host='0.0.0.0', debug=False)
+    time.sleep(10)
