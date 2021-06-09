@@ -36,6 +36,15 @@ robot_colors = {
 }
 
 
+def get_fake_img():
+    """ will return an image not from the video stream for testing """
+
+    framefull = cv2.imread("static/py/chairbot_ui_1.png", cv2.IMREAD_COLOR)
+    
+    ret, jpeg = cv2.imencode('.jpg', framefull) # frame for og resolution
+    return jpeg.tobytes()
+
+
 # from https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
 def make_480p(cap):
     cap.set(3, 640)
@@ -108,14 +117,6 @@ class TrackingCamera(object):
         sys.exit()
         return;
 
-
-    def get_fake_img(self):
-        """ will return an image not from the video stream for testing """
-
-        framefull = cv2.imread("static/py/chairbot_ui_1.png", cv2.IMREAD_COLOR)
-        
-        ret, jpeg = cv2.imencode('.jpg', framefull) # frame for og resolution
-        return jpeg.tobytes()
 
     # Start a
     # def socket_send(self, data):

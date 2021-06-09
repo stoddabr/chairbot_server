@@ -8,8 +8,8 @@ import os
 
 
 import threading
-import html
-from static.py.tracking_markers import TrackingCamera
+# import html
+from static.py.tracking_markers import TrackingCamera, get_fake_img
 from static.py.BrettControllers.robot_controller import RobotControllerClass
 from static.py.chairbot_study import promptList, uiList
 
@@ -89,19 +89,26 @@ def gen(camera):
     global save_next_img
 
     while True:
-        if IS_ROS_RUNNING:
-            frame = camera.process(save_img=True)
-        else: 
-            frame = camera.get_fake_img()
+        frame = camera.process(save_img=True)
         save_next_img = False
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+def genFake():
+    while True:
+        frame = get_fake_img()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(TrackingCamera(RobotController)),
+    if IS_ROS_RUNNING:
+        return Response(gen(TrackingCamera(RobotController)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        return Response(genFake(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/save_img')
 def save_img():
