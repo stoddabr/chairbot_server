@@ -60,6 +60,10 @@ class RobotControllerClass:
         where applicable, it calculates the new goal coordinates based on that type and
         then sets that as the new goal for each entity
 
+    getNearestRobot( x: int, y: int) -> (chairId: str, distance: float)
+        loops through all active chairbots and returns float with the nearest
+        chairbot id and the distance from given coords
+
     stop()
         big red button to stop chair movement and reset goals
     """
@@ -489,3 +493,21 @@ class RobotControllerClass:
         return {
           'stoppedRobotIds': stopped
         }
+
+    def getNearestRobot(self, x, y, maxDistance=100 ):
+        """ get the nearest robot to the given coords
+
+        loops through all active chairbots and returns float with the nearest
+        chairbot id and the distance from given coords
+        """  # TODO make into post request
+
+        closestId = None
+        closestDistance = 9999999
+        for robotId, coords in self._getCurrentRobotPositions().items():
+            # coords are [x,y,angle]
+            distance = sqrt( (x - coords[0])**2 + (y - coords[1])**2 )
+            if closestDistance < distance and distance < maxDistance:
+                closestId = robotId
+                closestDistance = distance
+
+        return (closestId, closestDistance)

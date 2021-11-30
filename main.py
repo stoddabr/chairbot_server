@@ -194,6 +194,14 @@ def send_movement_command(direction, id):
         mgs = 'Direction not recognized'
         return '<h2>Direction not recognized: unable to publish</h2>'
 
+@app.route('/distance/<x>/<y>', methods=['GET', 'POST'])
+def find_nearest_chairbot(x,y):
+    # TODO check x,y
+    id, dist = RobotController.getNearestRobot(x,y)
+    print('distance to nearest chair', dist)
+    if id:
+        return id
+    return 'No chair found'
 
 if __name__ == '__main__':
     app.run(threaded=True, debug=True, host='0.0.0.0')

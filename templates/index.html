@@ -47,6 +47,8 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 
 <body style="background-color: rgb(33,37,41); width: 100vw; height: 100vh;">
 
+<div class='page-container'>
+
   <div style="text-align: center">
     <img id="camera-frame" src="{{ url_for('video_feed') }}" class='camera-frame-class' />
   </div>
@@ -202,13 +204,15 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
   <!-- joystick code -->
   <!-- using absolute positioning breaks joystick so this ugly workaround is used -->
   <!-- from https://stackoverflow.com/a/45999283 -->
-  <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh;" id="joystickContainer">
+  <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh; width: 100vw" id="joystickContainer">
     <div style="margin-left: auto; font-size: small; padding: 0 0 4px 20px;font-style: italic;">
     <!-- joystick div -->
     <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
     </div>
     <p style="color:white; text-align:center;">Or use arrow keys</p>
   </div>
+
+</div>
 
 </body>
 </html>
@@ -408,12 +412,32 @@ $(document).ready(function () { // ensure jquery is loaded
 
      // exit early if click is not on video
      if (x < 0 || areaWidth < x || y < 0 || areaHeight < y) {
-       // TODO check if clicking on header, joystick, and other stuff
-       console.log("outside of img")
        return
      }
+     // exit early if click on joystick
+     const jRect = $('#joyDiv')[0].getBoundingClientRect();
+     if ((jRect.left < x && x < jRect.right)
+      && (y < jRect.bottom &&  jRect.top < y)) {
+        console.log('inside joystick');
+        return
+     }
 
+     //  post request to the server which will return the nearest chair
+     //   within an area
+     imgCoords = mapFromScreenXYtoImageXY(
+       x, y, areaWidth, areaHeight
+     )
      console.log("triggering selection of chair at", {x,y});
+     $.post( `/distance/${imgCoords.x}/${imgCoords.y}`,
+       JSON.stringify(imgCoords),
+       function( data ) {
+         console.log('closest chair: '+data)
+       },
+       'text'
+     ).fail(function() {
+         alert( "Error with ajax request! See python server logs" );
+    });
+
 
    });
 
