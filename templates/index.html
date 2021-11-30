@@ -13,8 +13,8 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
 <!DOCTYPE html>
 
 <!-- logging software -->
-<script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
-<script>window.LogRocket && window.LogRocket.init('mc1jdm/chairbot_study1');</script>
+<!-- <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+<script>window.LogRocket && window.LogRocket.init('mc1jdm/chairbot_study1');</script> -->
 <!-- import bootstrap and jquery -->
 <link href="{{ url_for('static', filename='css/dependencies/bootstrap.min.css') }}" rel="stylesheet"
   integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
@@ -202,7 +202,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
   <!-- joystick code -->
   <!-- using absolute positioning breaks joystick so this ugly workaround is used -->
   <!-- from https://stackoverflow.com/a/45999283 -->
-  <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh;">
+  <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh;" id="joystickContainer">
     <div style="margin-left: auto; font-size: small; padding: 0 0 4px 20px;font-style: italic;">
     <!-- joystick div -->
     <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
@@ -242,8 +242,9 @@ $(document).ready(function () { // ensure jquery is loaded
     // Add your own custom user variables here, ie:
     // subscriptionType: 'pro'
   }
-  LogRocket.identify(user_id_str, user_data);
+  //LogRocket.identify(user_id_str, user_data);
 
+  /*
   // log page clicks anywhere
   $(document).click(function(e){
     LogRocket.log('click', {
@@ -252,6 +253,7 @@ $(document).ready(function () { // ensure jquery is loaded
       y: e.pageY,
     });
   });
+  */
 
   //////////////////////////////////
   /* SECTION joystick controller */
@@ -385,6 +387,36 @@ $(document).ready(function () { // ensure jquery is loaded
    $('#dropdown-snap-down').on('click', snapDown);
    $('#dropdown-snap-left').on('click', snapLeft);
    $('#dropdown-snap-right').on('click', snapRight);
+
+   /////////////////////////////////////////////////////
+   /* SECTION tap to select */
+   /////////////////////////////////////////////////////
+
+   $('#joystickContainer').bind('click', function(e) {
+     const offset = $("#camera-frame").offset();
+     const areaWidth = $("#camera-frame").width();
+     const areaHeight = $("#camera-frame").height();
+     clickCoords = {
+       x: e.pageX,
+       y: e.pageY
+     };
+     console.log("click at", clickCoords);
+
+     const x = e.pageX - containLeftOffset(areaWidth, areaHeight);
+     const y = e.pageY - offset.top;
+     console.log("on img", {x,y});
+
+     // exit early if click is not on video
+     if (x < 0 || areaWidth < x || y < 0 || areaHeight < y) {
+       // TODO check if clicking on header, joystick, and other stuff
+       console.log("outside of img")
+       return
+     }
+
+     console.log("triggering selection of chair at", {x,y});
+
+   });
+
 
   /////////////////////////////////////////////////////
   /* SECTION tap goal */

@@ -113,7 +113,7 @@ class TrackingCamera(object):
         """ will return an image not from the video stream for testing """
 
         framefull = cv2.imread("static/py/chairbot_ui_1.png", cv2.IMREAD_COLOR)
-        
+
         ret, jpeg = cv2.imencode('.jpg', framefull) # frame for og resolution
         return jpeg.tobytes()
 
@@ -227,7 +227,7 @@ class TrackingCamera(object):
         # save image 1/10
         def decision(probability):
             return random.random() < probability
-        if decision(0.03):
+        if False: #decision(0.03):
             now = datetime.now()
             # dd/mm/YY-H:M:S
             dt_string = now.strftime("%d-%m-%Y-%H:%M:%S")

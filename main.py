@@ -91,7 +91,7 @@ def gen(camera):
     while True:
         if IS_ROS_RUNNING:
             frame = camera.process(save_img=True)
-        else: 
+        else:
             frame = camera.get_fake_img()
         save_next_img = False
         yield (b'--frame\r\n'
@@ -178,7 +178,7 @@ def send_movement_command(direction, id):
     if any(direction in d for d in ['FORWARD','BACKWARD','RIGHT','LEFT','STOP','LEFT_SLOW','RIGHT_SLOW']):
         # new ROSLIB.Message({data: motion})
         if (direction == 'STOP'):
-            print 'stopping robot '+str(id)
+            print 'stopping robot ' + str(id)
             try:
                 pub_stop_arr[int(id)].publish( 'STOP' )
             except:
@@ -189,12 +189,11 @@ def send_movement_command(direction, id):
                 pub_motion_arr[int(id)].publish( direction.upper() )
             except:
                 print('invalid robot id asked to stop', id)
-            return '<h2>Direction Command Published</h2>'
+            return '<h2>Direction Command Pubished</h2>'
     else:
         mgs = 'Direction not recognized'
         return '<h2>Direction not recognized: unable to publish</h2>'
 
 
-
 if __name__ == '__main__':
-    app.run(threaded=True, debug=True)
+    app.run(threaded=True, debug=True, host='0.0.0.0')
