@@ -200,7 +200,7 @@ def find_nearest_chairbot(x,y):
     id, dist = RobotController.getNearestRobot(x,y)
     print('distance to nearest chair', dist)
     if id:
-        return id
+        return str(id)
     return 'No chair found'
 
 if __name__ == '__main__':

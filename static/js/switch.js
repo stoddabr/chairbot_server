@@ -79,27 +79,29 @@ function disable(chairId) {
 
 //Turn chair#1 ON by toggling if the switch is checked or not
 function toggle_chair01() {
-  var checkBox = document.getElementById("Switch01");
-  if (checkBox.checked == true) {
-    enable(1) // chair01.publish(chairOn);
-    toggle_chair01_text();
-    //toggle other checkboxes
-    makeSelectAllIntuitive();
-
-  } else {
+  const isChecked = $('#Switch01').prop('checked')
+  console.log({isChecked})
+  if (isChecked) {
+    $('#Switch01').prop("checked", false);
     disable(1) // chair01.publish(chairOff);
     toggle_chair01_text();
 
     // if any of the chairs are unselected, uncheck select all.
     document.getElementById('SwitchAll').checked = false;
+  } else {
+    $('#Switch01').prop("checked", "checked");
+    enable(1) // chair01.publish(chairOn);
+    toggle_chair01_text();
+    //toggle other checkboxes
+    makeSelectAllIntuitive();
   }
 }
 //Give a textual feedback when chair#1 is ON/OFF by checking if the switch is checked or not
 function toggle_chair01_text() {
-  var checkBox = document.getElementById("Switch01");
+  const isChecked = $('#Switch01').prop('checked')
   var text = document.getElementById("Toggle01");
   const chairText = 'Chair1' // update based on html, if not found default value
-  if (checkBox.checked == true) {
+  if (isChecked) {
     text.innerHTML = chairText + ",";
   } else {
     text.innerHTML = "";
@@ -108,8 +110,9 @@ function toggle_chair01_text() {
 
 
 function toggle_chair02() {
-  var checkBox = document.getElementById("Switch02");
-  if (checkBox.checked == true) {
+  const isChecked = $('#Switch02').prop('checked')
+  if (!isChecked) {
+    $('#Switch02').prop("checked", "checked");
     enable(2) // chair02.publish(chairOn);
     toggle_chair02_text();
     //toggle other checkboxes
@@ -118,6 +121,8 @@ function toggle_chair02() {
   } else {
     disable(2) // chair02.publish(chairOff);
     toggle_chair02_text();
+    $('#Switch02').prop("checked", false);
+
     // if any of the chairs are unselected, uncheck select all.
     document.getElementById('SwitchAll').checked = false;
   }
@@ -125,10 +130,10 @@ function toggle_chair02() {
 
 //Give a textual feedback when chair#2 is ON/OFF by checking if the switch is checked or not
 function toggle_chair02_text() {
-  var checkBox = document.getElementById("Switch02");
+  const isChecked = $('#Switch02').prop('checked')
   var text = document.getElementById("Toggle02");
   const chairText = 'Chair2' // update based on html, if not found default value
-  if (checkBox.checked == true) {
+  if (isChecked) {
     text.innerHTML = chairText + ",";
   } else {
     text.innerHTML = "";
@@ -137,14 +142,16 @@ function toggle_chair02_text() {
 
 
 function toggle_chair03() {
-  var checkBox = document.getElementById("Switch03");
-  if (checkBox.checked == true) {
+  const isChecked = $('#Switch03').prop('checked')
+  if (!isChecked) {
+    $('#Switch03').prop("checked", "checked");
     enable(3) // chair03.publish(chairOn);
     toggle_chair03_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
 
   } else {
+    $('#Switch03').prop("checked", false);
     disable(3) // chair03.publish(chairOff);
     toggle_chair03_text();
     // if any of the chairs are unselected, uncheck select all.
@@ -154,10 +161,10 @@ function toggle_chair03() {
 
 //Give a textual feedback when chair#3 is ON/OFF by checking if the switch is checked or not
 function toggle_chair03_text() {
-  var checkBox = document.getElementById("Switch03");
+  const isChecked = $('#Switch03').prop('checked')
   var text = document.getElementById("Toggle03");
   const chairText = 'Chair3' // update based on html, if not found default value
-  if (checkBox.checked == true) {
+  if (isChecked) {
     text.innerHTML = chairText + ",";
   } else {
     text.innerHTML = "";
@@ -166,13 +173,15 @@ function toggle_chair03_text() {
 
 
 function toggle_chair04() {
-  var checkBox = document.getElementById("Switch04");
-  if (checkBox.checked == true) {
+  const isChecked = $('#Switch04').prop('checked')
+  if (!isChecked) {
+    $('#Switch04').prop("checked", "checked");
     enable(4) // chair04.publish(chairOn);
     toggle_chair04_text();
     //toggle other checkboxes
     makeSelectAllIntuitive();
   } else {
+    $('#Switch04').prop("checked", false);
     disable(4) // chair04.publish(chairOff);
     toggle_chair04_text();
     // if any of the chairs are unselected, uncheck select all.
@@ -182,19 +191,19 @@ function toggle_chair04() {
 
 //Give a textual feedback when chair#4 is ON/OFF by checking if the switch is checked or not
 function toggle_chair04_text() {
-  var checkBox = document.getElementById("Switch04");
+  const isChecked = $('#Switch04').prop('checked')
   var text = document.getElementById("Toggle04");
   const chairText = 'Chair4' // update based on html, if not found
-  if (checkBox.checked == true) {
+  if (isChecked) {
     text.innerHTML = chairText + ",";
   } else {
     text.innerHTML = "";
   }
 }
 
-function toggle_all() {
+function toggle_all() {  // DEPRECATED
   var checkBox = document.getElementById("SwitchAll");
-  if (checkBox.checked == true) { //check the checkbox
+  if (isChecked) { //check the checkbox
 chairNamesArr = [1,2,3,4].map(el=>{ // get names from html
   const chairText = 'Chair'+el // update based on html, if not found default value
       return chairText + ", ";

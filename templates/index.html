@@ -431,7 +431,28 @@ $(document).ready(function () { // ensure jquery is loaded
      $.post( `/distance/${imgCoords.x}/${imgCoords.y}`,
        JSON.stringify(imgCoords),
        function( data ) {
-         console.log('closest chair: '+data)
+         if (data == 'No chair found') { return; }
+         console.log('closest chair: '+data);
+         selectedChair = parseInt(data);
+         if (selectedChair == 'NaN') {
+           console.warn("Selected chair not a number", {selectedChair});
+           return;
+         }
+         console.log({selectedChair})
+         switch (selectedChair) {
+           case 1:
+             toggle_chair01();
+             break;
+           case 2:
+             toggle_chair02();
+             break;
+           case 3:
+             toggle_chair03();
+             break;
+           case 4:
+             toggle_chair04();
+             break;
+         }
        },
        'text'
      ).fail(function() {

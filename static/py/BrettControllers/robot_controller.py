@@ -494,7 +494,7 @@ class RobotControllerClass:
           'stoppedRobotIds': stopped
         }
 
-    def getNearestRobot(self, x, y, maxDistance=100 ):
+    def getNearestRobot(self, x, y, maxDistance=1000 ):
         """ get the nearest robot to the given coords
 
         loops through all active chairbots and returns float with the nearest
@@ -504,9 +504,16 @@ class RobotControllerClass:
         closestId = None
         closestDistance = 9999999
         for robotId, coords in self._getCurrentRobotPositions().items():
+            print(robotId, coords)
+            # coords may be none
+            if coords is None:
+                continue
             # coords are [x,y,angle]
-            distance = sqrt( (x - coords[0])**2 + (y - coords[1])**2 )
-            if closestDistance < distance and distance < maxDistance:
+            distance = math.sqrt( (int(x) - coords[0])**2 + (int(y) - coords[1])**2 )
+            print(coords, distance, x, y)
+
+            if distance < closestDistance and distance < maxDistance:
+                print('found new closest distance')
                 closestId = robotId
                 closestDistance = distance
 
