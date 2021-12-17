@@ -58,7 +58,7 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
       <p>Exit Goal</p>
     </div>
   </div>
-
+button
   <!-- top bar with dropdowns -->
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" aria-label="Third navbar example">
     <div class="container-fluid" id='navbar-container'>
@@ -200,14 +200,22 @@ ui v2 (bootstrap, layout, ect) 1/29/21 by Brett
     </div>
   </div>
 
+  <!-- gesture buttons -->
+  <div class="gestureButtonContainer">
+    <button class="btn btn-success mx-2" id="sideShakeButton">Side Shake</button>
+    <button class="btn btn-success mx-2" id="frontShakeButton">Front Shake</button>
+    <button class="btn btn-success mx-2" id="spin180Button">Spin 180*</button>
+    <button class="btn btn-success mx-2" id="spin360Button">Spin 360*</button>
+  </div>
+
 
   <!-- joystick code -->
   <!-- using absolute positioning breaks joystick so this ugly workaround is used -->
   <!-- from https://stackoverflow.com/a/45999283 -->
   <div style="padding-bottom:10px; display: flex; flex-wrap: wrap; align-items: flex-end; height: 100vh; width: 100vw" id="joystickContainer">
     <div style="margin-left: auto; font-size: small; padding: 0 0 4px 20px;font-style: italic;">
-    <!-- joystick div -->
-    <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
+      <!-- joystick div -->
+      <div id="joyDiv" style="width:150px;height:150px;margin-bottom:20px;margin:10px;align-self:flex-end;" />
     </div>
     <p style="color:white; text-align:center;">Or use arrow keys</p>
   </div>
@@ -642,6 +650,27 @@ $(document).ready(function () { // ensure jquery is loaded
    $("#camera-frame").on('vmousedown', imageClick);
    $("#camera-frame").on('vmouseup', imageRelease);
    $('#cancel-tap-goal').on('click', cancelTapGoal);
+
+
+   //////////////////////////////////////////////////////
+   /* SECTION gestures */
+   //////////////////////////////////////////////////////
+
+   $('#sideShakeButton').on('click', function(e) {
+     shakeSide();
+   });
+
+   $('#frontShakeButton').on('click', function(e) {
+     shakeFront();
+   });
+
+   $('#spin180Button').on('click', function(e) {
+     spin180();
+   });
+
+   $('#spin360Button').on('click', function(e) {
+     spin360();
+   });
 
    /////////////////////////////////////////////////////
    /* SECTION arrangement templates */

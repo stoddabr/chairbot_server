@@ -1,0 +1,12 @@
+<launch>
+	<param name="use_sim_time" value="false"/>
+	<!-- eg. packet_replicator_neato03 -->
+  <node name="$(eval 'packet_replicator_' + env('NEATO_NAME'))"
+  pkg="chairbot_neato_node" type="packet_replicator.py" output="screen">
+  </node>
+	<!-- eg. neato03 -->
+  <node name="$( env NEATO_NAME )" pkg="chairbot_neato_node"
+  type="neato_mover.py" output="screen">
+  </node>
+
+</launch>

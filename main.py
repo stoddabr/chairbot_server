@@ -185,7 +185,10 @@ def toggle_chair(command, id):
 # directly control the robot
 @app.route('/move/<direction>/<id>', methods = ['GET','POST'])
 def send_movement_command(direction, id):
-    if any(direction in d for d in ['FORWARD','BACKWARD','RIGHT','LEFT','STOP','LEFT_SLOW','RIGHT_SLOW']):
+    if any(direction in d for d in [
+    'FORWARD','BACKWARD','RIGHT','LEFT','STOP','LEFT_SLOW','RIGHT_SLOW',
+    'SHAKE_SIDE', 'SHAKE_FRONT', 'SPIN_180', 'SPIN_360'
+    ]):
         # new ROSLIB.Message({data: motion})
         if (direction == 'STOP'):
             print 'stopping robot ' + str(id)

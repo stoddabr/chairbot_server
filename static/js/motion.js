@@ -53,6 +53,10 @@ const BACKWARD = 'BACKWARD'
 const RIGHT = 'RIGHT_SLOW'
 const LEFT =  'LEFT_SLOW'
 const STOP = 'STOP'
+const SHAKE_SIDE = 'SHAKE_SIDE'
+const SHAKE_FRONT = 'SHAKE_FRONT'
+const SPIN_180 = 'SPIN_180'
+const SPIN_360 = 'SPIN_360'
 
 function sendMotion(motion, chairId) {
 	const motionstr = String(motion)
@@ -145,4 +149,16 @@ function turnRight() {
 }
 function turnLeft() {
 	askToRunSequence(LEFT);
+}
+function shakeSide() {
+	askToRunSequence(SHAKE_SIDE);
+}
+function shakeFront() {
+	askToRunSequence(SHAKE_FRONT);
+}
+function spin180() {
+	askToRunSequence(SPIN_180);
+}
+function spin360() {
+	askToRunSequence(SPIN_360);
 }
