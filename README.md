@@ -64,7 +64,7 @@ This is the directory where ROS is running the python code during execution.
 
 _Note: this text was originally written to be included in a paper but was moved here so the tone may be a little "off"_
 
-To address the required features listed above, substantial architectural and control systems were designed and implemented. 
+To address the required features listed above, substantial architectural and control systems were designed and implemented.
 
 ![Drag Racing](./documentation/diagrams/ChairbotRedesignArchitectureV2.1.png "Modules")
 
@@ -100,9 +100,9 @@ This module took in data from the UI and updated the Path Planning module's goal
 The ROS socket module is used by the server to wirelessly send commands to the ChairBot. It is subscribed to both the path planning and website modules. This is how the server communicates to the ChairBot. It forwards commands from the server by publishing them to ROS topics. Each ChairBot has it's own topic it subscribes to for listening for motion commands. This critical infrastructure enabled all features.
 
 ### Screen Interface
-The screen UI controller was implemented using a Javascript/HTML website served by the server over HTTP. This design provided flexibility to the system such that in that could be used on a mobile phone, tablet, laptop, a PC, or a smart fridge (not tested). Such a HTML/CSS/Javascript website could even be packaged to run as native applications (Windows executable, MacOS bundle, Android or iOS app) using frameworks such as Iconic, or Electron [citation needed]. This design choice was inspired by the WORA (write once, run anywhere) philosophy popularized by a Java in 1995 [$http://www.stroustrup.com/1995_Java_whitepaper.pdf$]. As a whole, utilizing web development technologies in telerobotic system allows for rapid prototyping, flexible deployment environments, and access to a large supporting communities. 
+The screen UI controller was implemented using a Javascript/HTML website served by the server over HTTP. This design provided flexibility to the system such that in that could be used on a mobile phone, tablet, laptop, a PC, or a smart fridge (not tested). Such a HTML/CSS/Javascript website could even be packaged to run as native applications (Windows executable, MacOS bundle, Android or iOS app) using frameworks such as Iconic, or Electron [citation needed]. This design choice was inspired by the WORA (write once, run anywhere) philosophy popularized by a Java in 1995 [$http://www.stroustrup.com/1995_Java_whitepaper.pdf$]. As a whole, utilizing web development technologies in telerobotic system allows for rapid prototyping, flexible deployment environments, and access to a large supporting communities.
 
-The website is served from a Flask server which also streamed video from the overhead camera using CV2. JQuery was used to manage user input logic. The roslibjs package was used to send commands through the ROS socket. A stream from the camera was displaced as the website's background to give the user a second, objective view of the robot. The Javascript controls could operate independently of the video stream. 
+The website is served from a Flask server which also streamed video from the overhead camera using CV2. JQuery was used to manage user input logic. The roslibjs package was used to send commands through the ROS socket. A stream from the camera was displaced as the website's background to give the user a second, objective view of the robot. The Javascript controls could operate independently of the video stream.
 
 # External Links
 Chirbot Wiki for more information on getting started with the chairs https://github.com/abhiagni11/ChairBots_ROS_system/wiki
@@ -111,6 +111,112 @@ Charisma Lab Github for other chairbot projects
 Snow white project that uses fiducials similarly https://github.com/charisma-lab/neato_localization/
   - image is processed in `tracking_aruco_markers.py`
   - then `localizing_tracked_markers.py` updates marker locations and publishes poses where applicable
+
+# Brett's local notes
+Useful for practical applications.
+Used as quick reference on laptop.
+Especially helpful for running system with no internet connection.
+
+## Networking (for Asus_Charisma_2G wifi)
+
+main computer / server / predator laptop
+```
+export ROS_HOSTNAME=192.168.1.196
+export ROS_MASTER_URI=http://192.168.1.196:11311
+export ROS_IP=192.168.1.196
+roslaunch chairbot_server start_ui_server.launch prompt:=2 ui:=0
+```
+
+ChairBot 4
+```
+ssh chairbot04@192.168.1.99
+# password "charisma"
+export ROS_IP=192.168.1.99
+export ROS_MASTER_URI=http://192.168.1.196:11311
+roslaunch chairbot_neato_node ui.launch
+```
+
+ChairBot "3" (VR pi)
+```
+ssh charismapi01@192.168.1.41
+# password "raspberry"
+export ROS_IP=192.168.1.41
+export ROS_MASTER_URI=http://192.168.1.196:11311
+roslaunch chairbot_neato_node ui.launch
+```
+
+ChairBot 2
+```
+ssh chairbot02@192.168.1.115
+# password "raspberry"
+export ROS_MASTER_URI=http://192.168.1.196:11311
+export ROS_IP=192.168.1.115
+roslaunch chairbot_neato_node ui.launch
+```
+
+on ChairBot 1
+```
+ssh chairbot01@192.168.1.73
+# password "raspberry"
+export ROS_MASTER_URI=http://192.168.1.196:11311
+export ROS_IP=192.168.1.73
+roslaunch chairbot_neato_node ui.launch
+```
+
+
+## Chair commands
+
+Stop chairs (clear arrangement)
+```
+curl -X "DELETE" http://0.0.0.0:5000/
+```
+
+Other commands are possible using curl post/get/delete.
+See documentation or code in chairbot_server/main.py.
+
+
+## Moving files around
+NOTE: all examples assumed that the chairbot raspi has been ssh-ed into
+```
+Commands use scp or rsync (similar programs with different features)
+
+# Grab all files from a directory, save on another computer
+#	For example, all files in catkin_ws/src for bootstrapping a new raspi
+#	using code from an old one
+#
+# requires to be in .../catkin_ws/ directory on raspi
+scp -r src/ charisma@192.168.1.196/home/charisma/brett/chairbot
+
+
+# Add all files from a directory to raspi
+#	For example, for bootstraping new raspi
+# requires to be in .../catkin_ws/ directory on raspi
+#
+# copy all catkin_ws/src files (will not overwrite existing files)
+rsync -ar --ignore-existing charisma@192.168.1.196:/home/charisma/brett/chairbot/src/ src/
+# will only copy python node files in chairbot_neato_node (will not overwrite existing files)
+rsync -ar --ignore-existing charisma@192.168.1.196:/home/charisma/brett/chairbot/src/chairbot_neato/chairbot_neato_node/nodes .
+
+
+# Add a single file
+# 	For example, if a code update has been developed on one and needs
+#	do be deployed on other chairbots
+#
+# requires to be ssh-ed into chairbot and inside of node folder
+#	(ie, the command copies first path onto second path)
+# will overwrite existing file
+rsync charisma@192.168.1.196:/home/charisma/brett/chairbot/src/chairbot_neato/chairbot_neato_node/nodes/packet_replicator.py packet_replicator.py
+```
+
+## Creating new chairbot pi
+1. install ros kinetic
+2. create ros workstation (ie, catkin_ws)
+3. edit ~/.bashrc (see other pis for example, need NEATO_NAME and other things)
+4. import files (see above)
+5. make the chairbot_neato_node package `catkin_make --only-pkg-with-deps chairbot_neato_node`
+6. run networking (see above)
+
+
 
 # contributors
   - after 4/2020 Brett Stoddard  stoddardbrett@gmail.com
